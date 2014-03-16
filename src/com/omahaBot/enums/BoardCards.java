@@ -1,28 +1,30 @@
 package com.omahaBot.enums;
 
+import java.awt.Rectangle;
+
+import com.omahaBot.consts.Consts;
+
 public enum BoardCards {
 
-	CARD1_FLOP(424),
-	CARD2_FLOP(500),
-	CARD3_FLOP(576),
-	CARD4_TURN(654),
-	CARD5_RIVER(728);
+	CARD1_FLOP(Consts.BLOCK_CARD1),
+	CARD2_FLOP(Consts.BLOCK_CARD2),
+	CARD3_FLOP(Consts.BLOCK_CARD3),
+	CARD4_TURN(Consts.BLOCK_CARD4),
+	CARD5_RIVER(Consts.BLOCK_CARD5);
 
-	private int posX;
-	public static int POSY = 307;
-	public static int WIDTH = 65;
-	public static int HEIGHT = 48;
+	private Rectangle block;
 
-	BoardCards(int posX) {
-		this.posX = posX;
+	private BoardCards(Rectangle block) {
+		this.block = block;
 	}
 
-	public int getPosX() {
-		return posX;
+	public Rectangle getBlock() {
+		return block;
 	}
 
-	public void setPosX(int posX) {
-		this.posX = posX;
+	public void setBlock(Rectangle block) {
+		this.block = block;
 	}
 
+	
 }

@@ -44,40 +44,43 @@ public class DealBlockWidget extends Composite {
 		grpInfosDeal.setFont(SWTResourceManager.getFont("Segoe UI", 12, SWT.BOLD));
 		grpInfosDeal.setText("Infos Deal");
 		grpInfosDeal.setLayout(new GridLayout(2, false));
-		
+
 		lbl1 = new Label(grpInfosDeal, SWT.NONE);
 		lbl1.setText("Hand ID :");
-				
-						valueId = new Label(grpInfosDeal, SWT.NONE);
-						GridData gd_valueId = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
-						gd_valueId.widthHint = 150;
-						valueId.setLayoutData(gd_valueId);
-						valueId.setText("[dealId]");
-				
-				Label lbl2 = new Label(grpInfosDeal, SWT.NONE);
-				lbl2.setText("Pot :");
-		
-				valuePot = new Label(grpInfosDeal, SWT.NONE);
-				GridData gd_valuePot = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
-				gd_valuePot.widthHint = 150;
-				valuePot.setLayoutData(gd_valuePot);
-				valuePot.setText("[currentPot]");
-				
-				lbl3 = new Label(grpInfosDeal, SWT.NONE);
-				lbl3.setText("Step :");
-				
-				valueDealStep = new Label(grpInfosDeal, SWT.NONE);
-				GridData gd_valueDealStep = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
-				gd_valueDealStep.widthHint = 150;
-				valueDealStep.setLayoutData(gd_valueDealStep);
-				valueDealStep.setText("[dealStep]");
-				
-				lbl4 = new Label(grpInfosDeal, SWT.NONE);
-				lbl4.setText("nb Player :");
-				
-				valueNbPlayer = new Label(grpInfosDeal, SWT.NONE);
-				valueNbPlayer.setText("[nbPlayer]");
-		
+
+		valueId = new Label(grpInfosDeal, SWT.NONE);
+		GridData gd_valueId = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
+		gd_valueId.widthHint = 150;
+		valueId.setLayoutData(gd_valueId);
+		valueId.setText("[dealId]");
+
+		Label lbl2 = new Label(grpInfosDeal, SWT.NONE);
+		lbl2.setText("Pot :");
+
+		valuePot = new Label(grpInfosDeal, SWT.NONE);
+		GridData gd_valuePot = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
+		gd_valuePot.widthHint = 150;
+		valuePot.setLayoutData(gd_valuePot);
+		valuePot.setText("[currentPot]");
+
+		lbl3 = new Label(grpInfosDeal, SWT.NONE);
+		lbl3.setText("Step :");
+
+		valueDealStep = new Label(grpInfosDeal, SWT.NONE);
+		GridData gd_valueDealStep = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
+		gd_valueDealStep.widthHint = 150;
+		valueDealStep.setLayoutData(gd_valueDealStep);
+		valueDealStep.setText("[dealStep]");
+
+		lbl4 = new Label(grpInfosDeal, SWT.NONE);
+		lbl4.setText("nb Player :");
+
+		valueNbPlayer = new Label(grpInfosDeal, SWT.NONE);
+		GridData gd_valueNbPlayer = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
+		gd_valueNbPlayer.widthHint = 150;
+		valueNbPlayer.setLayoutData(gd_valueNbPlayer);
+		valueNbPlayer.setText("[nbPlayer]");
+
 		m_bindingContext = initDataBindings();
 	}
 
@@ -96,6 +99,7 @@ public class DealBlockWidget extends Composite {
 			m_bindingContext.dispose();
 		m_bindingContext = initDataBindings();
 	}
+
 	protected DataBindingContext initDataBindings() {
 		DataBindingContext bindingContext = new DataBindingContext();
 		//

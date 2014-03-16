@@ -214,11 +214,9 @@ public class OcrServiceImpl implements OcrService {
 	public CardModel scanCard(BoardCards card) {
 		CardModel result = null;
 		
-		Rectangle rect = new Rectangle(new Rectangle(Consts.TABLE_X + card.getPosX(), Consts.TABLE_Y + BoardCards.POSY, BoardCards.WIDTH,
-				BoardCards.HEIGHT));
-		BufferedImage capture = robot.createScreenCapture(rect);
+		BufferedImage capture = robot.createScreenCapture(card.getBlock());
 
-		Color colorScaned = new Color(capture.getRGB(Suit.PIXEL_POSX, Suit.PIXEL_POSY));
+		Color colorScaned = new Color(capture.getRGB(Consts.PT_SUIT.x, Consts.PT_SUIT.y));
 
 		try {
 			String cardRankScaned = OcrUtils.scanCardRank(new Tesseract1(), capture);

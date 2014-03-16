@@ -4,6 +4,8 @@ import java.awt.AWTException;
 import java.awt.Robot;
 import java.util.logging.Logger;
 
+import junit.framework.Assert;
+
 import org.eclipse.swt.widgets.Display;
 
 import com.omahaBot.model.DealModel;
@@ -42,6 +44,8 @@ public class ThreadDeal extends MyThread {
 			// scan du dealId toutes les 1s
 			final String dealId = ocrService.scanDealId();// critère de rupture
 
+			Assert.assertEquals(dealId.isEmpty(), false);
+			
 			if (!dealId.isEmpty() && !dealIdOld.equals(dealId)) {
 				System.out.println("--> NEW DEAL : " + dealId);
 				dealIdOld = dealId;
@@ -49,9 +53,7 @@ public class ThreadDeal extends MyThread {
 				initDeal();
 				dealModel.setDealId(dealId);
 
-				if (threadBoard != null && threadBoard.isAlive()) {
-					threadBoard.arret();
-				}
+				arretThreadChild();
 				
 				// demarrage d'un nouveau thread
 				threadBoard = new ThreadBoard(mainForm, dealModel);
@@ -60,7 +62,7 @@ public class ThreadDeal extends MyThread {
 				Display.getDefault().syncExec(new Runnable() {
 					public void run() {
 						mainForm.initDealWidget(dealModel);
-						mainForm.initPlayerWidget(dealModel.getPlayers());
+						//mainForm.initPlayerWidget(dealModel.getPlayers());
 					}
 				});
 			}
@@ -77,32 +79,15 @@ public class ThreadDeal extends MyThread {
 		System.out.println("########## STOP ThreadDeal  ##########");
 	}
 
-    public void arret() {
+	@Override
+	public void arretThreadChild() {
     	if (threadBoard != null && threadBoard.isAlive()) {
     		threadBoard.arret();	
     	}
-        running = false;
-    }
-
+	}
+    
 	public void initDeal() {
 		dealModel = ocrService.scanNewDeal();
 	}
-
-//	public int activePlayer() {
-//
-//		for (PlayerModel playerModel : dealModel.getPlayers()) {
-//
-//			int x = Double.valueOf(
-//					playerModel.getPlayerBlock().getBlock().getX() + PixelConsts.PLAYER_ACTIV_PIXEL_BLOCK.x).intValue();
-//			int y = Double.valueOf(
-//					playerModel.getPlayerBlock().getBlock().getY() + PixelConsts.PLAYER_ACTIV_PIXEL_BLOCK.y).intValue();
-//
-//			if (PixelConsts.PLAYER_ACTIV_COLOR.equals(robot.getPixelColor(x, y))) {
-//				return playerModel.getPosition();
-//			}
-//		}
-//
-//		return 0;
-//	}
 
 }

@@ -5,7 +5,7 @@ import java.awt.Robot;
 import com.omahaBot.service.ocr.OcrServiceImpl;
 import com.omahaBot.ui.form.MainForm;
 
-public class MyThread extends Thread {
+public abstract class MyThread extends Thread implements IThread{
 
 	protected volatile boolean running = true;
 
@@ -16,4 +16,10 @@ public class MyThread extends Thread {
 	protected static int REFRESH = 1000;
 	
 	protected MainForm mainForm;
+	
+	@Override
+    public void arret() {
+    	arretThreadChild();
+        running = false;
+    }
 }

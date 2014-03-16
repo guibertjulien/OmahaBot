@@ -2,21 +2,19 @@ package com.omahaBot.enums;
 
 import java.awt.Color;
 
+import com.omahaBot.consts.PixelConsts;
+
 public enum Suit {
 
-	HEART("h", new Color(122, 48, 46)),//red
-	SPADE("s", new Color(59, 59, 59)),//black 
-	DIAMOND("d", new Color(66, 96, 106)),//blue
-	CLUB("c", new Color(76, 118, 47)),//green
+	HEART("h", PixelConsts.SUIT_HEART),
+	SPADE("s", PixelConsts.SUIT_SPADE), 
+	DIAMOND("d", PixelConsts.SUIT_DIAMOND),
+	CLUB("c", PixelConsts.SUIT_CLUB),//green
 	UNKNOW("?", null);
 
 	private String shortName;
 
 	private Color pixelColor;
-	
-	public static int PIXEL_POSX = 49;
-	
-	public static  int PIXEL_POSY = 20;
 
 	private Suit(String shortName, Color pixelColor) {
 		this.shortName = shortName;

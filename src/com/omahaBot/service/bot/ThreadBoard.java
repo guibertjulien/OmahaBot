@@ -23,13 +23,15 @@ public class ThreadBoard extends MyThread {
 
 	private List<CardModel> listBoardCard = new ArrayList<CardModel>();
 
-	private DealStep dealStepOld = DealStep.PRE_FLOP;
+	private DealStep dealStepOld = DealStep.UNKNOW;
 
 	private DealModel dealModel;
 
 	private Robot robot;
 
 	private ThreadPot threadPot;
+	
+	private ThreadPlayer threadPlayer;
 
 	public ThreadBoard(MainForm mainForm, DealModel dealModel) {
 		super();
@@ -62,16 +64,18 @@ public class ThreadBoard extends MyThread {
 				dealModel.setStep(dealStep);
 
 				initBoard(dealStep);
-				
-				// --> deal position
-				
-				if (threadPot != null && threadPot.isAlive()) {
-					threadPot.arret();
-				}
 
+				// --> deal position
+
+				arretThreadChild();
+								
 				// demarrage d'un nouveau thread
 				threadPot = new ThreadPot(mainForm, dealModel);
 				threadPot.start();
+				
+				// demarrage d'un nouveau thread
+				threadPlayer = new ThreadPlayer(mainForm, dealModel);
+				threadPlayer.start();
 
 				Display.getDefault().syncExec(new Runnable() {
 					public void run() {
@@ -93,13 +97,16 @@ public class ThreadBoard extends MyThread {
 		System.out.println("#### STOP ThreadBoard");
 	}
 
-	public void arret() {
+	@Override
+	public void arretThreadChild() {
 		if (threadPot != null && threadPot.isAlive()) {
 			threadPot.arret();
 		}
-		running = false;
+		if (threadPlayer != null && threadPlayer.isAlive()) {
+			threadPlayer.arret();
+		}
 	}
-
+	
 	public DealStep initDealStep() {
 
 		ArrayList<BoardCards> listCard = new ArrayList<>();
@@ -108,8 +115,8 @@ public class ThreadBoard extends MyThread {
 		listCard.add(BoardCards.CARD3_FLOP);
 
 		for (BoardCards card : listCard) {
-			Color colorScaned = robot.getPixelColor(Consts.TABLE_X + card.getPosX() + Suit.PIXEL_POSX, Consts.TABLE_Y
-					+ card.POSY + Suit.PIXEL_POSY);
+			Color colorScaned = robot.getPixelColor(card.getBlock().x + Consts.PT_SUIT.x, card.getBlock().y
+					+ Consts.PT_SUIT.y);
 
 			for (Suit suit : Suit.values()) {
 				if (colorScaned.equals(suit.getPixelColor())) {
@@ -141,9 +148,20 @@ public class ThreadBoard extends MyThread {
 			if (listBoardCard.size() == 3) {
 				listBoardCard.addAll(ocrService.scanBoardCards(DealStep.TURN));
 			}
+			else {
+				listBoardCard.clear();
+				listBoardCard.addAll(ocrService.scanBoardCards(DealStep.FLOP));
+				listBoardCard.addAll(ocrService.scanBoardCards(DealStep.TURN));
+			}
 			break;
 		case RIVER:
 			if (listBoardCard.size() == 4) {
+				listBoardCard.addAll(ocrService.scanBoardCards(DealStep.RIVER));
+			}
+			else {
+				listBoardCard.clear();
+				listBoardCard.addAll(ocrService.scanBoardCards(DealStep.FLOP));
+				listBoardCard.addAll(ocrService.scanBoardCards(DealStep.TURN));
 				listBoardCard.addAll(ocrService.scanBoardCards(DealStep.RIVER));
 			}
 			break;
@@ -153,4 +171,5 @@ public class ThreadBoard extends MyThread {
 
 		System.out.println(dealStep + " : " + listBoardCard);
 	}
+
 }
