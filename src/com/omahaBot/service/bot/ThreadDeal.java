@@ -4,8 +4,6 @@ import java.awt.AWTException;
 import java.awt.Robot;
 import java.util.logging.Logger;
 
-import junit.framework.Assert;
-
 import org.eclipse.swt.widgets.Display;
 
 import com.omahaBot.model.DealModel;
@@ -15,11 +13,11 @@ public class ThreadDeal extends MyThread {
 
 	private final static Logger LOGGER = Logger.getLogger(ThreadDeal.class.getName());
 
-	private String dealIdOld = "0";
+	private String oldDealId = "0", currentDealId;
 
-	private DealModel dealModel = new DealModel();
+	private DealModel dealModel;
 
-	private ThreadBoard threadBoard;
+	private ThreadDealStep threadDealStep;
 	
 	public ThreadDeal(MainForm mainForm) {
 		super();
@@ -42,27 +40,25 @@ public class ThreadDeal extends MyThread {
 		
 		while (running) {
 			// scan du dealId toutes les 1s
-			final String dealId = ocrService.scanDealId();// critère de rupture
-
-			Assert.assertEquals(dealId.isEmpty(), false);
+			currentDealId = ocrService.scanDealId();// critère de rupture
 			
-			if (!dealId.isEmpty() && !dealIdOld.equals(dealId)) {
-				System.out.println("--> NEW DEAL : " + dealId);
-				dealIdOld = dealId;
+			if (!currentDealId.isEmpty() && !oldDealId.equals(currentDealId)) {
+				System.out.println("--> NEW DEAL : " + currentDealId);
+				
+				oldDealId = currentDealId;
 
-				initDeal();
-				dealModel.setDealId(dealId);
-
+				dealModel = new DealModel();
+				dealModel.setDealId(currentDealId);
+				
 				arretThreadChild();
 				
 				// demarrage d'un nouveau thread
-				threadBoard = new ThreadBoard(mainForm, dealModel);
-				threadBoard.start();
+				threadDealStep = new ThreadDealStep(mainForm);
+				threadDealStep.start();
 				
 				Display.getDefault().syncExec(new Runnable() {
 					public void run() {
 						mainForm.initDealWidget(dealModel);
-						//mainForm.initPlayerWidget(dealModel.getPlayers());
 					}
 				});
 			}
@@ -81,13 +77,8 @@ public class ThreadDeal extends MyThread {
 
 	@Override
 	public void arretThreadChild() {
-    	if (threadBoard != null && threadBoard.isAlive()) {
-    		threadBoard.arret();	
+    	if (threadDealStep != null && threadDealStep.isAlive()) {
+    		threadDealStep.arret();	
     	}
 	}
-    
-	public void initDeal() {
-		dealModel = ocrService.scanNewDeal();
-	}
-
 }

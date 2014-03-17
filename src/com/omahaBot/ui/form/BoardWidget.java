@@ -1,6 +1,6 @@
 package com.omahaBot.ui.form;
 
-import java.util.List;
+import java.util.ArrayList;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.RowLayout;
@@ -9,11 +9,12 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.wb.swt.SWTResourceManager;
 
-import com.omahaBot.enums.DealStep;
 import com.omahaBot.model.CardModel;
+import com.omahaBot.model.DealStepModel;
 
 public class BoardWidget extends Composite {
 
+	private Group grpBoard;
 	private Label lblNewLabel;
 	private Label lblNewLabel_1;
 	private Label lblNewLabel_2;
@@ -34,7 +35,7 @@ public class BoardWidget extends Composite {
 		super(parent, style);
 		setLayout(new RowLayout(SWT.HORIZONTAL));
 
-		Group grpBoard = new Group(this, SWT.NONE);
+		grpBoard = new Group(this, SWT.NONE);
 		grpBoard.setFont(SWTResourceManager.getFont("Segoe UI", 12, SWT.BOLD));
 		grpBoard.setText("Board");
 		grpBoard.setLayout(new RowLayout(SWT.HORIZONTAL));
@@ -56,8 +57,13 @@ public class BoardWidget extends Composite {
 		lblNewLabel_4.setText(DEFAULT_RIVER);
 	}
 
-	public void init(List<CardModel> listCard, DealStep dealStep) {
-		switch (dealStep) {
+	public void init(DealStepModel dealStepModel) {
+		
+		grpBoard.setText("Board : " + dealStepModel.getDealStep().name());
+		
+		ArrayList<CardModel> listCard = new ArrayList<>(dealStepModel.getListBoardCard());
+		
+		switch (dealStepModel.getDealStep()) {
 		case FLOP:
 			if (listCard.size() == 3) {
 				lblNewLabel.setText(listCard.get(0).toString());

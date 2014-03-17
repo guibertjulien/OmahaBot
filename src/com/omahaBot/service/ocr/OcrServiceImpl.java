@@ -66,31 +66,25 @@ public class OcrServiceImpl implements OcrService {
 		return INSTANCE;
 	}
 
-	@Override
-	public DealModel scanNewDeal() {
-		try {
-			dealModel = new DealModel();
-
-			// capture de la table
-			captureTable = robot.createScreenCapture(Consts.BLOCK_TABLE);
-
-			// sauvegarde de la capture
-			ImageIO.write(captureTable, "png", new File(CAPS_DIRECTORY + TABLE_FILENAME));
-
-			scanPlayerList();
-
-			dealModel.setPlayers(listPlayer);
-		} catch (IOException e) {
-			LOGGER.warning(e.getMessage());
-		}
-
-		return dealModel;
-	}
+//	@Override
+//	public DealModel scanNewDeal() {
+//		try {
+//			dealModel = new DealModel();
+//			
+//			captureTable = robot.createScreenCapture(Consts.BLOCK_TABLE);
+//			ImageIO.write(captureTable, "png", new File(CAPS_DIRECTORY + TABLE_FILENAME));
+//			
+//			// TODO
+//			
+//		} catch (IOException e) {
+//			LOGGER.warning(e.getMessage());
+//		}
+//
+//		return dealModel;
+//	}
 
 	@Override
 	public String scanDealId() {
-
-		// capture de dealId
 		Rectangle block = new Rectangle(Consts.BLOCK_DEAL_ID);
 		BufferedImage capture = robot.createScreenCapture(block);
 

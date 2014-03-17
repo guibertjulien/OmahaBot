@@ -7,13 +7,13 @@ import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.omahaBot.enums.Block;
-
 import net.sourceforge.tess4j.TessAPI1.TessPageSegMode;
 import net.sourceforge.tess4j.Tesseract;
 import net.sourceforge.tess4j.Tesseract1;
 import net.sourceforge.tess4j.TesseractException;
 import net.sourceforge.vietocr.ImageHelper;
+
+import com.omahaBot.enums.Block;
 
 public class OcrUtils {
 

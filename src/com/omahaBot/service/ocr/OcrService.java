@@ -7,13 +7,10 @@ import java.util.List;
 import com.omahaBot.enums.BoardCards;
 import com.omahaBot.enums.DealStep;
 import com.omahaBot.model.CardModel;
-import com.omahaBot.model.DealModel;
 
 public interface OcrService {
 
 	String scanDealId();
-
-	DealModel scanNewDeal();
 
 	CardModel scanCard(BoardCards card);
 

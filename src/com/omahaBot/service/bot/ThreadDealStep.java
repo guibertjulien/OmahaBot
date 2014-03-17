@@ -14,29 +14,28 @@ import com.omahaBot.enums.BoardCards;
 import com.omahaBot.enums.DealStep;
 import com.omahaBot.enums.Suit;
 import com.omahaBot.model.CardModel;
-import com.omahaBot.model.DealModel;
+import com.omahaBot.model.DealStepModel;
 import com.omahaBot.ui.form.MainForm;
 
-public class ThreadBoard extends MyThread {
+public class ThreadDealStep extends MyThread {
 
-	private final static Logger LOGGER = Logger.getLogger(ThreadBoard.class.getName());
+	private final static Logger LOGGER = Logger.getLogger(ThreadDealStep.class.getName());
 
 	private List<CardModel> listBoardCard = new ArrayList<CardModel>();
 
-	private DealStep dealStepOld = DealStep.UNKNOW;
+	private DealStep oldDealStep = DealStep.UNKNOW, currentDealStep;
 
-	private DealModel dealModel;
+	private DealStepModel dealStepModel;
 
 	private Robot robot;
 
 	private ThreadPot threadPot;
 	
-	private ThreadPlayer threadPlayer;
+	private ThreadAction threadAction;
 
-	public ThreadBoard(MainForm mainForm, DealModel dealModel) {
+	public ThreadDealStep(MainForm mainForm) {
 		super();
 		this.mainForm = mainForm;
-		this.dealModel = dealModel;
 
 		try {
 			robot = new Robot();
@@ -51,36 +50,35 @@ public class ThreadBoard extends MyThread {
 	@Override
 	public void run() {
 
-		System.out.println("#### START ThreadBoard");
+		System.out.println("#### START ThreadDealStep");
 
 		while (running) {
 			// scan du dealStep toutes les 1s
-			final DealStep dealStep = initDealStep();// critère de rupture
+			currentDealStep = initDealStep();// critère de rupture
 
-			if (!dealStepOld.equals(dealStep)) {
-				System.out.println("--> NEW STEP : " + dealStep);
-				dealStepOld = dealStep;
+			if (!oldDealStep.equals(currentDealStep)) {
+				System.out.println("--> NEW DEAL STEP : " + currentDealStep);
+				oldDealStep = currentDealStep;
 
-				dealModel.setStep(dealStep);
+				initBoardCard();
 
-				initBoard(dealStep);
-
-				// --> deal position
-
+				dealStepModel = new DealStepModel();
+				dealStepModel.setDealStep(currentDealStep);
+				dealStepModel.setListBoardCard(listBoardCard);
+				
 				arretThreadChild();
 								
 				// demarrage d'un nouveau thread
-				threadPot = new ThreadPot(mainForm, dealModel);
+				threadPot = new ThreadPot(mainForm);
 				threadPot.start();
 				
 				// demarrage d'un nouveau thread
-				threadPlayer = new ThreadPlayer(mainForm, dealModel);
-				threadPlayer.start();
+				threadAction = new ThreadAction(mainForm);
+				threadAction.start();
 
 				Display.getDefault().syncExec(new Runnable() {
 					public void run() {
-						mainForm.initDealWidget(dealModel);
-						mainForm.initBoardWidget(listBoardCard, dealStep);
+						mainForm.initBoardWidget(dealStepModel);
 					}
 				});
 			}
@@ -94,7 +92,7 @@ public class ThreadBoard extends MyThread {
 
 		}
 
-		System.out.println("#### STOP ThreadBoard");
+		System.out.println("#### STOP ThreadDealStep");
 	}
 
 	@Override
@@ -102,8 +100,8 @@ public class ThreadBoard extends MyThread {
 		if (threadPot != null && threadPot.isAlive()) {
 			threadPot.arret();
 		}
-		if (threadPlayer != null && threadPlayer.isAlive()) {
-			threadPlayer.arret();
+		if (threadAction != null && threadAction.isAlive()) {
+			threadAction.arret();
 		}
 	}
 	
@@ -137,9 +135,9 @@ public class ThreadBoard extends MyThread {
 		return DealStep.PRE_FLOP;
 	}
 
-	public void initBoard(DealStep dealStep) {
+	public void initBoardCard() {
 
-		switch (dealStep) {
+		switch (currentDealStep) {
 		case FLOP:
 			listBoardCard.clear();
 			listBoardCard.addAll(ocrService.scanBoardCards(DealStep.FLOP));
@@ -168,8 +166,6 @@ public class ThreadBoard extends MyThread {
 		default:
 			break;
 		}
-
-		System.out.println(dealStep + " : " + listBoardCard);
 	}
 
 }

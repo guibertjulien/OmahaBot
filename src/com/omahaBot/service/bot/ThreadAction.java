@@ -11,14 +11,14 @@ import org.eclipse.swt.widgets.Display;
 
 import com.omahaBot.consts.PixelConsts;
 import com.omahaBot.enums.PlayerBlock;
-import com.omahaBot.model.DealModel;
+import com.omahaBot.model.ActionModel;
 import com.omahaBot.ui.form.MainForm;
 
-public class ThreadPlayer extends MyThread {
+public class ThreadAction extends MyThread {
 
-	private final static Logger LOGGER = Logger.getLogger(ThreadBoard.class.getName());
+	private final static Logger LOGGER = Logger.getLogger(ThreadDealStep.class.getName());
 
-	private DealModel dealModel;
+	private ActionModel actionModel;
 
 	private int nbPlayerOld = 99;
 
@@ -26,10 +26,9 @@ public class ThreadPlayer extends MyThread {
 
 	private static int REFRESH_POT = 100;
 
-	public ThreadPlayer(MainForm mainForm, DealModel dealModel) {
+	public ThreadAction(MainForm mainForm) {
 		super();
 		this.mainForm = mainForm;
-		this.dealModel = dealModel;
 
 		listCurrentPlayer = new ArrayList<PlayerBlock>(EnumSet.allOf(PlayerBlock.class));
 
@@ -46,7 +45,7 @@ public class ThreadPlayer extends MyThread {
 	@Override
 	public void run() {
 
-		System.out.println("## START ThreadPlayer");
+		System.out.println("## START ThreadAction");
 		
 		while (running) {
 			// nbPlayer ?
@@ -54,17 +53,15 @@ public class ThreadPlayer extends MyThread {
 			final int nbCurrentPlayer = listCurrentPlayer.size();// critère de rupture
 			
 			if (nbPlayerOld != nbCurrentPlayer) {
-				
-				// TODO scan des players
-				// TODO active player
 
 				nbPlayerOld = nbCurrentPlayer;
 
-				dealModel.setNbPlayer(nbCurrentPlayer);
-
+				actionModel = new ActionModel();
+				actionModel.setNbPlayer(nbCurrentPlayer);
+				
 				Display.getDefault().syncExec(new Runnable() {
 					public void run() {
-						mainForm.initDealWidget(dealModel);
+						mainForm.initActionWidget(actionModel);
 					}
 				});
 			}
@@ -78,7 +75,7 @@ public class ThreadPlayer extends MyThread {
 
 		}
 
-		System.out.println("## STOP ThreadPlayer");
+		System.out.println("## STOP ThreadAction");
 	}
 
 	@Override
@@ -87,7 +84,6 @@ public class ThreadPlayer extends MyThread {
 	}
 
 	public void initListCurrentPlayer() {
-
 		ArrayList<PlayerBlock> listPlayer = new ArrayList<>(listCurrentPlayer);
 
 		for (PlayerBlock playerBlock : listPlayer) {

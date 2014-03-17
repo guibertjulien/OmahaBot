@@ -6,23 +6,19 @@ import java.util.logging.Logger;
 
 import org.eclipse.swt.widgets.Display;
 
-import com.omahaBot.model.DealModel;
 import com.omahaBot.ui.form.MainForm;
 
 public class ThreadPot extends MyThread {
 
-	private final static Logger LOGGER = Logger.getLogger(ThreadBoard.class.getName());
+	private final static Logger LOGGER = Logger.getLogger(ThreadDealStep.class.getName());
 
-	private DealModel dealModel;
-
-	private Double potOld = 0.0;
-
+	private Double oldPot = 0.0, currentPot;
+	
 	private static int REFRESH_POT = 100;
 
-	public ThreadPot(MainForm mainForm, DealModel dealModel) {
+	public ThreadPot(MainForm mainForm) {
 		super();
 		this.mainForm = mainForm;
-		this.dealModel = dealModel;
 
 		try {
 			robot = new Robot();
@@ -41,17 +37,15 @@ public class ThreadPot extends MyThread {
 		
 		while (running) {
 			// scan du pot toutes les 100ms
-			final Double currentPot = ocrService.scanPot();
+			currentPot = ocrService.scanPot();
 
-			if (!potOld.equals(currentPot)) {
+			if (!oldPot.equals(currentPot)) {
 				System.out.println("--> NEW POT : " + currentPot);
-				potOld = currentPot;
-
-				dealModel.setCurrentPot(currentPot);
+				oldPot = currentPot;
 
 				Display.getDefault().syncExec(new Runnable() {
 					public void run() {
-						mainForm.initDealWidget(dealModel);
+						mainForm.initPotWidget(currentPot);
 					}
 				});
 			}
