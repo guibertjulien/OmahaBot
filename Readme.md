@@ -29,13 +29,13 @@ ThreadPlayer 100ms : #positionActivePlayer
 - positionActivePlayer
 - nbPlayer
 - lastAction (FOLD, CHECK, BET, RAISE, RERAISE, ALLIN)
-\- Si bet, lastBet
+Si bet, lastBet
 
 
-_ ThreadDeal : 1s
-	_ ThreadDealStep : 100ms
-		_ ThreadPot : 100ms
-		_ ThreadPlayer : 100ms
+- ThreadDeal : 1s
+- ThreadDealStep : 100ms
+-- ThreadPot : 100ms
+-- ThreadPlayer : 100ms
 		
 		
 SYNCHRONISATION
