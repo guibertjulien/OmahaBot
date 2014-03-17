@@ -34,8 +34,8 @@ Si bet, lastBet
 
 - ThreadDeal : 1s
 - ThreadDealStep : 100ms
--- ThreadPot : 100ms
--- ThreadPlayer : 100ms
+- ThreadPot : 100ms
+- ThreadPlayer : 100ms
 		
 		
 SYNCHRONISATION
