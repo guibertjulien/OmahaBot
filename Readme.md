@@ -1,1 +1,1 @@
-Doc : https://sites.google.com/site/omahabot/
+Wiki : https://sites.google.com/site/omahabot/
