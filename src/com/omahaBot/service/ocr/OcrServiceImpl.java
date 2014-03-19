@@ -66,22 +66,23 @@ public class OcrServiceImpl implements OcrService {
 		return INSTANCE;
 	}
 
-//	@Override
-//	public DealModel scanNewDeal() {
-//		try {
-//			dealModel = new DealModel();
-//			
-//			captureTable = robot.createScreenCapture(Consts.BLOCK_TABLE);
-//			ImageIO.write(captureTable, "png", new File(CAPS_DIRECTORY + TABLE_FILENAME));
-//			
-//			// TODO
-//			
-//		} catch (IOException e) {
-//			LOGGER.warning(e.getMessage());
-//		}
-//
-//		return dealModel;
-//	}
+	// @Override
+	// public DealModel scanNewDeal() {
+	// try {
+	// dealModel = new DealModel();
+	//
+	// captureTable = robot.createScreenCapture(Consts.BLOCK_TABLE);
+	// ImageIO.write(captureTable, "png", new File(CAPS_DIRECTORY +
+	// TABLE_FILENAME));
+	//
+	// // TODO
+	//
+	// } catch (IOException e) {
+	// LOGGER.warning(e.getMessage());
+	// }
+	//
+	// return dealModel;
+	// }
 
 	@Override
 	public String scanDealId() {
@@ -93,11 +94,9 @@ public class OcrServiceImpl implements OcrService {
 
 		return OcrUtils.cleanDealId(ocr);
 	}
-	
+
 	@Override
 	public Double scanPot() {
-
-		// capture de pot
 		Rectangle block = new Rectangle(Consts.BLOCK_POT);
 		BufferedImage capture = robot.createScreenCapture(block);
 
@@ -107,24 +106,24 @@ public class OcrServiceImpl implements OcrService {
 		return OcrUtils.cleanPot(ocr);
 	}
 
-	private void scanPlayerList() {
-		listPlayer.clear();
-
-		int position = 1;
-
-		for (PlayerBlock player : PlayerBlock.values()) {
-
-			PlayerModel playerModel = scanPlayer(player, position);
-			listPlayer.add(playerModel);
-			//LOGGER.info(playerModel.toString());
-			position++;
-		}
-	}
+	// private void scanPlayerList() {
+	// listPlayer.clear();
+	//
+	// int position = 1;
+	//
+	// for (PlayerBlock player : PlayerBlock.values()) {
+	//
+	// PlayerModel playerModel = scanPlayer(player, position);
+	// listPlayer.add(playerModel);
+	// //LOGGER.info(playerModel.toString());
+	// position++;
+	// }
+	// }
 
 	@Override
 	public List<CardModel> scanBoardCards(DealStep dealStep) {
 		listCard.clear();
-		
+
 		switch (dealStep) {
 		case FLOP:
 			int nbCard = 0;
@@ -136,7 +135,7 @@ public class OcrServiceImpl implements OcrService {
 				if (nbCard == 3) {
 					break;
 				}
-			}		
+			}
 			break;
 		case TURN:
 			CardModel cardModel1 = scanCard(BoardCards.CARD4_TURN);
@@ -149,30 +148,42 @@ public class OcrServiceImpl implements OcrService {
 		default:
 			break;
 		}
-		
+
 		return listCard;
 	}
 
-	private PlayerModel scanPlayer(PlayerBlock playerBlock, int position) {
+	public PlayerModel scanPlayer(PlayerBlock playerBlock) {
 
-		Rectangle block_line1 = new Rectangle(playerBlock.getBlock().x, playerBlock.getBlock().y,
-				playerBlock.getBlock().width, Consts.BLOCK_PLAYER_DATA_HEIGHT);
-		Rectangle block_line2 = new Rectangle(playerBlock.getBlock().x, playerBlock.getBlock().y
-				+ Consts.BLOCK_PLAYER_LINE2_Y, playerBlock.getBlock().width, Consts.BLOCK_PLAYER_DATA_HEIGHT);
+		String name = scanPlayerName(playerBlock);
+		Double stack = scanPlayerStack(playerBlock);
 
-		String name = scanBlock(block_line1, captureTable, "", TessPageSegMode.PSM_SINGLE_LINE, playerBlock.name()
-				+ BlockType.PLAYER_NAME.name());
-		String stack = scanBlock(block_line2, captureTable, "", TessPageSegMode.PSM_SINGLE_LINE,
-				playerBlock.name() + BlockType.PLAYER_STACK);
-
-		PlayerModel playerModel = null;
-
-		if (!name.trim().isEmpty() && !stack.trim().isEmpty()) {
-			Double stack2double = OcrUtils.cleanStack(stack);
-			playerModel = new PlayerModel(playerBlock, name, stack2double, position);
-		}
+		PlayerModel playerModel = new PlayerModel(playerBlock, name, stack, playerBlock.ordinal() + 1);
 
 		return playerModel;
+	}
+
+	public String scanPlayerName(PlayerBlock playerBlock) {
+		Rectangle block = new Rectangle(playerBlock.getBlock().x, playerBlock.getBlock().y,
+				playerBlock.getBlock().width, Consts.BLOCK_PLAYER_NAME_HEIGHT);
+		BufferedImage capture = robot.createScreenCapture(block);
+
+		String ocr = scanBlock(null, capture, "",
+				TessPageSegMode.PSM_SINGLE_LINE, playerBlock.name()
+						+ BlockType.PLAYER_NAME.name());
+
+		return ocr;
+	}
+
+	public Double scanPlayerStack(PlayerBlock playerBlock) {
+		Rectangle block = new Rectangle(playerBlock.getBlock().x, playerBlock.getBlock().y
+				+ Consts.BLOCK_PLAYER_STACK_Y, playerBlock.getBlock().width, Consts.BLOCK_PLAYER_STACK_HEIGHT);
+		BufferedImage capture = robot.createScreenCapture(block);
+
+		String ocr = scanBlock(null, capture, "",
+				TessPageSegMode.PSM_SINGLE_LINE, playerBlock.name()
+						+ BlockType.PLAYER_NAME.name());
+
+		return OcrUtils.cleanStack(ocr);
 	}
 
 	@Override
@@ -207,7 +218,7 @@ public class OcrServiceImpl implements OcrService {
 	@Override
 	public CardModel scanCard(BoardCards card) {
 		CardModel result = null;
-		
+
 		BufferedImage capture = robot.createScreenCapture(card.getBlock());
 
 		Color colorScaned = new Color(capture.getRGB(Consts.PT_SUIT.x, Consts.PT_SUIT.y));

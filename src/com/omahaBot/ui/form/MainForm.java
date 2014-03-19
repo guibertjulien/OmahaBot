@@ -15,7 +15,6 @@ import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Group;
-import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 
 import com.omahaBot.model.ActionModel;
@@ -24,8 +23,6 @@ import com.omahaBot.model.DealStepModel;
 import com.omahaBot.model.PlayerModel;
 import com.omahaBot.service.bot.ThreadDeal;
 import com.omahaBot.service.ocr.OcrServiceImpl;
-import org.eclipse.swt.widgets.TabFolder;
-import org.eclipse.swt.widgets.TabItem;
 
 public class MainForm {
 
@@ -43,7 +40,7 @@ public class MainForm {
 	private PlayerBlockWidget playerBlockWidget_5;
 	private PlayerBlockWidget playerBlockWidget_6;
 	private BoardWidget boardWidget;
-	
+
 	private static boolean start = false;
 	private PotWidget potWidget;
 	private ActionBlockWidget actionBlockWidget;
@@ -102,9 +99,9 @@ public class MainForm {
 
 		final Button btnNewButton = new Button(grpActions, SWT.NONE);
 		btnNewButton.setLayoutData(new RowData(100, SWT.DEFAULT));
-		
+
 		final MainForm mainForm = this;
-		
+
 		btnNewButton.setText("START BOT");
 		btnNewButton.addSelectionListener(new SelectionAdapter() {
 			private ThreadDeal threadDeal;
@@ -128,11 +125,11 @@ public class MainForm {
 		});
 
 		boardWidget = new BoardWidget(shell, SWT.NONE);
-		
+
 		potWidget = new PotWidget(shell, SWT.NONE);
-		
+
 		actionBlockWidget = new ActionBlockWidget(shell, SWT.NONE);
-		
+
 		final Group grpTable = new Group(shell, SWT.NONE);
 		grpTable.setText("Table");
 		grpTable.setLayout(new GridLayout(2, false));
@@ -148,23 +145,23 @@ public class MainForm {
 		dealBlockWidget.setDealModel(dealModel);
 	}
 
-	public void initPlayerWidget(List<PlayerModel> players) {
-		playerBlockWidget_1.setPlayerModel(players.get(0));
-		playerBlockWidget_2.setPlayerModel(players.get(1));
-		playerBlockWidget_3.setPlayerModel(players.get(2));
-		playerBlockWidget_4.setPlayerModel(players.get(3));
-		playerBlockWidget_5.setPlayerModel(players.get(4));
-		playerBlockWidget_6.setPlayerModel(players.get(5));
+	public void initPlayerWidget(List<PlayerModel> listPlayer) {
+		playerBlockWidget_1.setPlayerModel(listPlayer.get(0));
+		playerBlockWidget_2.setPlayerModel(listPlayer.get(1));
+		playerBlockWidget_3.setPlayerModel(listPlayer.get(2));
+		playerBlockWidget_4.setPlayerModel(listPlayer.get(3));
+		playerBlockWidget_5.setPlayerModel(listPlayer.get(4));
+		playerBlockWidget_6.setPlayerModel(listPlayer.get(5));
 	}
 
 	public void initBoardWidget(DealStepModel dealStepModel) {
 		boardWidget.init(dealStepModel);
 	}
-	
+
 	public void initPotWidget(Double pot) {
 		potWidget.init(pot);
 	}
-	
+
 	public void initActionWidget(ActionModel actionModel) {
 		actionBlockWidget.setActionModel(actionModel);
 	}

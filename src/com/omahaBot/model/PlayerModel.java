@@ -11,6 +11,13 @@ public class PlayerModel {
 	private Integer position;
 	private PlayerAction action;
 
+	
+	
+	public PlayerModel() {
+		super();
+		this.action = PlayerAction.INACTIV;
+	}
+
 	public PlayerModel(PlayerBlock playerBlock, String name, Double stack, int position) {
 		super();
 		this.playerBlock = playerBlock;

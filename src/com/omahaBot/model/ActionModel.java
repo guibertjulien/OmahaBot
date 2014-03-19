@@ -1,5 +1,7 @@
 package com.omahaBot.model;
 
+import java.util.ArrayList;
+
 import com.omahaBot.enums.PlayerAction;
 
 public class ActionModel {
@@ -7,6 +9,7 @@ public class ActionModel {
 	private int nbPlayer;
 	private int activePlayer;
 	private PlayerAction playerAction;
+	private ArrayList<PlayerModel> listPlayer;
 
 	public ActionModel() {
 		super();
@@ -36,4 +39,13 @@ public class ActionModel {
 	public void setPlayerAction(PlayerAction playerAction) {
 		this.playerAction = playerAction;
 	}
+
+	public ArrayList<PlayerModel> getListPlayer() {
+		return listPlayer;
+	}
+
+	public void setListPlayer(ArrayList<PlayerModel> listPlayer) {
+		this.listPlayer = listPlayer;
+	}
+
 }

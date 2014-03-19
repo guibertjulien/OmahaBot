@@ -26,15 +26,16 @@ public final class Consts {
 
 	public static final int BLOCK_PLAYER_WIDTH = 140;
 	public static final int BLOCK_PLAYER_HEIGHT = 45;
-	public static final int BLOCK_PLAYER_DATA_HEIGHT = 20;
-	public static final int BLOCK_PLAYER_LINE2_Y = 25;	
+	public static final int BLOCK_PLAYER_NAME_HEIGHT = 20;
+	public static final int BLOCK_PLAYER_STACK_Y = 25;	
+	public static final int BLOCK_PLAYER_STACK_HEIGHT = 20;
 	
-	public static final Rectangle BLOCK_PLAYER1 = new Rectangle(860, 107, BLOCK_PLAYER_WIDTH, BLOCK_PLAYER_HEIGHT);
-	public static final Rectangle BLOCK_PLAYER2 = new Rectangle(1007, 415, BLOCK_PLAYER_WIDTH, BLOCK_PLAYER_HEIGHT);
-	public static final Rectangle BLOCK_PLAYER3 = new Rectangle(860, 580, BLOCK_PLAYER_WIDTH, BLOCK_PLAYER_HEIGHT);
-	public static final Rectangle BLOCK_PLAYER4 = new Rectangle(193, 580, BLOCK_PLAYER_WIDTH, BLOCK_PLAYER_HEIGHT);
-	public static final Rectangle BLOCK_PLAYER5 = new Rectangle(63, 415, BLOCK_PLAYER_WIDTH, BLOCK_PLAYER_HEIGHT);
-	public static final Rectangle BLOCK_PLAYER6 = new Rectangle(206, 107, BLOCK_PLAYER_WIDTH, BLOCK_PLAYER_HEIGHT);
+	public static final Rectangle BLOCK_PLAYER1 = new Rectangle(TABLE_X + 860, TABLE_Y + 107, BLOCK_PLAYER_WIDTH, BLOCK_PLAYER_HEIGHT);
+	public static final Rectangle BLOCK_PLAYER2 = new Rectangle(TABLE_X + 1007, TABLE_Y + 415, BLOCK_PLAYER_WIDTH, BLOCK_PLAYER_HEIGHT);
+	public static final Rectangle BLOCK_PLAYER3 = new Rectangle(TABLE_X + 860, TABLE_Y + 580, BLOCK_PLAYER_WIDTH, BLOCK_PLAYER_HEIGHT);
+	public static final Rectangle BLOCK_PLAYER4 = new Rectangle(TABLE_X + 193, TABLE_Y + 580, BLOCK_PLAYER_WIDTH, BLOCK_PLAYER_HEIGHT);
+	public static final Rectangle BLOCK_PLAYER5 = new Rectangle(TABLE_X + 63, TABLE_Y + 415, BLOCK_PLAYER_WIDTH, BLOCK_PLAYER_HEIGHT);
+	public static final Rectangle BLOCK_PLAYER6 = new Rectangle(TABLE_X + 206, TABLE_Y + 107, BLOCK_PLAYER_WIDTH, BLOCK_PLAYER_HEIGHT);
 
 	public static final Point PT_PLAYER1_IN = new Point(TABLE_X + 823, TABLE_Y + 236);
 	public static final Point PT_PLAYER2_IN = new Point(TABLE_X + 982, TABLE_Y + 379);

@@ -40,7 +40,7 @@ public class ThreadPot extends MyThread {
 			currentPot = ocrService.scanPot();
 
 			if (!oldPot.equals(currentPot)) {
-				System.out.println("--> NEW POT : " + currentPot);
+				//System.out.println("--> NEW POT : " + currentPot);
 				oldPot = currentPot;
 
 				Display.getDefault().syncExec(new Runnable() {

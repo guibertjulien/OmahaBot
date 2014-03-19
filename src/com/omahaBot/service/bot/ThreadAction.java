@@ -12,6 +12,7 @@ import org.eclipse.swt.widgets.Display;
 import com.omahaBot.consts.PixelConsts;
 import com.omahaBot.enums.PlayerBlock;
 import com.omahaBot.model.ActionModel;
+import com.omahaBot.model.PlayerModel;
 import com.omahaBot.ui.form.MainForm;
 
 public class ThreadAction extends MyThread {
@@ -22,15 +23,17 @@ public class ThreadAction extends MyThread {
 
 	private int nbPlayerOld = 99;
 
-	private ArrayList<PlayerBlock> listCurrentPlayer;
+	private ArrayList<PlayerBlock> listCurrentPlayerBlock;
+
+	private ArrayList<PlayerModel> listCurrentPlayer;
 
 	private static int REFRESH_POT = 100;
+
+	private boolean firstLoop = true;
 
 	public ThreadAction(MainForm mainForm) {
 		super();
 		this.mainForm = mainForm;
-
-		listCurrentPlayer = new ArrayList<PlayerBlock>(EnumSet.allOf(PlayerBlock.class));
 
 		try {
 			robot = new Robot();
@@ -46,22 +49,30 @@ public class ThreadAction extends MyThread {
 	public void run() {
 
 		System.out.println("## START ThreadAction");
+
+		listCurrentPlayerBlock = new ArrayList<PlayerBlock>(EnumSet.allOf(PlayerBlock.class));
+		listCurrentPlayer = new ArrayList<PlayerModel>();
 		
 		while (running) {
-			// nbPlayer ?
-			initListCurrentPlayer();
-			final int nbCurrentPlayer = listCurrentPlayer.size();// critère de rupture
 			
+			// TODO active player
+			final int nbCurrentPlayer = initNbPlayer();// critère de rupture
+			
+
 			if (nbPlayerOld != nbCurrentPlayer) {
 
 				nbPlayerOld = nbCurrentPlayer;
 
+				initListCurrentPlayer();
+
 				actionModel = new ActionModel();
 				actionModel.setNbPlayer(nbCurrentPlayer);
-				
+				actionModel.setListPlayer(listCurrentPlayer);
+
 				Display.getDefault().syncExec(new Runnable() {
 					public void run() {
 						mainForm.initActionWidget(actionModel);
+						mainForm.initPlayerWidget(listCurrentPlayer);
 					}
 				});
 			}
@@ -83,15 +94,47 @@ public class ThreadAction extends MyThread {
 		// nothing
 	}
 
-	public void initListCurrentPlayer() {
-		ArrayList<PlayerBlock> listPlayer = new ArrayList<>(listCurrentPlayer);
+	public int initNbPlayer() {
 
-		for (PlayerBlock playerBlock : listPlayer) {
+		ArrayList<PlayerBlock> listPlayerBlock = new ArrayList<>(listCurrentPlayerBlock);
+
+		for (PlayerBlock playerBlock : listPlayerBlock) {
 			Color colorScaned = robot.getPixelColor(playerBlock.getPlayIN().x, playerBlock.getPlayIN().y);
 
 			if (!colorScaned.equals(PixelConsts.PLAYER_IN_COLOR)) {
-				listCurrentPlayer.remove(playerBlock);
+				listCurrentPlayerBlock.remove(playerBlock);
 			}
+		}
+
+		System.out.println("NB : " + listCurrentPlayerBlock.size());
+		
+		return listCurrentPlayerBlock.size();
+
+	}
+
+	public void initListCurrentPlayer() {
+		
+		for (PlayerBlock playerBlock : PlayerBlock.values()) {
+			Color colorScaned = robot.getPixelColor(playerBlock.getPlayIN().x, playerBlock.getPlayIN().y);
+
+			if (colorScaned.equals(PixelConsts.PLAYER_IN_COLOR)) {
+				if (firstLoop) {
+					listCurrentPlayer.add(ocrService.scanPlayer(playerBlock));
+				}
+				else {
+					PlayerModel playerModel = listCurrentPlayer.get(playerBlock.ordinal());
+					playerModel.setStack(ocrService.scanPlayerStack(playerBlock));
+				}
+			}
+			else {
+				if (firstLoop) {
+					listCurrentPlayer.add(new PlayerModel());
+				}
+			}
+		}
+		
+		if (firstLoop) {
+			firstLoop = false;
 		}
 	}
 }
