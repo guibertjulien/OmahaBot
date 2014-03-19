@@ -23,6 +23,8 @@ public class ThreadAction extends MyThread {
 
 	private int nbPlayerOld = 99;
 
+	private int positionPlayerTurnPlayOld = 0;
+
 	private ArrayList<PlayerBlock> listCurrentPlayerBlock;
 
 	private ArrayList<PlayerModel> listCurrentPlayer;
@@ -52,21 +54,21 @@ public class ThreadAction extends MyThread {
 
 		listCurrentPlayerBlock = new ArrayList<PlayerBlock>(EnumSet.allOf(PlayerBlock.class));
 		listCurrentPlayer = new ArrayList<PlayerModel>();
-		
+
 		while (running) {
-			
-			// TODO active player
-			final int nbCurrentPlayer = initNbPlayer();// critère de rupture
-			
 
-			if (nbPlayerOld != nbCurrentPlayer) {
+			// critère de rupture : tour du joueur
+			final int positionPlayerTurnPlay = positionPlayerTurnPlay();
 
-				nbPlayerOld = nbCurrentPlayer;
+			if (positionPlayerTurnPlayOld != positionPlayerTurnPlay) {
+
+				positionPlayerTurnPlayOld = positionPlayerTurnPlay;
 
 				initListCurrentPlayer();
 
 				actionModel = new ActionModel();
-				actionModel.setNbPlayer(nbCurrentPlayer);
+				actionModel.setActivePlayer(positionPlayerTurnPlay);
+				actionModel.setNbPlayer(nbPlayer());
 				actionModel.setListPlayer(listCurrentPlayer);
 
 				Display.getDefault().syncExec(new Runnable() {
@@ -94,12 +96,29 @@ public class ThreadAction extends MyThread {
 		// nothing
 	}
 
-	public int initNbPlayer() {
+	public int positionPlayerTurnPlay() {
+
+		int position = positionPlayerTurnPlayOld;
+
+		for (PlayerBlock playerBlock : listCurrentPlayerBlock) {
+			Color colorScaned = robot.getPixelColor(playerBlock.getTurnPlay().x, playerBlock.getTurnPlay().y);
+			
+			if (!colorScaned.equals(PixelConsts.PLAYER_NOT_TURN_PLAY_COLOR1)
+					&& !colorScaned.equals(PixelConsts.PLAYER_NOT_TURN_PLAY_COLOR2)) {
+				position = playerBlock.ordinal() + 1;
+				break;
+			}
+		}
+		
+		return position;
+	}
+
+	public int nbPlayer() {
 
 		ArrayList<PlayerBlock> listPlayerBlock = new ArrayList<>(listCurrentPlayerBlock);
 
 		for (PlayerBlock playerBlock : listPlayerBlock) {
-			Color colorScaned = robot.getPixelColor(playerBlock.getPlayIN().x, playerBlock.getPlayIN().y);
+			Color colorScaned = robot.getPixelColor(playerBlock.getInPlay().x, playerBlock.getInPlay().y);
 
 			if (!colorScaned.equals(PixelConsts.PLAYER_IN_COLOR)) {
 				listCurrentPlayerBlock.remove(playerBlock);
@@ -107,15 +126,15 @@ public class ThreadAction extends MyThread {
 		}
 
 		System.out.println("NB : " + listCurrentPlayerBlock.size());
-		
+
 		return listCurrentPlayerBlock.size();
 
 	}
 
 	public void initListCurrentPlayer() {
-		
+
 		for (PlayerBlock playerBlock : PlayerBlock.values()) {
-			Color colorScaned = robot.getPixelColor(playerBlock.getPlayIN().x, playerBlock.getPlayIN().y);
+			Color colorScaned = robot.getPixelColor(playerBlock.getInPlay().x, playerBlock.getInPlay().y);
 
 			if (colorScaned.equals(PixelConsts.PLAYER_IN_COLOR)) {
 				if (firstLoop) {
@@ -132,7 +151,7 @@ public class ThreadAction extends MyThread {
 				}
 			}
 		}
-		
+
 		if (firstLoop) {
 			firstLoop = false;
 		}

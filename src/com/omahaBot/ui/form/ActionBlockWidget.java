@@ -43,7 +43,7 @@ public class ActionBlockWidget extends Composite {
 
 		lbl1 = new Label(grpInfosDeal, SWT.NONE);
 		lbl1.setLayoutData(new GridData(SWT.LEFT, SWT.TOP, false, false, 1, 1));
-		lbl1.setText("Active player :");
+		lbl1.setText("Player turn to play");
 
 		value1 = new Label(grpInfosDeal, SWT.NONE);
 		GridData gd_valueId = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
@@ -90,6 +90,10 @@ public class ActionBlockWidget extends Composite {
 		IObservableValue observeTextValue2ObserveWidget = WidgetProperties.text().observe(value2);
 		IObservableValue nbPlayerActionModelObserveValue = PojoProperties.value("nbPlayer").observe(actionModel);
 		bindingContext.bindValue(observeTextValue2ObserveWidget, nbPlayerActionModelObserveValue, null, null);
+		//
+		IObservableValue observeTextValue1ObserveWidget = WidgetProperties.text().observe(value1);
+		IObservableValue activePlayerActionModelObserveValue = PojoProperties.value("activePlayer").observe(actionModel);
+		bindingContext.bindValue(observeTextValue1ObserveWidget, activePlayerActionModelObserveValue, null, null);
 		//
 		return bindingContext;
 	}

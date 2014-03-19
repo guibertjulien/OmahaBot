@@ -43,6 +43,13 @@ public final class Consts {
 	public static final Point PT_PLAYER4_IN = new Point(TABLE_X + 415, TABLE_Y + 519);
 	public static final Point PT_PLAYER5_IN = new Point(TABLE_X + 249, TABLE_Y + 379);
 	public static final Point PT_PLAYER6_IN = new Point(TABLE_X + 415, TABLE_Y + 236);
+	
+	public static final Point PT_PLAYER1_TURN = new Point(TABLE_X + 929, TABLE_Y + 158);
+	public static final Point PT_PLAYER2_TURN = new Point(TABLE_X + 1074, TABLE_Y + 466);
+	public static final Point PT_PLAYER3_TURN = new Point(TABLE_X + 932, TABLE_Y + 631);
+	public static final Point PT_PLAYER4_TURN = new Point(TABLE_X + 297, TABLE_Y + 631);
+	public static final Point PT_PLAYER5_TURN = new Point(TABLE_X + 132, TABLE_Y + 466);
+	public static final Point PT_PLAYER6_TURN = new Point(TABLE_X + 272, TABLE_Y + 158);
 
 	public static final int BLOCK_CARD_Y = TABLE_Y + 307;
 	public static final int BLOCK_CARD_WIDTH = 65;
