@@ -6,6 +6,8 @@ import java.util.logging.Logger;
 
 import org.eclipse.swt.widgets.Display;
 
+import com.omahaBot.enums.PlayerAction;
+import com.omahaBot.model.ActionModel;
 import com.omahaBot.model.DealModel;
 import com.omahaBot.ui.form.MainForm;
 
@@ -38,6 +40,8 @@ public class ThreadDeal extends MyThread {
 		
 		System.out.println("########## START ThreadDeal ##########");
 		
+		initialize();
+		
 		while (running) {
 			// scan du dealId toutes les 1s
 			currentDealId = ocrService.scanDealId();// critère de rupture
@@ -59,6 +63,12 @@ public class ThreadDeal extends MyThread {
 				Display.getDefault().syncExec(new Runnable() {
 					public void run() {
 						mainForm.initDealWidget(dealModel);
+						mainForm.initPotWidget(0.0);
+						
+						ActionModel actionModel = new ActionModel();
+						actionModel.setActivePlayer(0);
+						actionModel.setPlayerAction(PlayerAction.UNKNOW);
+						mainForm.initActionWidget(actionModel);
 					}
 				});
 			}
@@ -80,5 +90,9 @@ public class ThreadDeal extends MyThread {
     	if (threadDealStep != null && threadDealStep.isAlive()) {
     		threadDealStep.arret();	
     	}
+	}
+
+	@Override
+	public void initialize() {
 	}
 }

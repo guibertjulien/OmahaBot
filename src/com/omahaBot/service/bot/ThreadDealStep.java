@@ -12,7 +12,9 @@ import org.eclipse.swt.widgets.Display;
 import com.omahaBot.consts.Consts;
 import com.omahaBot.enums.BoardCards;
 import com.omahaBot.enums.DealStep;
+import com.omahaBot.enums.PlayerAction;
 import com.omahaBot.enums.Suit;
+import com.omahaBot.model.ActionModel;
 import com.omahaBot.model.CardModel;
 import com.omahaBot.model.DealStepModel;
 import com.omahaBot.ui.form.MainForm;
@@ -28,8 +30,8 @@ public class ThreadDealStep extends MyThread {
 	private DealStepModel dealStepModel;
 
 	private Robot robot;
-
-	private ThreadPot threadPot;
+//
+//	private ThreadPot threadPot;
 	
 	private ThreadAction threadAction;
 
@@ -67,10 +69,6 @@ public class ThreadDealStep extends MyThread {
 				dealStepModel.setListBoardCard(listBoardCard);
 				
 				arretThreadChild();
-								
-				// demarrage d'un nouveau thread
-				threadPot = new ThreadPot(mainForm);
-				threadPot.start();
 				
 				// demarrage d'un nouveau thread
 				threadAction = new ThreadAction(mainForm);
@@ -97,9 +95,9 @@ public class ThreadDealStep extends MyThread {
 
 	@Override
 	public void arretThreadChild() {
-		if (threadPot != null && threadPot.isAlive()) {
-			threadPot.arret();
-		}
+//		if (threadPot != null && threadPot.isAlive()) {
+//			threadPot.arret();
+//		}
 		if (threadAction != null && threadAction.isAlive()) {
 			threadAction.arret();
 		}
@@ -166,6 +164,10 @@ public class ThreadDealStep extends MyThread {
 		default:
 			break;
 		}
+	}
+
+	@Override
+	public void initialize() {
 	}
 
 }

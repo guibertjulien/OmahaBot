@@ -10,9 +10,8 @@ public class PlayerModel {
 	private Double stack;
 	private Integer position;
 	private PlayerAction action;
+	private boolean isActiv;
 
-	
-	
 	public PlayerModel() {
 		super();
 		this.action = PlayerAction.INACTIV;
@@ -59,17 +58,26 @@ public class PlayerModel {
 		this.action = action;
 	}
 
-	@Override
-	public String toString() {
-		return "PlayerModel [name=" + name + ", stack=" + stack + ", position=" + position + "]";
-	}
-
 	public PlayerBlock getPlayerBlock() {
 		return playerBlock;
 	}
 
 	public void setPlayerBlock(PlayerBlock playerBlock) {
 		this.playerBlock = playerBlock;
+	}
+
+	@Override
+	public String toString() {
+		return "PlayerModel [playerBlock=" + playerBlock + ", name=" + name + ", stack=" + stack + ", position="
+				+ position + ", action=" + action + "]";
+	}
+
+	public boolean isActiv() {
+		return isActiv;
+	}
+
+	public void setActiv(boolean isActiv) {
+		this.isActiv = isActiv;
 	}
 
 }

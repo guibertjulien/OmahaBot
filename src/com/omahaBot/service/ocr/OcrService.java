@@ -19,5 +19,7 @@ public interface OcrService {
 	List<CardModel> scanBoardCards(DealStep dealStep);
 
 	Double scanPot();
+	
+	boolean checkTable();
 
 }

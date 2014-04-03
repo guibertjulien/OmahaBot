@@ -11,6 +11,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.wb.swt.SWTResourceManager;
 
+import com.omahaBot.enums.PlayerAction;
 import com.omahaBot.model.PlayerModel;
 
 public class PlayerBlockWidget extends Composite {
@@ -79,6 +80,13 @@ public class PlayerBlockWidget extends Composite {
 		if (m_bindingContext != null)
 			m_bindingContext.dispose();
 		m_bindingContext = initDataBindings();
+		
+		if (playerModel.isActiv()) {
+			setBackground(SWTResourceManager.getColor(SWT.COLOR_GREEN));
+		}
+		else {
+			setBackground(SWTResourceManager.getColor(SWT.COLOR_TITLE_BACKGROUND));
+		}
 	}
 	protected DataBindingContext initDataBindings() {
 		DataBindingContext bindingContext = new DataBindingContext();

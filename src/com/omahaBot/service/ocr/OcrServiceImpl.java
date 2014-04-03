@@ -13,8 +13,8 @@ import java.util.logging.Logger;
 
 import javax.imageio.ImageIO;
 
+import junit.framework.Assert;
 import net.sourceforge.tess4j.TessAPI1.TessPageSegMode;
-import net.sourceforge.tess4j.Tesseract;
 import net.sourceforge.tess4j.Tesseract1;
 import net.sourceforge.tess4j.TesseractException;
 import net.sourceforge.vietocr.ImageHelper;
@@ -28,27 +28,18 @@ import com.omahaBot.enums.PlayerBlock;
 import com.omahaBot.enums.Rank;
 import com.omahaBot.enums.Suit;
 import com.omahaBot.model.CardModel;
-import com.omahaBot.model.DealModel;
 import com.omahaBot.model.PlayerModel;
 
 public class OcrServiceImpl implements OcrService {
 
 	private final static Logger LOGGER = Logger.getLogger(OcrServiceImpl.class.getName());
 
-	protected BufferedImage captureTable;
-
 	private static final String TABLE_FILENAME = "tableCaps.png";
 	private static final String CAPS_DIRECTORY = "C:/_DEV/caps/";
 
-	private List<PlayerModel> listPlayer = new ArrayList<PlayerModel>();
 	private List<CardModel> listCard = new ArrayList<CardModel>();
 
-	// JNA Interface Mapping
-	private Tesseract instance = Tesseract.getInstance();
-
 	private Robot robot;
-
-	private DealModel dealModel = null;
 
 	private static OcrServiceImpl INSTANCE = new OcrServiceImpl();
 
@@ -65,24 +56,6 @@ public class OcrServiceImpl implements OcrService {
 	public static OcrServiceImpl getInstance() {
 		return INSTANCE;
 	}
-
-	// @Override
-	// public DealModel scanNewDeal() {
-	// try {
-	// dealModel = new DealModel();
-	//
-	// captureTable = robot.createScreenCapture(Consts.BLOCK_TABLE);
-	// ImageIO.write(captureTable, "png", new File(CAPS_DIRECTORY +
-	// TABLE_FILENAME));
-	//
-	// // TODO
-	//
-	// } catch (IOException e) {
-	// LOGGER.warning(e.getMessage());
-	// }
-	//
-	// return dealModel;
-	// }
 
 	@Override
 	public String scanDealId() {
@@ -252,6 +225,24 @@ public class OcrServiceImpl implements OcrService {
 
 		System.out.println("--> scanCard : " + result);
 		return result;
+	}
+
+	@Override
+	public boolean checkTable() {
+
+		try {
+			BufferedImage captureTable = robot.createScreenCapture(Consts.BLOCK_TABLE);
+			ImageIO.write(captureTable, "png", new File(CAPS_DIRECTORY +
+					TABLE_FILENAME));
+			
+			Assert.assertTrue(true);
+
+		} catch (IOException e) {
+			LOGGER.warning(e.getMessage());
+		}
+
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 }

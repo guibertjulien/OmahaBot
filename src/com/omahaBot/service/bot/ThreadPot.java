@@ -66,4 +66,10 @@ public class ThreadPot extends MyThread {
 	public void arretThreadChild() {
 		// nothing
 	}
+
+	@Override
+	public void initialize() {
+		// TODO Auto-generated method stub
+		
+	}
 }

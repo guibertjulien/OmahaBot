@@ -44,6 +44,7 @@ public class MainForm {
 	private static boolean start = false;
 	private PotWidget potWidget;
 	private ActionBlockWidget actionBlockWidget;
+	private Button btnNewButton_1;
 
 	/**
 	 * Launch the application.
@@ -96,6 +97,15 @@ public class MainForm {
 		grpActions.setLayout(rl_grpActions);
 
 		dealBlockWidget = new DealBlockWidget(shell, SWT.NONE);
+		
+		btnNewButton_1 = new Button(grpActions, SWT.NONE);
+		btnNewButton_1.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				ocrService.checkTable();
+			}
+		});
+		btnNewButton_1.setText("CHECK TABLE");
 
 		final Button btnNewButton = new Button(grpActions, SWT.NONE);
 		btnNewButton.setLayoutData(new RowData(100, SWT.DEFAULT));

@@ -10,7 +10,8 @@ public class ActionModel {
 	private int activePlayer;
 	private PlayerAction playerAction;
 	private ArrayList<PlayerModel> listPlayer;
-
+	private Double lastBet;
+	
 	public ActionModel() {
 		super();
 		// TODO Auto-generated constructor stub
@@ -46,6 +47,14 @@ public class ActionModel {
 
 	public void setListPlayer(ArrayList<PlayerModel> listPlayer) {
 		this.listPlayer = listPlayer;
+	}
+
+	public Double getLastBet() {
+		return lastBet;
+	}
+
+	public void setLastBet(Double lastBet) {
+		this.lastBet = lastBet;
 	}
 
 }

@@ -25,6 +25,8 @@ public class ActionBlockWidget extends Composite {
 	private Label value1;
 	private Label value2;
 	private Label value3;
+	private Label lbl4;
+	private Label value4;
 
 	/**
 	 * Create the composite.
@@ -40,31 +42,39 @@ public class ActionBlockWidget extends Composite {
 		grpInfosDeal.setFont(SWTResourceManager.getFont("Segoe UI", 12, SWT.BOLD));
 		grpInfosDeal.setText("Infos action");
 		grpInfosDeal.setLayout(new GridLayout(2, false));
-
-		lbl1 = new Label(grpInfosDeal, SWT.NONE);
-		lbl1.setLayoutData(new GridData(SWT.LEFT, SWT.TOP, false, false, 1, 1));
-		lbl1.setText("Player turn to play");
-
-		value1 = new Label(grpInfosDeal, SWT.NONE);
-		GridData gd_valueId = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
-		gd_valueId.widthHint = 150;
-		value1.setLayoutData(gd_valueId);
-
-		lbl2 = new Label(grpInfosDeal, SWT.NONE);
-		lbl2.setText("Nb player :");
-
-		value2 = new Label(grpInfosDeal, SWT.NONE);
-		GridData gd_valuePot = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
-		gd_valuePot.widthHint = 150;
-		value2.setLayoutData(gd_valuePot);
-
-		lbl3 = new Label(grpInfosDeal, SWT.NONE);
-		lbl3.setText("Last action : ");
-
-		value3 = new Label(grpInfosDeal, SWT.NONE);
-		GridData gd_valueDealStep = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
-		gd_valueDealStep.widthHint = 150;
-		value3.setLayoutData(gd_valueDealStep);
+		
+				lbl2 = new Label(grpInfosDeal, SWT.NONE);
+				lbl2.setText("Nb player :");
+		
+				value2 = new Label(grpInfosDeal, SWT.NONE);
+				GridData gd_valuePot = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
+				gd_valuePot.widthHint = 150;
+				value2.setLayoutData(gd_valuePot);
+				
+						lbl1 = new Label(grpInfosDeal, SWT.NONE);
+						lbl1.setLayoutData(new GridData(SWT.LEFT, SWT.TOP, false, false, 1, 1));
+						lbl1.setText("Player turn to play");
+				
+						value1 = new Label(grpInfosDeal, SWT.NONE);
+						GridData gd_valueId = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
+						gd_valueId.widthHint = 150;
+						value1.setLayoutData(gd_valueId);
+						
+								lbl3 = new Label(grpInfosDeal, SWT.NONE);
+								lbl3.setText("Last action : ");
+								
+										value3 = new Label(grpInfosDeal, SWT.NONE);
+										GridData gd_valueDealStep = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
+										gd_valueDealStep.widthHint = 150;
+										value3.setLayoutData(gd_valueDealStep);
+										
+										lbl4 = new Label(grpInfosDeal, SWT.NONE);
+										lbl4.setText("Last bet :");
+										
+										value4 = new Label(grpInfosDeal, SWT.NONE);
+										GridData gd_value4 = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
+										gd_value4.widthHint = 150;
+										value4.setLayoutData(gd_value4);
 
 		m_bindingContext = initDataBindings();
 	}
@@ -94,6 +104,14 @@ public class ActionBlockWidget extends Composite {
 		IObservableValue observeTextValue1ObserveWidget = WidgetProperties.text().observe(value1);
 		IObservableValue activePlayerActionModelObserveValue = PojoProperties.value("activePlayer").observe(actionModel);
 		bindingContext.bindValue(observeTextValue1ObserveWidget, activePlayerActionModelObserveValue, null, null);
+		//
+		IObservableValue observeTextValue3ObserveWidget = WidgetProperties.text().observe(value3);
+		IObservableValue playerActionActionModelObserveValue = PojoProperties.value("playerAction").observe(actionModel);
+		bindingContext.bindValue(observeTextValue3ObserveWidget, playerActionActionModelObserveValue, null, null);
+		//
+		IObservableValue observeTextValue4ObserveWidget = WidgetProperties.text().observe(value4);
+		IObservableValue lastBetActionModelObserveValue = PojoProperties.value("lastBet").observe(actionModel);
+		bindingContext.bindValue(observeTextValue4ObserveWidget, lastBetActionModelObserveValue, null, null);
 		//
 		return bindingContext;
 	}

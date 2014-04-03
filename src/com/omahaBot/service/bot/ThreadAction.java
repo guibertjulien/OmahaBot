@@ -10,6 +10,7 @@ import java.util.logging.Logger;
 import org.eclipse.swt.widgets.Display;
 
 import com.omahaBot.consts.PixelConsts;
+import com.omahaBot.enums.PlayerAction;
 import com.omahaBot.enums.PlayerBlock;
 import com.omahaBot.model.ActionModel;
 import com.omahaBot.model.PlayerModel;
@@ -21,8 +22,6 @@ public class ThreadAction extends MyThread {
 
 	private ActionModel actionModel;
 
-	private int nbPlayerOld = 99;
-
 	private int positionPlayerTurnPlayOld = 0;
 
 	private ArrayList<PlayerBlock> listCurrentPlayerBlock;
@@ -32,6 +31,14 @@ public class ThreadAction extends MyThread {
 	private static int REFRESH_POT = 100;
 
 	private boolean firstLoop = true;
+
+	private Double oldPot = 0.0, currentPot;
+
+	private int oldNbPlayer = 0, currentNbPlayer = 0;
+
+	private PlayerAction oldLastAction = PlayerAction.UNKNOW, currentLastAction = PlayerAction.UNKNOW;
+
+	private Double lastBet = 0.0;
 
 	public ThreadAction(MainForm mainForm) {
 		super();
@@ -52,6 +59,8 @@ public class ThreadAction extends MyThread {
 
 		System.out.println("## START ThreadAction");
 
+		initialize();
+
 		listCurrentPlayerBlock = new ArrayList<PlayerBlock>(EnumSet.allOf(PlayerBlock.class));
 		listCurrentPlayer = new ArrayList<PlayerModel>();
 
@@ -62,17 +71,30 @@ public class ThreadAction extends MyThread {
 
 			if (positionPlayerTurnPlayOld != positionPlayerTurnPlay) {
 
-				positionPlayerTurnPlayOld = positionPlayerTurnPlay;
+				currentPot = ocrService.scanPot();
+
+				currentNbPlayer = nbPlayer();
 
 				initListCurrentPlayer();
+				initLastActionPlayer(positionPlayerTurnPlayOld);
+				initLastAction();
 
 				actionModel = new ActionModel();
 				actionModel.setActivePlayer(positionPlayerTurnPlay);
-				actionModel.setNbPlayer(nbPlayer());
+				actionModel.setNbPlayer(currentNbPlayer);
 				actionModel.setListPlayer(listCurrentPlayer);
+				actionModel.setPlayerAction(currentLastAction);
+				actionModel.setLastBet(lastBet);
+
+				oldNbPlayer = currentNbPlayer;
+
+				oldPot = currentPot;
+
+				positionPlayerTurnPlayOld = positionPlayerTurnPlay;
 
 				Display.getDefault().syncExec(new Runnable() {
 					public void run() {
+						mainForm.initPotWidget(currentPot);
 						mainForm.initActionWidget(actionModel);
 						mainForm.initPlayerWidget(listCurrentPlayer);
 					}
@@ -102,14 +124,14 @@ public class ThreadAction extends MyThread {
 
 		for (PlayerBlock playerBlock : listCurrentPlayerBlock) {
 			Color colorScaned = robot.getPixelColor(playerBlock.getTurnPlay().x, playerBlock.getTurnPlay().y);
-			
+
 			if (!colorScaned.equals(PixelConsts.PLAYER_NOT_TURN_PLAY_COLOR1)
 					&& !colorScaned.equals(PixelConsts.PLAYER_NOT_TURN_PLAY_COLOR2)) {
 				position = playerBlock.ordinal() + 1;
 				break;
 			}
 		}
-		
+
 		return position;
 	}
 
@@ -138,16 +160,21 @@ public class ThreadAction extends MyThread {
 
 			if (colorScaned.equals(PixelConsts.PLAYER_IN_COLOR)) {
 				if (firstLoop) {
-					listCurrentPlayer.add(ocrService.scanPlayer(playerBlock));
+					PlayerModel playerModel = ocrService.scanPlayer(playerBlock);
+					playerModel.setActiv(true);
+					listCurrentPlayer.add(playerModel);
 				}
 				else {
 					PlayerModel playerModel = listCurrentPlayer.get(playerBlock.ordinal());
+					playerModel.setActiv(true);
 					playerModel.setStack(ocrService.scanPlayerStack(playerBlock));
 				}
 			}
 			else {
 				if (firstLoop) {
-					listCurrentPlayer.add(new PlayerModel());
+					PlayerModel playerModel = new PlayerModel();
+					playerModel.setActiv(false);					
+					listCurrentPlayer.add(playerModel);
 				}
 			}
 		}
@@ -155,5 +182,64 @@ public class ThreadAction extends MyThread {
 		if (firstLoop) {
 			firstLoop = false;
 		}
+	}
+
+	public void initLastActionPlayer(int positionPlayerTurnPlayOld) {
+		if (positionPlayerTurnPlayOld > 0) {
+			PlayerModel playerModel = listCurrentPlayer.get(positionPlayerTurnPlayOld - 1);
+			
+			if (playerModel.getStack() == null) {
+				//playerModel.setAction(PlayerAction.FOLD);	
+			} else if (playerModel.getStack() == 0.0) {
+				playerModel.setAction(PlayerAction.ALLIN);
+			} else {
+				if (oldPot == currentPot) {
+					playerModel.setAction(PlayerAction.CHECK);
+				} else if (currentPot > oldPot) {
+					playerModel.setAction(PlayerAction.RAISE);
+				}
+			}
+
+			System.out.println(listCurrentPlayer.get(positionPlayerTurnPlayOld - 1));
+		}
+	}
+
+	public void initLastAction() {
+
+		lastBet = 0.0;
+
+		if (oldPot == currentPot) {
+			if (oldNbPlayer == currentNbPlayer) {
+				currentLastAction = PlayerAction.FOLD;
+			}
+			else {
+				currentLastAction = PlayerAction.CHECK;
+			}
+		}
+		else if (currentPot > oldPot) {
+			// currentLastAction = PlayerAction.ALLIN;
+
+			if (oldLastAction.equals(PlayerAction.RAISE)) {
+				currentLastAction = PlayerAction.RERAISE;
+			}
+			else {
+				currentLastAction = PlayerAction.RAISE;
+			}
+
+			lastBet = currentPot - oldPot;
+		}
+
+		oldLastAction = currentLastAction;
+	}
+
+	@Override
+	public void initialize() {
+		oldPot = ocrService.scanPot();
+
+		Display.getDefault().syncExec(new Runnable() {
+			public void run() {
+				mainForm.initPotWidget(oldPot);
+			}
+		});
 	}
 }
