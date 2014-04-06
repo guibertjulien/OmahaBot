@@ -4,7 +4,6 @@ import java.awt.AWTException;
 import java.awt.Color;
 import java.awt.Robot;
 import java.util.ArrayList;
-import java.util.EnumSet;
 import java.util.logging.Logger;
 
 import org.eclipse.swt.widgets.Display;
@@ -24,9 +23,7 @@ public class ThreadAction extends MyThread {
 
 	private int positionPlayerTurnPlayOld = 0;
 
-	private ArrayList<PlayerBlock> listCurrentPlayerBlock;
-
-	private ArrayList<PlayerModel> listCurrentPlayer;
+	private ArrayList<PlayerModel> listPlayer = new ArrayList<PlayerModel>();
 
 	private static int REFRESH_POT = 100;
 
@@ -61,9 +58,8 @@ public class ThreadAction extends MyThread {
 
 		initialize();
 
-		listCurrentPlayerBlock = new ArrayList<PlayerBlock>(EnumSet.allOf(PlayerBlock.class));
-		listCurrentPlayer = new ArrayList<PlayerModel>();
-
+		listPlayer.clear();
+	
 		while (running) {
 
 			// critère de rupture : tour du joueur
@@ -73,16 +69,14 @@ public class ThreadAction extends MyThread {
 
 				currentPot = ocrService.scanPot();
 
-				currentNbPlayer = nbPlayer();
-
 				initListCurrentPlayer();
-				initLastActionPlayer(positionPlayerTurnPlayOld);
+				//initLastActionPlayer(positionPlayerTurnPlayOld);
 				initLastAction();
 
 				actionModel = new ActionModel();
 				actionModel.setActivePlayer(positionPlayerTurnPlay);
 				actionModel.setNbPlayer(currentNbPlayer);
-				actionModel.setListPlayer(listCurrentPlayer);
+				actionModel.setListPlayer(listPlayer);
 				actionModel.setPlayerAction(currentLastAction);
 				actionModel.setLastBet(lastBet);
 
@@ -96,7 +90,7 @@ public class ThreadAction extends MyThread {
 					public void run() {
 						mainForm.initPotWidget(currentPot);
 						mainForm.initActionWidget(actionModel);
-						mainForm.initPlayerWidget(listCurrentPlayer);
+						mainForm.initPlayerWidget(listPlayer);
 					}
 				});
 			}
@@ -122,7 +116,7 @@ public class ThreadAction extends MyThread {
 
 		int position = positionPlayerTurnPlayOld;
 
-		for (PlayerBlock playerBlock : listCurrentPlayerBlock) {
+		for (PlayerBlock playerBlock : PlayerBlock.values()) {
 			Color colorScaned = robot.getPixelColor(playerBlock.getTurnPlay().x, playerBlock.getTurnPlay().y);
 
 			if (!colorScaned.equals(PixelConsts.PLAYER_NOT_TURN_PLAY_COLOR1)
@@ -135,48 +129,33 @@ public class ThreadAction extends MyThread {
 		return position;
 	}
 
-	public int nbPlayer() {
-
-		ArrayList<PlayerBlock> listPlayerBlock = new ArrayList<>(listCurrentPlayerBlock);
-
-		for (PlayerBlock playerBlock : listPlayerBlock) {
-			Color colorScaned = robot.getPixelColor(playerBlock.getInPlay().x, playerBlock.getInPlay().y);
-
-			if (!colorScaned.equals(PixelConsts.PLAYER_IN_COLOR)) {
-				listCurrentPlayerBlock.remove(playerBlock);
-			}
-		}
-
-		System.out.println("NB : " + listCurrentPlayerBlock.size());
-
-		return listCurrentPlayerBlock.size();
-
-	}
-
 	public void initListCurrentPlayer() {
 
+		currentNbPlayer = 0;
+		
 		for (PlayerBlock playerBlock : PlayerBlock.values()) {
-			Color colorScaned = robot.getPixelColor(playerBlock.getInPlay().x, playerBlock.getInPlay().y);
-
-			if (colorScaned.equals(PixelConsts.PLAYER_IN_COLOR)) {
-				if (firstLoop) {
-					PlayerModel playerModel = ocrService.scanPlayer(playerBlock);
-					playerModel.setActiv(true);
-					listCurrentPlayer.add(playerModel);
-				}
-				else {
-					PlayerModel playerModel = listCurrentPlayer.get(playerBlock.ordinal());
-					playerModel.setActiv(true);
-					playerModel.setStack(ocrService.scanPlayerStack(playerBlock));
-				}
+			PlayerModel playerModel;
+			
+			if (firstLoop) {
+				playerModel = ocrService.scanPlayer(playerBlock);
+				listPlayer.add(playerModel);
 			}
 			else {
-				if (firstLoop) {
-					PlayerModel playerModel = new PlayerModel();
-					playerModel.setActiv(false);					
-					listCurrentPlayer.add(playerModel);
-				}
+				playerModel = listPlayer.get(playerBlock.ordinal());
 			}
+			
+			Color colorScaned = robot.getPixelColor(playerBlock.getInPlay().x, playerBlock.getInPlay().y);
+			
+			if (colorScaned.equals(PixelConsts.PLAYER_IN_COLOR)) {
+				playerModel.setActiv(true);
+				playerModel.setStack(ocrService.scanPlayerStack(playerBlock));
+			}
+			else {
+				playerModel.setActiv(false);
+				//playerModel.setStack(ocrService.scanPlayerStack(playerBlock));
+			}
+				
+			currentNbPlayer++;
 		}
 
 		if (firstLoop) {
@@ -184,25 +163,23 @@ public class ThreadAction extends MyThread {
 		}
 	}
 
-	public void initLastActionPlayer(int positionPlayerTurnPlayOld) {
-		if (positionPlayerTurnPlayOld > 0) {
-			PlayerModel playerModel = listCurrentPlayer.get(positionPlayerTurnPlayOld - 1);
-			
-			if (playerModel.getStack() == null) {
-				//playerModel.setAction(PlayerAction.FOLD);	
-			} else if (playerModel.getStack() == 0.0) {
-				playerModel.setAction(PlayerAction.ALLIN);
-			} else {
-				if (oldPot == currentPot) {
-					playerModel.setAction(PlayerAction.CHECK);
-				} else if (currentPot > oldPot) {
-					playerModel.setAction(PlayerAction.RAISE);
-				}
-			}
-
-			System.out.println(listCurrentPlayer.get(positionPlayerTurnPlayOld - 1));
-		}
-	}
+//	public void initLastActionPlayer(int positionPlayerTurnPlayOld) {
+//		if (positionPlayerTurnPlayOld > 0) {
+//			PlayerModel playerModel = listPlayer.get(positionPlayerTurnPlayOld - 1);
+//			
+//			if (playerModel.getStack() == null) {
+//				//playerModel.setAction(PlayerAction.FOLD);	
+//			} else if (playerModel.getStack() == 0.0) {
+//				playerModel.setAction(PlayerAction.ALLIN);
+//			} else {
+//				if (oldPot == currentPot) {
+//					playerModel.setAction(PlayerAction.CHECK);
+//				} else if (currentPot > oldPot) {
+//					playerModel.setAction(PlayerAction.RAISE);
+//				}
+//			}
+//		}
+//	}
 
 	public void initLastAction() {
 

@@ -156,6 +156,9 @@ public class MainForm {
 	}
 
 	public void initPlayerWidget(List<PlayerModel> listPlayer) {
+		
+		System.out.println("initPlayerWidget()");
+		
 		playerBlockWidget_1.setPlayerModel(listPlayer.get(0));
 		playerBlockWidget_2.setPlayerModel(listPlayer.get(1));
 		playerBlockWidget_3.setPlayerModel(listPlayer.get(2));

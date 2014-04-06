@@ -70,13 +70,19 @@ public class OcrServiceImpl implements OcrService {
 
 	@Override
 	public Double scanPot() {
+		Double res;
+		
 		Rectangle block = new Rectangle(Consts.BLOCK_POT);
 		BufferedImage capture = robot.createScreenCapture(block);
 
 		String ocr = scanBlock(null, capture, "",
 				TessPageSegMode.PSM_SINGLE_LINE, BlockType.POT.name());
 
-		return OcrUtils.cleanPot(ocr);
+		res = OcrUtils.cleanPot(ocr);
+		
+		System.out.println("scanPot() : " + res);
+		
+		return res;
 	}
 
 	// private void scanPlayerList() {
