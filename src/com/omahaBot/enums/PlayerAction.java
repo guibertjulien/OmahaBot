@@ -2,7 +2,10 @@ package com.omahaBot.enums;
 
 public enum PlayerAction {
 	UNKNOW,
-	INACTIV,
+	OUT,
+	PENDING,
+	SB,
+	BB,
 	FOLD,
 	CHECK,
 	BET,

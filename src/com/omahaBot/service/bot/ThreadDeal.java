@@ -66,7 +66,7 @@ public class ThreadDeal extends MyThread {
 						mainForm.initPotWidget(0.0);
 						
 						ActionModel actionModel = new ActionModel();
-						actionModel.setActivePlayer(0);
+						actionModel.setPositionPlayerTurnPlay(0);
 						actionModel.setPlayerAction(PlayerAction.UNKNOW);
 						mainForm.initActionWidget(actionModel);
 					}

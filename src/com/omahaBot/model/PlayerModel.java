@@ -11,10 +11,11 @@ public class PlayerModel {
 	private Integer position;
 	private PlayerAction action;
 	private boolean isActiv;
+	private Double lastBet;
 
 	public PlayerModel() {
 		super();
-		this.action = PlayerAction.INACTIV;
+		this.action = PlayerAction.OUT;
 	}
 
 	public PlayerModel(PlayerBlock playerBlock, String name, Double stack, int position) {
@@ -23,7 +24,6 @@ public class PlayerModel {
 		this.name = name;
 		this.stack = stack;
 		this.position = position;
-		this.action = PlayerAction.INACTIV;
 	}
 
 	public String getName() {
@@ -79,5 +79,15 @@ public class PlayerModel {
 	public void setActiv(boolean isActiv) {
 		this.isActiv = isActiv;
 	}
+
+	public Double getLastBet() {
+		return lastBet;
+	}
+
+	public void setLastBet(Double lastBet) {
+		this.lastBet = lastBet;
+	}
+	
+	
 
 }

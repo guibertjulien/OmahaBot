@@ -8,6 +8,10 @@ public final class Consts {
 
 	public static final String CAPS_DIRECTORY = "C:/_DEV/caps/";
 
+	public static final int MY_TABLEPOSITION = 4;
+	
+	public static final boolean register = false;
+	
 	/* peut varier */
 	public static final int TABLE_X = 391;// 393, bordure noire
 	public static final int TABLE_Y = 0;
@@ -24,7 +28,7 @@ public final class Consts {
 	public static final Rectangle BLOCK_DEAL_ID = new Rectangle(TABLE_X + 52, TABLE_Y + 40, 116, 18);
 	public static final Rectangle BLOCK_POT = new Rectangle(TABLE_X + 477, TABLE_Y + 97, 270, 22);
 
-	public static final int BLOCK_PLAYER_WIDTH = 140;
+	public static final int BLOCK_PLAYER_WIDTH = 120;
 	public static final int BLOCK_PLAYER_HEIGHT = 45;
 	public static final int BLOCK_PLAYER_NAME_HEIGHT = 20;
 	public static final int BLOCK_PLAYER_STACK_Y = 25;	
@@ -37,12 +41,13 @@ public final class Consts {
 	public static final Rectangle BLOCK_PLAYER5 = new Rectangle(TABLE_X + 63, TABLE_Y + 415, BLOCK_PLAYER_WIDTH, BLOCK_PLAYER_HEIGHT);
 	public static final Rectangle BLOCK_PLAYER6 = new Rectangle(TABLE_X + 206, TABLE_Y + 107, BLOCK_PLAYER_WIDTH, BLOCK_PLAYER_HEIGHT);
 
-	public static final Point PT_PLAYER1_IN = new Point(TABLE_X + 823, TABLE_Y + 236);
-	public static final Point PT_PLAYER2_IN = new Point(TABLE_X + 982, TABLE_Y + 379);
-	public static final Point PT_PLAYER3_IN = new Point(TABLE_X + 823, TABLE_Y + 519);
-	public static final Point PT_PLAYER4_IN = new Point(TABLE_X + 415, TABLE_Y + 519);
-	public static final Point PT_PLAYER5_IN = new Point(TABLE_X + 249, TABLE_Y + 379);
-	public static final Point PT_PLAYER6_IN = new Point(TABLE_X + 415, TABLE_Y + 236);
+	public static final Point PT_PLAYER1_ACTIVE = new Point(TABLE_X + 823, TABLE_Y + 236);
+	public static final Point PT_PLAYER2_ACTIVE = new Point(TABLE_X + 982, TABLE_Y + 379);
+	public static final Point PT_PLAYER3_ACTIVE = new Point(TABLE_X + 823, TABLE_Y + 519);
+	public static final Point PT_PLAYER4_ACTIVE = new Point(TABLE_X + 415, TABLE_Y + 519);
+	public static final Point PT_PLAYER5_ACTIVE = new Point(TABLE_X + 249, TABLE_Y + 379);
+	public static final Point PT_PLAYER6_ACTIVE = new Point(TABLE_X + 415, TABLE_Y + 236);
+	public static final Point PT_IAM_ACTIVE = new Point(TABLE_X + 400, TABLE_Y + 600);
 	
 	public static final Point PT_PLAYER1_TURN = new Point(TABLE_X + 929, TABLE_Y + 158);
 	public static final Point PT_PLAYER2_TURN = new Point(TABLE_X + 1074, TABLE_Y + 466);

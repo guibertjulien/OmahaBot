@@ -4,13 +4,16 @@ import java.awt.AWTException;
 import java.awt.Color;
 import java.awt.Robot;
 import java.util.ArrayList;
+import java.util.EnumSet;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.eclipse.swt.widgets.Display;
 
-import com.omahaBot.consts.PixelConsts;
+import com.omahaBot.consts.Consts;
 import com.omahaBot.enums.PlayerAction;
 import com.omahaBot.enums.PlayerBlock;
+import com.omahaBot.enums.PlayerShortcut;
 import com.omahaBot.model.ActionModel;
 import com.omahaBot.model.PlayerModel;
 import com.omahaBot.ui.form.MainForm;
@@ -23,7 +26,11 @@ public class ThreadAction extends MyThread {
 
 	private int positionPlayerTurnPlayOld = 0;
 
-	private ArrayList<PlayerModel> listPlayer = new ArrayList<PlayerModel>();
+	// private ArrayList<PlayerModel> listPlayer = new ArrayList<PlayerModel>();
+
+	private ArrayList<PlayerBlock> listCurrentPlayerBlock;
+
+	private ArrayList<PlayerModel> listCurrentPlayer;
 
 	private static int REFRESH_POT = 100;
 
@@ -58,8 +65,9 @@ public class ThreadAction extends MyThread {
 
 		initialize();
 
-		listPlayer.clear();
-	
+		listCurrentPlayerBlock = new ArrayList<PlayerBlock>(EnumSet.allOf(PlayerBlock.class));
+		listCurrentPlayer = new ArrayList<PlayerModel>();
+
 		while (running) {
 
 			// critère de rupture : tour du joueur
@@ -69,14 +77,16 @@ public class ThreadAction extends MyThread {
 
 				currentPot = ocrService.scanPot();
 
+				currentNbPlayer = nbPlayerActive();
+
 				initListCurrentPlayer();
-				//initLastActionPlayer(positionPlayerTurnPlayOld);
-				initLastAction();
+				// initLastActionPlayer(positionPlayerTurnPlayOld);
 
 				actionModel = new ActionModel();
-				actionModel.setActivePlayer(positionPlayerTurnPlay);
+				actionModel.setPositionPlayerTurnPlay(positionPlayerTurnPlay);
+
 				actionModel.setNbPlayer(currentNbPlayer);
-				actionModel.setListPlayer(listPlayer);
+				actionModel.setListPlayer(listCurrentPlayer);
 				actionModel.setPlayerAction(currentLastAction);
 				actionModel.setLastBet(lastBet);
 
@@ -84,13 +94,17 @@ public class ThreadAction extends MyThread {
 
 				oldPot = currentPot;
 
+				if (positionPlayerTurnPlay == Consts.MY_TABLEPOSITION) {
+					play();
+				}
+
 				positionPlayerTurnPlayOld = positionPlayerTurnPlay;
 
 				Display.getDefault().syncExec(new Runnable() {
 					public void run() {
 						mainForm.initPotWidget(currentPot);
 						mainForm.initActionWidget(actionModel);
-						mainForm.initPlayerWidget(listPlayer);
+						mainForm.initPlayerWidget(listCurrentPlayer);
 					}
 				});
 			}
@@ -107,55 +121,84 @@ public class ThreadAction extends MyThread {
 		System.out.println("## STOP ThreadAction");
 	}
 
+	private void play() {
+
+		try {
+			MyRobot robot = new MyRobot();
+			robot.clickAction(PlayerShortcut.random());
+		} catch (AWTException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
 	@Override
 	public void arretThreadChild() {
 		// nothing
 	}
 
+	/**
+	 * listCurrentPlayerBlock
+	 */
 	public int positionPlayerTurnPlay() {
 
 		int position = positionPlayerTurnPlayOld;
 
-		for (PlayerBlock playerBlock : PlayerBlock.values()) {
-			Color colorScaned = robot.getPixelColor(playerBlock.getTurnPlay().x, playerBlock.getTurnPlay().y);
+		for (PlayerBlock playerBlock : listCurrentPlayerBlock) {
+			// TODO optimize
+			Color colorScanedActive = robot.getPixelColor(playerBlock.getActive().x, playerBlock.getActive().y);
+			Color colorScanedTurnToPlay = robot.getPixelColor(playerBlock.getTurnPlay().x, playerBlock.getTurnPlay().y);
 
-			if (!colorScaned.equals(PixelConsts.PLAYER_NOT_TURN_PLAY_COLOR1)
-					&& !colorScaned.equals(PixelConsts.PLAYER_NOT_TURN_PLAY_COLOR2)) {
+			if (playerBlock.isActivePlayer(colorScanedActive) && playerBlock.isPlayerTurnPlay(colorScanedTurnToPlay)) {
 				position = playerBlock.ordinal() + 1;
 				break;
 			}
 		}
-
+		
 		return position;
+	}
+
+	public int nbPlayerActive() {
+		ArrayList<PlayerBlock> listPlayerBlock = new ArrayList<>(listCurrentPlayerBlock);
+
+		for (PlayerBlock playerBlock : listPlayerBlock) {
+			Color colorScaned = robot.getPixelColor(playerBlock.getActive().x, playerBlock.getActive().y);
+
+			if (!playerBlock.isActivePlayer(colorScaned)) {
+				LOGGER.log(Level.INFO, playerBlock.name() + " OUT");
+				listCurrentPlayerBlock.remove(playerBlock);
+			}
+		}
+
+		System.out.println("nbPlayerActive : " + listCurrentPlayerBlock.size());
+
+		return listCurrentPlayerBlock.size();
 	}
 
 	public void initListCurrentPlayer() {
 
-		currentNbPlayer = 0;
-		
 		for (PlayerBlock playerBlock : PlayerBlock.values()) {
 			PlayerModel playerModel;
-			
+
 			if (firstLoop) {
 				playerModel = ocrService.scanPlayer(playerBlock);
-				listPlayer.add(playerModel);
+				listCurrentPlayer.add(playerModel);
 			}
 			else {
-				playerModel = listPlayer.get(playerBlock.ordinal());
+				playerModel = listCurrentPlayer.get(playerBlock.ordinal());
 			}
-			
-			Color colorScaned = robot.getPixelColor(playerBlock.getInPlay().x, playerBlock.getInPlay().y);
-			
-			if (colorScaned.equals(PixelConsts.PLAYER_IN_COLOR)) {
+
+			Color colorScaned = robot.getPixelColor(playerBlock.getActive().x, playerBlock.getActive().y);
+
+			// TODO optimize
+			if (playerBlock.isActivePlayer(colorScaned)) {
 				playerModel.setActiv(true);
 				playerModel.setStack(ocrService.scanPlayerStack(playerBlock));
 			}
 			else {
 				playerModel.setActiv(false);
-				//playerModel.setStack(ocrService.scanPlayerStack(playerBlock));
+				playerModel.setStack(ocrService.scanPlayerStack(playerBlock));
 			}
-				
-			currentNbPlayer++;
 		}
 
 		if (firstLoop) {
@@ -163,51 +206,61 @@ public class ThreadAction extends MyThread {
 		}
 	}
 
-//	public void initLastActionPlayer(int positionPlayerTurnPlayOld) {
-//		if (positionPlayerTurnPlayOld > 0) {
-//			PlayerModel playerModel = listPlayer.get(positionPlayerTurnPlayOld - 1);
-//			
-//			if (playerModel.getStack() == null) {
-//				//playerModel.setAction(PlayerAction.FOLD);	
-//			} else if (playerModel.getStack() == 0.0) {
-//				playerModel.setAction(PlayerAction.ALLIN);
-//			} else {
-//				if (oldPot == currentPot) {
-//					playerModel.setAction(PlayerAction.CHECK);
-//				} else if (currentPot > oldPot) {
-//					playerModel.setAction(PlayerAction.RAISE);
-//				}
-//			}
-//		}
-//	}
-
-	public void initLastAction() {
-
-		lastBet = 0.0;
-
-		if (oldPot == currentPot) {
-			if (oldNbPlayer == currentNbPlayer) {
-				currentLastAction = PlayerAction.FOLD;
-			}
-			else {
-				currentLastAction = PlayerAction.CHECK;
-			}
-		}
-		else if (currentPot > oldPot) {
-			// currentLastAction = PlayerAction.ALLIN;
-
-			if (oldLastAction.equals(PlayerAction.RAISE)) {
-				currentLastAction = PlayerAction.RERAISE;
-			}
-			else {
-				currentLastAction = PlayerAction.RAISE;
-			}
-
-			lastBet = currentPot - oldPot;
-		}
-
-		oldLastAction = currentLastAction;
-	}
+	// public void initLastActionPlayer(int positionPlayerTurnPlayOld) {
+	// System.out.println("initLastActionPlayer() : " +
+	// positionPlayerTurnPlayOld);
+	//
+	// if (positionPlayerTurnPlayOld <= 0) {
+	// LOGGER.log(Level.WARNING, "positionPlayerTurnPlayOld : ",
+	// positionPlayerTurnPlayOld);
+	// } else {
+	// PlayerModel playerModel = listCurrentPlayer.get(positionPlayerTurnPlayOld
+	// - 1);
+	// Double lastBetPlayer = 0.0;
+	//
+	// System.out.println("oldPot : " + oldPot + "/ currentPot : " +
+	// currentPot);
+	//
+	// // playerModel.setAction(PlayerAction.SB);
+	// // playerModel.setAction(PlayerAction.BB);
+	//
+	// if (!playerModel.isActiv()) {
+	// currentLastAction = PlayerAction.FOLD;
+	// } else if (playerModel.getStack() == 0.0) {
+	// currentLastAction = PlayerAction.ALLIN;
+	// lastBetPlayer = currentPot - oldPot;
+	// } else if (oldPot.equals(currentPot)) {
+	// currentLastAction = PlayerAction.CHECK;
+	// } else if (currentPot > oldPot) {
+	// if (oldLastAction.equals(PlayerAction.CHECK)) {
+	// currentLastAction = PlayerAction.BET;
+	// }
+	// else if (oldLastAction.equals(PlayerAction.RAISE)) {
+	// currentLastAction = PlayerAction.RERAISE;
+	// }
+	// else {
+	// currentLastAction = PlayerAction.RAISE;
+	// }
+	//
+	// lastBetPlayer = currentPot - oldPot;
+	// }
+	// else {
+	// currentLastAction = PlayerAction.UNKNOW;
+	// }
+	//
+	// playerModel.setAction(currentLastAction);
+	// playerModel.setLastBet(lastBetPlayer);
+	//
+	// oldLastAction = currentLastAction;
+	//
+	// if (lastBetPlayer > 0) {
+	// lastBet = lastBetPlayer;
+	// }
+	//
+	// // playerModel.setAction(PlayerAction.CALL);
+	//
+	// }
+	// }
 
 	@Override
 	public void initialize() {

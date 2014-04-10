@@ -101,10 +101,6 @@ public class ActionBlockWidget extends Composite {
 		IObservableValue nbPlayerActionModelObserveValue = PojoProperties.value("nbPlayer").observe(actionModel);
 		bindingContext.bindValue(observeTextValue2ObserveWidget, nbPlayerActionModelObserveValue, null, null);
 		//
-		IObservableValue observeTextValue1ObserveWidget = WidgetProperties.text().observe(value1);
-		IObservableValue activePlayerActionModelObserveValue = PojoProperties.value("activePlayer").observe(actionModel);
-		bindingContext.bindValue(observeTextValue1ObserveWidget, activePlayerActionModelObserveValue, null, null);
-		//
 		IObservableValue observeTextValue3ObserveWidget = WidgetProperties.text().observe(value3);
 		IObservableValue playerActionActionModelObserveValue = PojoProperties.value("playerAction").observe(actionModel);
 		bindingContext.bindValue(observeTextValue3ObserveWidget, playerActionActionModelObserveValue, null, null);
@@ -112,6 +108,10 @@ public class ActionBlockWidget extends Composite {
 		IObservableValue observeTextValue4ObserveWidget = WidgetProperties.text().observe(value4);
 		IObservableValue lastBetActionModelObserveValue = PojoProperties.value("lastBet").observe(actionModel);
 		bindingContext.bindValue(observeTextValue4ObserveWidget, lastBetActionModelObserveValue, null, null);
+		//
+		IObservableValue observeTextValue1ObserveWidget_1 = WidgetProperties.text().observe(value1);
+		IObservableValue positionPlayerTurnPlayActionModelObserveValue = PojoProperties.value("positionPlayerTurnPlay").observe(actionModel);
+		bindingContext.bindValue(observeTextValue1ObserveWidget_1, positionPlayerTurnPlayActionModelObserveValue, null, null);
 		//
 		return bindingContext;
 	}

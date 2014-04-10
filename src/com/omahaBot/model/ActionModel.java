@@ -7,11 +7,11 @@ import com.omahaBot.enums.PlayerAction;
 public class ActionModel {
 
 	private int nbPlayer;
-	private int activePlayer;
+	private int positionPlayerTurnPlay;
 	private PlayerAction playerAction;
 	private ArrayList<PlayerModel> listPlayer;
 	private Double lastBet;
-	
+
 	public ActionModel() {
 		super();
 		// TODO Auto-generated constructor stub
@@ -25,12 +25,12 @@ public class ActionModel {
 		this.nbPlayer = nbPlayer;
 	}
 
-	public int getActivePlayer() {
-		return activePlayer;
+	public int getPositionPlayerTurnPlay() {
+		return positionPlayerTurnPlay;
 	}
 
-	public void setActivePlayer(int activePlayer) {
-		this.activePlayer = activePlayer;
+	public void setPositionPlayerTurnPlay(int positionPlayerTurnPlay) {
+		this.positionPlayerTurnPlay = positionPlayerTurnPlay;
 	}
 
 	public PlayerAction getPlayerAction() {

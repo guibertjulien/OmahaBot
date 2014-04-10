@@ -2,6 +2,8 @@ package com.omaha.service.ocr;
 
 import static org.junit.Assert.assertTrue;
 
+import java.awt.AWTException;
+import java.awt.Robot;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -13,6 +15,7 @@ import net.sourceforge.tess4j.TesseractException;
 import net.sourceforge.tess4j.TessAPI1.TessPageSegMode;
 import net.sourceforge.vietocr.ImageHelper;
 
+import org.eclipse.swt.events.KeyEvent;
 import org.junit.Test;
 
 import com.omahaBot.consts.Consts;
@@ -85,5 +88,22 @@ public class OcrUtilsTest {
 		}
 
 
+	}
+	
+
+	@Test
+	public void testShortCut() {
+		try {
+			Robot robot = new Robot();
+			
+			robot.keyPress(java.awt.event.KeyEvent.VK_0);
+			
+			
+		} catch (AWTException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
 	}
 }
