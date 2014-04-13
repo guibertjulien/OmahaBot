@@ -80,8 +80,6 @@ public class OcrServiceImpl implements OcrService {
 
 		res = OcrUtils.cleanPot(ocr);
 		
-		System.out.println("scanPot() : " + res);
-		
 		return res;
 	}
 
@@ -107,7 +105,6 @@ public class OcrServiceImpl implements OcrService {
 		case FLOP:
 			int nbCard = 0;
 			for (BoardCards card : BoardCards.values()) {
-				System.out.println(card.name());
 				CardModel cardModel = scanCard(card);
 				listCard.add(cardModel);
 				nbCard++;
@@ -229,7 +226,6 @@ public class OcrServiceImpl implements OcrService {
 			LOGGER.warning(e.getMessage());
 		}
 
-		System.out.println("--> scanCard : " + result);
 		return result;
 	}
 

@@ -5,7 +5,6 @@ import java.awt.Color;
 import java.awt.Robot;
 import java.util.ArrayList;
 import java.util.EnumSet;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.eclipse.swt.widgets.Display;
@@ -22,6 +21,8 @@ public class ThreadAction extends MyThread {
 
 	private final static Logger LOGGER = Logger.getLogger(ThreadDealStep.class.getName());
 
+	private final static String START_LOG = "        ";
+	
 	private ActionModel actionModel;
 
 	private int positionPlayerTurnPlayOld = 0;
@@ -61,7 +62,7 @@ public class ThreadAction extends MyThread {
 	@Override
 	public void run() {
 
-		System.out.println("## START ThreadAction");
+		System.out.println(START_LOG + ">> START ThreadAction : " + this.getId());
 
 		initialize();
 
@@ -74,11 +75,13 @@ public class ThreadAction extends MyThread {
 			final int positionPlayerTurnPlay = positionPlayerTurnPlay();
 
 			if (positionPlayerTurnPlayOld != positionPlayerTurnPlay) {
-
+				System.out.println(START_LOG + "---------------------------------------");
+				System.out.println(START_LOG + "NEW ACTION");
+				
 				currentPot = ocrService.scanPot();
 
 				currentNbPlayer = nbPlayerActive();
-
+				
 				initListCurrentPlayer();
 				// initLastActionPlayer(positionPlayerTurnPlayOld);
 
@@ -94,7 +97,7 @@ public class ThreadAction extends MyThread {
 
 				oldPot = currentPot;
 
-				if (positionPlayerTurnPlay == Consts.MY_TABLEPOSITION) {
+				if (Consts.register && positionPlayerTurnPlay == Consts.MY_TABLEPOSITION) {
 					play();
 				}
 
@@ -115,17 +118,16 @@ public class ThreadAction extends MyThread {
 				// TODO Auto-generated catch block
 				ex.printStackTrace();
 			}
-
 		}
 
-		System.out.println("## STOP ThreadAction");
+		System.out.println(START_LOG + "<< STOP ThreadAction : " + this.getId()); 
 	}
 
 	private void play() {
 
 		try {
 			MyRobot robot = new MyRobot();
-			robot.clickAction(PlayerShortcut.random());
+			robot.clickAction(PlayerShortcut.random(), this.getId());
 		} catch (AWTException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -165,12 +167,10 @@ public class ThreadAction extends MyThread {
 			Color colorScaned = robot.getPixelColor(playerBlock.getActive().x, playerBlock.getActive().y);
 
 			if (!playerBlock.isActivePlayer(colorScaned)) {
-				LOGGER.log(Level.INFO, playerBlock.name() + " OUT");
+				System.out.println(START_LOG + playerBlock.name() + " OUT");
 				listCurrentPlayerBlock.remove(playerBlock);
 			}
 		}
-
-		System.out.println("nbPlayerActive : " + listCurrentPlayerBlock.size());
 
 		return listCurrentPlayerBlock.size();
 	}

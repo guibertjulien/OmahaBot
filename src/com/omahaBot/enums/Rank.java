@@ -2,7 +2,6 @@ package com.omahaBot.enums;
 
 public enum Rank {
 
-	ACE("A"),
 	TWO("2"),
 	THREE("3"),
 	FOUR("4"),
@@ -15,6 +14,7 @@ public enum Rank {
 	JACK("J"),
 	QUEEN("Q"),
 	KING("K"), 
+	ACE("A"),
 	UNKNOW("?");
 
 	private String shortName;
@@ -31,4 +31,5 @@ public enum Rank {
 		this.shortName = shortName;
 	}
 
+	
 }

@@ -12,7 +12,6 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.wb.swt.SWTResourceManager;
 
 import com.omahaBot.model.PlayerModel;
-import org.eclipse.swt.widgets.Group;
 
 public class PlayerBlockWidget extends Composite {
 	private DataBindingContext m_bindingContext;

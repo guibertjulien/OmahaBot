@@ -1,21 +1,29 @@
 package com.omahaBot.ui.form;
 
+import java.io.PrintStream;
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
 
 import org.eclipse.core.databinding.observable.Realm;
 import org.eclipse.jface.databinding.swt.SWTObservables;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.layout.RowData;
 import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.TabFolder;
+import org.eclipse.swt.widgets.TabItem;
 
 import com.omahaBot.model.ActionModel;
 import com.omahaBot.model.DealModel;
@@ -23,6 +31,9 @@ import com.omahaBot.model.DealStepModel;
 import com.omahaBot.model.PlayerModel;
 import com.omahaBot.service.bot.ThreadDeal;
 import com.omahaBot.service.ocr.OcrServiceImpl;
+import com.omahaBot.utils.CustomOutputStream;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.custom.StackLayout;
 
 public class MainForm {
 
@@ -44,7 +55,12 @@ public class MainForm {
 	private static boolean start = false;
 	private PotWidget potWidget;
 	private ActionBlockWidget actionBlockWidget;
-	private Button btnNewButton_1;
+	private Button btn_checkTable;
+
+	private StyledText styledText;
+	private PrintStream standardOut;
+	
+	private MainForm mainForm;
 
 	/**
 	 * Launch the application.
@@ -85,39 +101,50 @@ public class MainForm {
 	 */
 	protected void createContents() {
 		shell = new Shell();
+		shell.setMinimumSize(new Point(0, 0));
 		shell.setLocation(new Point(0, 0));
 		shell.setMinimumSize(390, 800);
 		shell.setSize(390, 800);
 		shell.setText("SWT Application");
 		shell.setLayout(new GridLayout(1, false));
 
+		mainForm = this;
+		
 		Group grpActions = new Group(shell, SWT.NONE);
+		grpActions.setSize(new Point(0, 100));
 		grpActions.setText("Actions");
 		RowLayout rl_grpActions = new RowLayout(SWT.HORIZONTAL);
 		grpActions.setLayout(rl_grpActions);
 
-		dealBlockWidget = new DealBlockWidget(shell, SWT.NONE);
-		
-		btnNewButton_1 = new Button(grpActions, SWT.NONE);
-		btnNewButton_1.addSelectionListener(new SelectionAdapter() {
+		btn_checkTable = new Button(grpActions, SWT.NONE);
+		btn_checkTable.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				ocrService.checkTable();
 			}
 		});
-		btnNewButton_1.setText("CHECK TABLE");
+		btn_checkTable.setText("CHECK TABLE");
 
 		final Button btnNewButton = new Button(grpActions, SWT.NONE);
 		btnNewButton.setLayoutData(new RowData(100, SWT.DEFAULT));
 
-		final MainForm mainForm = this;
-
 		btnNewButton.setText("START BOT");
+
+		Button btn_clear = new Button(grpActions, SWT.NONE);
+		btn_clear.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				styledText.setText("");
+			}
+		});
+		btn_clear.setText("Clear log");
 		btnNewButton.addSelectionListener(new SelectionAdapter() {
 			private ThreadDeal threadDeal;
 
 			@Override
 			public void widgetSelected(SelectionEvent e) {
+				// printLog();
+
 				if (start) {
 					start = false;
 					btnNewButton.setText("START BOT");
@@ -133,14 +160,37 @@ public class MainForm {
 				}
 			}
 		});
+		// shell.setLayout(new FillLayout(SWT.HORIZONTAL));
 
-		boardWidget = new BoardWidget(shell, SWT.NONE);
+		TabFolder tabFolder = new TabFolder(shell, SWT.NONE);
 
-		potWidget = new PotWidget(shell, SWT.NONE);
+		TabItem tbtm1 = new TabItem(tabFolder, SWT.NONE);
+		tbtm1.setText("Table");
 
-		actionBlockWidget = new ActionBlockWidget(shell, SWT.NONE);
+		Composite composite1 = new Composite(tabFolder, SWT.NONE);
+		tbtm1.setControl(composite1);
+		composite1.setLayout(new GridLayout(1, false));
 
-		final Group grpTable = new Group(shell, SWT.NONE);
+		TabItem tbtm2 = new TabItem(tabFolder, SWT.NONE);
+		tbtm2.setText("Logs");
+
+		Composite composite2 = new Composite(tabFolder, SWT.NONE);
+		tbtm2.setControl(composite2);
+		composite2.setLayout(new GridLayout(1, false));
+
+		styledText = new StyledText(composite2, SWT.BORDER | SWT.V_SCROLL | SWT.MULTI | SWT.WRAP);
+		styledText.setEditable(false);
+		styledText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+
+		dealBlockWidget = new DealBlockWidget(composite1, SWT.NONE);
+
+		boardWidget = new BoardWidget(composite1, SWT.NONE);
+
+		potWidget = new PotWidget(composite1, SWT.NONE);
+
+		actionBlockWidget = new ActionBlockWidget(composite1, SWT.NONE);
+
+		final Group grpTable = new Group(composite1, SWT.NONE);
 		grpTable.setText("Table");
 		grpTable.setLayout(new GridLayout(2, false));
 		playerBlockWidget_6 = new PlayerBlockWidget(grpTable, SWT.NONE, 6);
@@ -149,6 +199,16 @@ public class MainForm {
 		playerBlockWidget_2 = new PlayerBlockWidget(grpTable, SWT.NONE, 2);
 		playerBlockWidget_4 = new PlayerBlockWidget(grpTable, SWT.NONE, 4);
 		playerBlockWidget_3 = new PlayerBlockWidget(grpTable, SWT.NONE, 3);
+
+		// styledText.setEditable(false);
+		PrintStream printStream = new PrintStream(new CustomOutputStream(styledText));
+
+		// keeps reference of standard output stream
+		standardOut = System.out;
+
+		// re-assigns standard output stream and error output stream
+		System.setOut(printStream);
+		System.setErr(printStream);
 	}
 
 	public void initDealWidget(DealModel dealModel) {
@@ -156,9 +216,7 @@ public class MainForm {
 	}
 
 	public void initPlayerWidget(List<PlayerModel> listPlayer) {
-		
-		System.out.println("initPlayerWidget()");
-		
+		// TODO optimize
 		playerBlockWidget_1.setPlayerModel(listPlayer.get(0));
 		playerBlockWidget_2.setPlayerModel(listPlayer.get(1));
 		playerBlockWidget_3.setPlayerModel(listPlayer.get(2));

@@ -2,6 +2,7 @@ package com.omahaBot.service.bot;
 
 import java.awt.AWTException;
 import java.awt.Robot;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.eclipse.swt.widgets.Display;
@@ -33,7 +34,7 @@ public class ThreadPot extends MyThread {
 	@Override
 	public void run() {
 
-		System.out.println("## START ThreadPot");
+		System.out.println("########## START ThreadPot");
 		
 		while (running) {
 			// scan du pot toutes les 100ms
@@ -59,7 +60,7 @@ public class ThreadPot extends MyThread {
 
 		}
 
-		System.out.println("## STOP ThreadPot");
+		System.out.println("########## STOP ThreadPot");
 	}
 
 	@Override

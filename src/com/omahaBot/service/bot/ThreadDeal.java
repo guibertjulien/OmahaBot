@@ -37,8 +37,7 @@ public class ThreadDeal extends MyThread {
 	 */
 	@Override
 	public void run() {
-		
-		System.out.println("########## START ThreadDeal ##########");
+		System.out.println(">> START ThreadDeal : " + this.getId());
 		
 		initialize();
 		
@@ -47,7 +46,8 @@ public class ThreadDeal extends MyThread {
 			currentDealId = ocrService.scanDealId();// critère de rupture
 			
 			if (!currentDealId.isEmpty() && !oldDealId.equals(currentDealId)) {
-				System.out.println("--> NEW DEAL : " + currentDealId);
+				System.out.println("##############################################");
+				System.out.println("NEW DEAL : " + currentDealId);
 				
 				oldDealId = currentDealId;
 
@@ -56,9 +56,11 @@ public class ThreadDeal extends MyThread {
 				
 				arretThreadChild();
 				
-				// demarrage d'un nouveau thread
-				threadDealStep = new ThreadDealStep(mainForm);
-				threadDealStep.start();
+				if (running) {
+					// demarrage d'un nouveau thread
+					threadDealStep = new ThreadDealStep(mainForm);
+					threadDealStep.start();
+				}
 				
 				Display.getDefault().syncExec(new Runnable() {
 					public void run() {
@@ -82,7 +84,7 @@ public class ThreadDeal extends MyThread {
 			}
 		}
 
-		System.out.println("########## STOP ThreadDeal  ##########");
+		System.out.println("<< STOP ThreadDeal : " + this.getId());
 	}
 
 	@Override

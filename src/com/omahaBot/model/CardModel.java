@@ -3,7 +3,7 @@ package com.omahaBot.model;
 import com.omahaBot.enums.Rank;
 import com.omahaBot.enums.Suit;
 
-public class CardModel {
+public class CardModel implements Comparable<CardModel> {
 
 	private Rank rank;
 
@@ -36,5 +36,27 @@ public class CardModel {
 		return rank.getShortName() + suit.getShortName();
 	}
 
-	
+	@Override
+	public int compareTo(CardModel o) {
+		if (this.rank.ordinal() > o.rank.ordinal())
+			return 1;
+		if (this.rank.ordinal() < o.rank.ordinal())
+			return -1;
+		else
+			if (this.suit.ordinal() > o.suit.ordinal())
+				return 1;
+			if (this.suit.ordinal() < o.suit.ordinal())
+				return -1;
+			else return 0;
+	}
+
+	public boolean isConnected(CardModel o) {
+		// cas particulier 2A
+		if (this.getRank().equals(Rank.TWO) && this.getRank().equals(Rank.ACE)) {
+			return true;
+		}
+		else {
+			return (this.rank.ordinal() - o.rank.ordinal() == -1);
+		}
+	}
 }

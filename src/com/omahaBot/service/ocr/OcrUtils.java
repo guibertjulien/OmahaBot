@@ -127,8 +127,6 @@ public class OcrUtils {
 		result = result.replaceAll("(\r\n|\n)", "");
 		result = result.replaceAll("1Q", "10");
 
-		//System.out.println("--> scanCardRank : " + result);
-
 		return result;
 	}
 
@@ -143,8 +141,6 @@ public class OcrUtils {
 		result = result.trim();
 		result = result.replaceAll("(\r\n|\n)", "");
 		result = result.replaceAll("1Q", "10");
-
-		//System.out.println("--> scanCardRank : " + result);
 
 		return result;
 	}

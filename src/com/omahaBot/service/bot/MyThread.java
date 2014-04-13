@@ -19,7 +19,7 @@ public abstract class MyThread extends Thread implements IThread{
 	
 	@Override
     public void arret() {
-    	arretThreadChild();
         running = false;
+    	arretThreadChild();
     }
 }
