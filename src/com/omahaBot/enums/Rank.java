@@ -1,5 +1,14 @@
 package com.omahaBot.enums;
 
+import java.util.HashMap;
+import java.util.Map;
+
+/**
+ * TODO Cf. GUAVA
+ * 
+ * @author Julien
+ * 
+ */
 public enum Rank {
 
 	TWO("2"),
@@ -13,9 +22,19 @@ public enum Rank {
 	TEN("10"),
 	JACK("J"),
 	QUEEN("Q"),
-	KING("K"), 
+	KING("K"),
 	ACE("A"),
 	UNKNOW("?");
+
+	private static final Map<String, Rank> map = new
+			HashMap<String, Rank>();
+
+	// map permettant de récupérer ke power avec une hand
+	static {
+		for (Rank rank : values()) {
+			map.put(rank.getShortName(), rank);
+		}
+	}
 
 	private String shortName;
 
@@ -31,5 +50,13 @@ public enum Rank {
 		this.shortName = shortName;
 	}
 
-	
+	// récupération de l'instance
+	public static Rank fromShortName(String shortName) {
+		final Rank value = map.get(shortName);
+		if (value != null) {
+			return value;
+		}
+
+		throw new IllegalArgumentException();
+	}
 }

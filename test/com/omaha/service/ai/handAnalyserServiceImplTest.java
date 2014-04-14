@@ -15,6 +15,7 @@ import com.omahaBot.enums.Rank;
 import com.omahaBot.enums.Suit;
 import com.omahaBot.model.CardModel;
 import com.omahaBot.model.HandModel;
+import com.omahaBot.service.ai.handAnalyserServiceImpl;
 
 public class handAnalyserServiceImplTest {
 
@@ -94,4 +95,17 @@ public class handAnalyserServiceImplTest {
 		
 	    assertTrue(m.find());
 	}
+	
+	@Test
+	public void test4() {
+		
+		handAnalyserServiceImpl analyserServiceImpl = new handAnalyserServiceImpl();
+		
+		HandModel handModel = new HandModel("AsKsAhKh");
+		analyserServiceImpl.decidePreFlop(handModel);
+		
+		handModel = new HandModel("AsKsQhKd");
+		analyserServiceImpl.decidePreFlop(handModel);
+	}
+		
 }

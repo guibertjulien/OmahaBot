@@ -14,9 +14,9 @@ public enum PowerHandRank {
 	TWO_PAIR_LOW(HandType.TWO_PAIR, "AAKK", "AAQQ", "AAJJ", "AATT", "KKQQ", "KKTT", "QQJJ", "QQTT", "JJTT"),
 
 	// ONE PAIR
-	ONE_PAIR_HIGHT(HandType.ONE_PAIR, "(AA)"),
-	ONE_PAIR_MEDIUM(HandType.ONE_PAIR, "(KK)", "(QQ)", "(JJ)", "(TT)"),
-	ONE_PAIR_LOW(HandType.ONE_PAIR, "(99)", "(88)", "(77)", "(66)", "(55)", "(44)", "(33)", "(22)"),
+	ONE_PAIR_HIGHT(HandType.ONE_PAIR, ".AA."),
+	ONE_PAIR_MEDIUM(HandType.ONE_PAIR, ".KK.", ".QQ.", ".JJ.", ".TT."),
+	ONE_PAIR_LOW(HandType.ONE_PAIR, ".99.", ".88.", ".77.", ".66.", ".55.", ".44.", ".33.", ".22."),
 	
 	// THREE_OF_A_KIND
 	// TODO

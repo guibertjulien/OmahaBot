@@ -1,7 +1,7 @@
 package com.omahaBot.enums;
 
 public enum PowerHand {
-	TWO_PAIRS_SUITED_MAX(PowerHandLevel.MAX, PowerHandRank.TWO_PAIR_HIGHT, PowerHandSuit.NO_POWER), // KKAA
+	TWO_PAIRS_SUITED_MAX(PowerHandLevel.MAX, PowerHandRank.TWO_PAIR_HIGHT, PowerHandSuit.TWO_COLORS), // KKAA
 	TWO_PAIRS_SUITED(PowerHandLevel.HIGHT, PowerHandRank.NO_POWER, PowerHandSuit.NO_POWER),
 	TWO_PAIRS(PowerHandLevel.HIGHT, PowerHandRank.NO_POWER, PowerHandSuit.NO_POWER),
 	ONE_PAIR_AND_AS_SUITED(PowerHandLevel.MEDIUM, PowerHandRank.NO_POWER, PowerHandSuit.NO_POWER),

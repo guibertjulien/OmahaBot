@@ -1,62 +1,67 @@
 package com.omahaBot.enums;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.regex.Pattern;
 
 public enum PowerHandSuit {
+	
+	// TWO COLORS
+	TWO_COLORS("sshh","ssdd","sscc","hhdd","hhcc", "ddcc"),
+	
+	// ONE COLOR
+	ONE_COLOR("ss..","hh..",".hh.",".dd.", "..dd","..cc"),
 
-	// TWO PAIRS
-	TWO_PAIRS_HIGHT("TTJJ", "TTQQ", "TTKK", "JJQQ", "JJKK", "QQKK", "??AA"),
-	TWO_PAIRS_MEDIUM("??TT", "??JJ", "??QQ", "??KK"),
-	TWO_PAIRS_LOW("AAKK", "AAQQ", "AAJJ", "AATT", "KKQQ", "KKTT", "QQJJ", "QQTT", "JJTT"),
-	
-//	// TWO COLORS
-//	TWO_COLORS_HIGHT("A?A?"),
-//	TWO_COLORS_MEDIUM("K?A?"),
-//	TWO_COLORS_LOW("A?A?"),
-	
-	// SEQUENCE de 4
-	// par les 2 bouts	
-	SEQUENCE4_HIGHT("2345", "3456", "4567", "5678", "6789", "789T", "89TJ", "9TJQ", "TJQK"),
-	// par un seul bout
-	SEQUENCE4_MEDIUM("234A", "JQKA"),
-	
-	// SEQUENCE de 3
-	SEQUENCE3_HIGHT("?345", "?456", "?567", "?678", "?789", "?89T", "?9TJ", "?TJQ", "?JQK"),
-	SEQUENCE3_MEDIUM("AKQ?", "?32A"),
+	// ZERO COLOR
+	ZERO_COLOR("shdc"),
 	
 	NO_POWER();
 
-	private final String[] arrayHands;
+	private final String[] arrayHand;
 
-	private static final Map<String, PowerHandSuit> mapHands = new
+	private static final Map<String, PowerHandSuit> mapHand = new
 			HashMap<String, PowerHandSuit>();
 
-	private PowerHandSuit(String... arrayHands) {
-		this.arrayHands = arrayHands;
+	private PowerHandSuit(String... arrayHand) {
+		this.arrayHand = arrayHand;
 	}
 
-	public String[] getArrayHands() {
-		return arrayHands;
+	public String[] getArrayHand() {
+		return arrayHand;
 	}
 
 	// map permettant de récupérer ke power avec une hand
 	static {
-		for (PowerHandSuit powerHand : values()) {
-			for (int i = 0; i < powerHand.getArrayHands().length; i++) {
-				mapHands.put(powerHand.getArrayHands()[i], powerHand);
+		for (PowerHandSuit powerHandSuit : values()) {
+			for (int i = 0; i < powerHandSuit.getArrayHand().length; i++) {
+				mapHand.put(powerHandSuit.getArrayHand()[i], powerHandSuit);
 			}
 		}
 	}
 
 	// récupération de l'instance
 	public static PowerHandSuit fromHand(String hand) {
-		final PowerHandSuit value = mapHands.get(hand);
+		PowerHandSuit value = mapHand.get(hand);
+		
+		if (value == null) {
+			for (Iterator i = mapHand.entrySet().iterator(); i.hasNext();) {
+				Entry couple = (Entry) i.next();
+
+				String handPattern = (String) couple.getKey();
+				PowerHandSuit powerHandSuitValue = (PowerHandSuit) couple.getValue();
+
+				if (Pattern.matches(handPattern, hand)) {
+					value = powerHandSuitValue;
+				}
+			}
+		}
+		
 		if (value != null) {
 			return value;
 		}
-		
+
 		return NO_POWER;
-		//throw new IllegalArgumentException();
 	}
 }

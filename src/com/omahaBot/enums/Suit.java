@@ -1,16 +1,28 @@
 package com.omahaBot.enums;
 
 import java.awt.Color;
+import java.util.HashMap;
+import java.util.Map;
 
 import com.omahaBot.consts.PixelConsts;
 
 public enum Suit {
 
+	SPADE("s", PixelConsts.SUIT_SPADE),
 	HEART("h", PixelConsts.SUIT_HEART),
-	SPADE("s", PixelConsts.SUIT_SPADE), 
 	DIAMOND("d", PixelConsts.SUIT_DIAMOND),
-	CLUB("c", PixelConsts.SUIT_CLUB),//green
+	CLUB("c", PixelConsts.SUIT_CLUB), // green
 	UNKNOW("?", null);
+
+	private static final Map<String, Suit> map = new
+			HashMap<String, Suit>();
+
+	// map permettant de récupérer ke power avec une hand
+	static {
+		for (Suit suit : values()) {
+			map.put(suit.getShortName(), suit);
+		}
+	}
 
 	private String shortName;
 
@@ -35,6 +47,15 @@ public enum Suit {
 
 	public void setPixelColor(Color pixelColor) {
 		this.pixelColor = pixelColor;
+	}
+
+	public static Suit fromShortName(String shortName) {
+		final Suit value = map.get(shortName);
+		if (value != null) {
+			return value;
+		}
+
+		throw new IllegalArgumentException();
 	}
 
 }
