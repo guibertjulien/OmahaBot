@@ -5,7 +5,7 @@ import java.awt.Robot;
 import java.util.Random;
 import java.util.logging.Logger;
 
-import com.omahaBot.enums.PlayerShortcut;
+import com.omahaBot.enums.BettingDecision;
 
 public class MyRobot extends Robot {
 
@@ -19,15 +19,15 @@ public class MyRobot extends Robot {
 		// TODO Auto-generated constructor stub
 	}
 
-	public void clickAction(PlayerShortcut playerShortcut, long threadId) {
+	public void clickAction(BettingDecision bettingDecision, long threadId) {
 
 		Random rand = new Random();
 		int randomNumber = rand.nextInt(MAX - MIN + 1) + MIN;
 
-		System.out.println("threadId : " + threadId + " / random : " + randomNumber + " / playerShortcut : " + playerShortcut);
+		System.out.println("threadId : " + threadId + " / random : " + randomNumber + " / playerShortcut : " + bettingDecision);
 		//LOGGER.log(Level.INFO, "ramdom : {0} / playerShortcut : {1}", new Object[] { randomNumber, playerShortcut });
 
 		delay(randomNumber);
-		this.keyPress(playerShortcut.getShortcut());
+		this.keyPress(bettingDecision.getShortcut());
 	}
 }

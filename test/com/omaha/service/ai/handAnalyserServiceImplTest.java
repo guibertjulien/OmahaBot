@@ -99,13 +99,13 @@ public class handAnalyserServiceImplTest {
 	@Test
 	public void test4() {
 		
-		handAnalyserServiceImpl analyserServiceImpl = new handAnalyserServiceImpl();
-		
-		HandModel handModel = new HandModel("AsKsAhKh");
-		analyserServiceImpl.decidePreFlop(handModel);
-		
-		handModel = new HandModel("AsKsQhKd");
-		analyserServiceImpl.decidePreFlop(handModel);
+//		handAnalyserServiceImpl analyserServiceImpl = new handAnalyserServiceImpl();
+//		
+//		HandModel handModel = new HandModel("AsKsAhKh");
+//		analyserServiceImpl.decidePreFlop(handModel);
+//		
+//		handModel = new HandModel("AsKsQhKd");
+//		analyserServiceImpl.decidePreFlop(handModel);
 	}
 		
 }

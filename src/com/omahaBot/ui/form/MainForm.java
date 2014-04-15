@@ -61,6 +61,7 @@ public class MainForm {
 	private PrintStream standardOut;
 	
 	private MainForm mainForm;
+	private TabItem tbtm3;
 
 	/**
 	 * Launch the application.
@@ -202,6 +203,9 @@ public class MainForm {
 
 		// styledText.setEditable(false);
 		PrintStream printStream = new PrintStream(new CustomOutputStream(styledText));
+		
+		tbtm3 = new TabItem(tabFolder, SWT.NONE);
+		tbtm3.setText("AI");
 
 		// keeps reference of standard output stream
 		standardOut = System.out;

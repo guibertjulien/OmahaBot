@@ -1,5 +1,8 @@
 package com.omahaBot.service.ai;
 
+import java.awt.AWTException;
+import java.awt.Robot;
+
 import com.omahaBot.enums.BettingDecision;
 import com.omahaBot.enums.HandType;
 import com.omahaBot.enums.PowerHand;
@@ -7,9 +10,20 @@ import com.omahaBot.enums.PowerHandRank;
 import com.omahaBot.enums.PowerHandSuit;
 import com.omahaBot.model.HandModel;
 import com.omahaBot.model.PlayerModel;
+import com.omahaBot.service.ocr.OcrServiceImpl;
 
 public class handAnalyserServiceImpl {
 
+	private static handAnalyserServiceImpl INSTANCE = new handAnalyserServiceImpl();
+
+	private handAnalyserServiceImpl() {
+		super();
+	}
+	
+	public static handAnalyserServiceImpl getInstance() {
+		return INSTANCE;
+	}
+	
 	public PowerHand analyseHandPreFlop(HandModel handModel) {
 
 		PowerHandRank powerHandRank = PowerHandRank.NO_POWER;
@@ -51,13 +65,13 @@ public class handAnalyserServiceImpl {
 
 	public BettingDecision decidePreFlop(HandModel handModel) {
 
-		BettingDecision bettingDecision = BettingDecision.FOLD;
+		BettingDecision bettingDecision;
 
 		PowerHand powerHand = analyseHandPreFlop(handModel);
 
 		switch (powerHand) {
 		case TWO_PAIRS_SUITED_MAX:
-			bettingDecision = BettingDecision.RAISE;
+			bettingDecision = BettingDecision.BET_RAISE;
 			break;
 		case TWO_PAIRS_SUITED:
 		case TWO_PAIRS:

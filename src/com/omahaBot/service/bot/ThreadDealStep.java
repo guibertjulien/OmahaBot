@@ -10,7 +10,7 @@ import java.util.logging.Logger;
 import org.eclipse.swt.widgets.Display;
 
 import com.omahaBot.consts.Consts;
-import com.omahaBot.enums.BoardCards;
+import com.omahaBot.enums.CardBlock;
 import com.omahaBot.enums.DealStep;
 import com.omahaBot.enums.Suit;
 import com.omahaBot.model.CardModel;
@@ -74,7 +74,7 @@ public class ThreadDealStep extends MyThread {
 				
 				if (running) {
 					// demarrage d'un nouveau thread
-					threadAction = new ThreadAction(mainForm);
+					threadAction = new ThreadAction(mainForm, currentDealStep);
 					threadAction.start();
 				}
 				
@@ -109,12 +109,18 @@ public class ThreadDealStep extends MyThread {
 	
 	public DealStep initDealStep() {
 
-		ArrayList<BoardCards> listCard = new ArrayList<>();
-		listCard.add(BoardCards.CARD5_RIVER);
-		listCard.add(BoardCards.CARD4_TURN);
-		listCard.add(BoardCards.CARD3_FLOP);
+		ArrayList<CardBlock> listCard = new ArrayList<>();
+		listCard.add(CardBlock.CARD5_RIVER);
+		listCard.add(CardBlock.CARD4_TURN);
+		listCard.add(CardBlock.CARD3_FLOP);
 
-		for (BoardCards card : listCard) {
+		int nbCardScaned = 0;
+		
+		for (CardBlock card : listCard) {
+			if (nbCardScaned > 5) {
+				return DealStep.PRE_FLOP;
+			}
+			
 			Color colorScaned = robot.getPixelColor(card.getBlock().x + Consts.PT_SUIT.x, card.getBlock().y
 					+ Consts.PT_SUIT.y);
 
@@ -132,6 +138,8 @@ public class ThreadDealStep extends MyThread {
 					}
 				}
 			}
+			
+			nbCardScaned++;
 		}
 
 		return DealStep.PRE_FLOP;

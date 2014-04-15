@@ -9,6 +9,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.SortedSet;
+import java.util.TreeSet;
 import java.util.logging.Logger;
 
 import javax.imageio.ImageIO;
@@ -22,7 +24,7 @@ import net.sourceforge.vietocr.ImageHelper;
 import com.omahaBot.consts.Consts;
 import com.omahaBot.enums.Block;
 import com.omahaBot.enums.BlockType;
-import com.omahaBot.enums.BoardCards;
+import com.omahaBot.enums.CardBlock;
 import com.omahaBot.enums.DealStep;
 import com.omahaBot.enums.PlayerBlock;
 import com.omahaBot.enums.Rank;
@@ -37,7 +39,7 @@ public class OcrServiceImpl implements OcrService {
 	private static final String TABLE_FILENAME = "tableCaps.png";
 	private static final String CAPS_DIRECTORY = "C:/_DEV/caps/";
 
-	private List<CardModel> listCard = new ArrayList<CardModel>();
+	private List<CardModel> listBoardCard = new ArrayList<CardModel>();
 
 	private Robot robot;
 
@@ -99,14 +101,15 @@ public class OcrServiceImpl implements OcrService {
 
 	@Override
 	public List<CardModel> scanBoardCards(DealStep dealStep) {
-		listCard.clear();
+		
+		listBoardCard.clear();
 
 		switch (dealStep) {
 		case FLOP:
 			int nbCard = 0;
-			for (BoardCards card : BoardCards.values()) {
+			for (CardBlock card : CardBlock.values()) {
 				CardModel cardModel = scanCard(card);
-				listCard.add(cardModel);
+				listBoardCard.add(cardModel);
 				nbCard++;
 				if (nbCard == 3) {
 					break;
@@ -114,20 +117,32 @@ public class OcrServiceImpl implements OcrService {
 			}
 			break;
 		case TURN:
-			CardModel cardModel1 = scanCard(BoardCards.CARD4_TURN);
-			listCard.add(cardModel1);
+			CardModel cardModel1 = scanCard(CardBlock.CARD4_TURN);
+			listBoardCard.add(cardModel1);
 			break;
 		case RIVER:
-			CardModel cardModel2 = scanCard(BoardCards.CARD5_RIVER);
-			listCard.add(cardModel2);
+			CardModel cardModel2 = scanCard(CardBlock.CARD5_RIVER);
+			listBoardCard.add(cardModel2);
 			break;
 		default:
 			break;
 		}
 
-		return listCard;
+		return listBoardCard;
 	}
 
+	@Override
+	public SortedSet<CardModel> scanMyHand() {
+		SortedSet<CardModel> listMyCard = new TreeSet<CardModel>();
+		
+		listMyCard.add(scanCard(CardBlock.MY_CARD1));
+		listMyCard.add(scanCard(CardBlock.MY_CARD2));
+		listMyCard.add(scanCard(CardBlock.MY_CARD3));
+		listMyCard.add(scanCard(CardBlock.MY_CARD4));
+		
+		return listMyCard;
+	}	
+	
 	public PlayerModel scanPlayer(PlayerBlock playerBlock) {
 
 		String name = scanPlayerName(playerBlock);
@@ -192,7 +207,7 @@ public class OcrServiceImpl implements OcrService {
 	}
 
 	@Override
-	public CardModel scanCard(BoardCards card) {
+	public CardModel scanCard(CardBlock card) {
 		CardModel result = null;
 
 		BufferedImage capture = robot.createScreenCapture(card.getBlock());

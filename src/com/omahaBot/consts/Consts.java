@@ -30,6 +30,7 @@ public final class Consts {
 
 	public static final int BLOCK_PLAYER_WIDTH = 120;
 	public static final int BLOCK_PLAYER_HEIGHT = 45;
+	
 	public static final int BLOCK_PLAYER_NAME_HEIGHT = 20;
 	public static final int BLOCK_PLAYER_STACK_Y = 25;	
 	public static final int BLOCK_PLAYER_STACK_HEIGHT = 20;
@@ -56,15 +57,22 @@ public final class Consts {
 	public static final Point PT_PLAYER5_TURN = new Point(TABLE_X + 132, TABLE_Y + 466);
 	public static final Point PT_PLAYER6_TURN = new Point(TABLE_X + 272, TABLE_Y + 158);
 
-	public static final int BLOCK_CARD_Y = TABLE_Y + 307;
-	public static final int BLOCK_CARD_WIDTH = 65;
-	public static final int BLOCK_CARD_HEIGHT = 48;
+	public static final int BLOCK_CARD_Y = TABLE_Y + 311;
+//	public static final int BLOCK_CARD_WIDTH = 65;
+//	public static final int BLOCK_CARD_HEIGHT = 48;
+	public static final int BLOCK_CARD_WIDTH = 34;
+	public static final int BLOCK_CARD_HEIGHT = 83;
 	
 	public static final Rectangle BLOCK_CARD1 = new Rectangle(TABLE_X + 426, BLOCK_CARD_Y, BLOCK_CARD_WIDTH, BLOCK_CARD_HEIGHT);
 	public static final Rectangle BLOCK_CARD2 = new Rectangle(TABLE_X + 502, BLOCK_CARD_Y, BLOCK_CARD_WIDTH, BLOCK_CARD_HEIGHT);
 	public static final Rectangle BLOCK_CARD3 = new Rectangle(TABLE_X + 578, BLOCK_CARD_Y, BLOCK_CARD_WIDTH, BLOCK_CARD_HEIGHT);
-	public static final Rectangle BLOCK_CARD4 = new Rectangle(TABLE_X + 656, BLOCK_CARD_Y, BLOCK_CARD_WIDTH, BLOCK_CARD_HEIGHT);
+	public static final Rectangle BLOCK_CARD4 = new Rectangle(TABLE_X + 654, BLOCK_CARD_Y, BLOCK_CARD_WIDTH, BLOCK_CARD_HEIGHT);
 	public static final Rectangle BLOCK_CARD5 = new Rectangle(TABLE_X + 730, BLOCK_CARD_Y, BLOCK_CARD_WIDTH, BLOCK_CARD_HEIGHT);
 	
-	public static final Point PT_SUIT = new Point(49, 20);
+	public static final Rectangle MY_CARD1 = new Rectangle(TABLE_X + 329, TABLE_Y + 557, BLOCK_CARD_WIDTH, BLOCK_CARD_HEIGHT);
+	public static final Rectangle MY_CARD2 = new Rectangle(TABLE_X + 364, TABLE_Y + 563, BLOCK_CARD_WIDTH, BLOCK_CARD_HEIGHT);
+	public static final Rectangle MY_CARD3 = new Rectangle(TABLE_X + 399, TABLE_Y + 568, BLOCK_CARD_WIDTH, BLOCK_CARD_HEIGHT);
+	public static final Rectangle MY_CARD4 = new Rectangle(TABLE_X + 434, TABLE_Y + 574, BLOCK_CARD_WIDTH, BLOCK_CARD_HEIGHT);
+	
+	public static final Point PT_SUIT = new Point(15, 65);
 }

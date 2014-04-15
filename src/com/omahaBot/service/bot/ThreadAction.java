@@ -5,15 +5,19 @@ import java.awt.Color;
 import java.awt.Robot;
 import java.util.ArrayList;
 import java.util.EnumSet;
+import java.util.SortedSet;
 import java.util.logging.Logger;
 
 import org.eclipse.swt.widgets.Display;
 
 import com.omahaBot.consts.Consts;
+import com.omahaBot.enums.DealStep;
 import com.omahaBot.enums.PlayerAction;
 import com.omahaBot.enums.PlayerBlock;
-import com.omahaBot.enums.PlayerShortcut;
+import com.omahaBot.enums.BettingDecision;
 import com.omahaBot.model.ActionModel;
+import com.omahaBot.model.CardModel;
+import com.omahaBot.model.HandModel;
 import com.omahaBot.model.PlayerModel;
 import com.omahaBot.ui.form.MainForm;
 
@@ -44,10 +48,15 @@ public class ThreadAction extends MyThread {
 	private PlayerAction oldLastAction = PlayerAction.UNKNOW, currentLastAction = PlayerAction.UNKNOW;
 
 	private Double lastBet = 0.0;
+	
+	private HandModel myHand;
+	
+	private DealStep dealStep;
 
-	public ThreadAction(MainForm mainForm) {
+	public ThreadAction(MainForm mainForm, DealStep dealStep) {
 		super();
 		this.mainForm = mainForm;
+		this.dealStep = dealStep;
 
 		try {
 			robot = new Robot();
@@ -98,6 +107,9 @@ public class ThreadAction extends MyThread {
 				oldPot = currentPot;
 
 				if (Consts.register && positionPlayerTurnPlay == Consts.MY_TABLEPOSITION) {
+					if (firstLoop) {
+						initMyHand();
+					}
 					play();
 				}
 
@@ -123,11 +135,36 @@ public class ThreadAction extends MyThread {
 		System.out.println(START_LOG + "<< STOP ThreadAction : " + this.getId()); 
 	}
 
-	private void play() {
+	private void initMyHand() {
+		SortedSet<CardModel> listCard = ocrService.scanMyHand();
+		myHand = new HandModel(listCard);
+	}
 
+	private void play() {
+		
+		BettingDecision bettingDecision = BettingDecision.FOLD;
+		
+		switch (dealStep) {
+		case PRE_FLOP:
+			bettingDecision = handAnalyserService.decidePreFlop(myHand);
+			break;
+		case FLOP:
+			// TODO
+			break;
+		case TURN:
+			// TODO
+			break;
+		case RIVER:
+			// TODO
+			break;
+	
+		default:
+			break;
+		}
+		
 		try {
 			MyRobot robot = new MyRobot();
-			robot.clickAction(PlayerShortcut.random(), this.getId());
+			robot.clickAction(bettingDecision, this.getId());
 		} catch (AWTException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
