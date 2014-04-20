@@ -11,14 +11,17 @@ import java.util.logging.Logger;
 import org.eclipse.swt.widgets.Display;
 
 import com.omahaBot.consts.Consts;
+import com.omahaBot.enums.BettingDecision;
 import com.omahaBot.enums.DealStep;
 import com.omahaBot.enums.PlayerAction;
 import com.omahaBot.enums.PlayerBlock;
-import com.omahaBot.enums.BettingDecision;
 import com.omahaBot.model.ActionModel;
+import com.omahaBot.model.BoardModel;
 import com.omahaBot.model.CardModel;
 import com.omahaBot.model.HandModel;
 import com.omahaBot.model.PlayerModel;
+import com.omahaBot.service.ai.PostFlopAnalyserServiceImpl;
+import com.omahaBot.service.ai.PreFlopAnalyserServiceImpl;
 import com.omahaBot.ui.form.MainForm;
 
 public class ThreadAction extends MyThread {
@@ -26,7 +29,7 @@ public class ThreadAction extends MyThread {
 	private final static Logger LOGGER = Logger.getLogger(ThreadDealStep.class.getName());
 
 	private final static String START_LOG = "        ";
-	
+
 	private ActionModel actionModel;
 
 	private int positionPlayerTurnPlayOld = 0;
@@ -48,15 +51,17 @@ public class ThreadAction extends MyThread {
 	private PlayerAction oldLastAction = PlayerAction.UNKNOW, currentLastAction = PlayerAction.UNKNOW;
 
 	private Double lastBet = 0.0;
-	
+
 	private HandModel myHand;
-	
+	private BoardModel board;
+
 	private DealStep dealStep;
 
-	public ThreadAction(MainForm mainForm, DealStep dealStep) {
+	public ThreadAction(MainForm mainForm, DealStep dealStep, BoardModel board) {
 		super();
 		this.mainForm = mainForm;
 		this.dealStep = dealStep;
+		this.board = board;
 
 		try {
 			robot = new Robot();
@@ -86,11 +91,11 @@ public class ThreadAction extends MyThread {
 			if (positionPlayerTurnPlayOld != positionPlayerTurnPlay) {
 				System.out.println(START_LOG + "---------------------------------------");
 				System.out.println(START_LOG + "NEW ACTION");
-				
+
 				currentPot = ocrService.scanPot();
 
 				currentNbPlayer = nbPlayerActive();
-				
+
 				initListCurrentPlayer();
 				// initLastActionPlayer(positionPlayerTurnPlayOld);
 
@@ -107,7 +112,7 @@ public class ThreadAction extends MyThread {
 				oldPot = currentPot;
 
 				if (Consts.register && positionPlayerTurnPlay == Consts.MY_TABLEPOSITION) {
-					if (firstLoop) {
+					if (myHand == null) {
 						initMyHand();
 					}
 					play();
@@ -132,7 +137,7 @@ public class ThreadAction extends MyThread {
 			}
 		}
 
-		System.out.println(START_LOG + "<< STOP ThreadAction : " + this.getId()); 
+		System.out.println(START_LOG + "<< STOP ThreadAction : " + this.getId());
 	}
 
 	private void initMyHand() {
@@ -141,27 +146,24 @@ public class ThreadAction extends MyThread {
 	}
 
 	private void play() {
-		
+
 		BettingDecision bettingDecision = BettingDecision.FOLD;
-		
+
 		switch (dealStep) {
 		case PRE_FLOP:
-			bettingDecision = handAnalyserService.decidePreFlop(myHand);
+			PreFlopAnalyserServiceImpl preFlopAnalyserServiceImpl = new PreFlopAnalyserServiceImpl();
+			bettingDecision = preFlopAnalyserServiceImpl.decide(myHand);
 			break;
 		case FLOP:
-			// TODO
-			break;
 		case TURN:
-			// TODO
-			break;
 		case RIVER:
-			// TODO
+			PostFlopAnalyserServiceImpl postFlopAnalyserServiceImpl = new PostFlopAnalyserServiceImpl();
+			bettingDecision = postFlopAnalyserServiceImpl.decide(myHand, board);
 			break;
-	
 		default:
 			break;
 		}
-		
+
 		try {
 			MyRobot robot = new MyRobot();
 			robot.clickAction(bettingDecision, this.getId());
@@ -193,7 +195,7 @@ public class ThreadAction extends MyThread {
 				break;
 			}
 		}
-		
+
 		return position;
 	}
 
@@ -238,9 +240,7 @@ public class ThreadAction extends MyThread {
 			}
 		}
 
-		if (firstLoop) {
-			firstLoop = false;
-		}
+		firstLoop = false;
 	}
 
 	// public void initLastActionPlayer(int positionPlayerTurnPlayOld) {

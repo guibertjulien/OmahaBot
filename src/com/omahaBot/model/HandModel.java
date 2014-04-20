@@ -2,10 +2,12 @@ package com.omahaBot.model;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
 import com.omahaBot.model.comparator.SuitComparator;
+import com.omahaBot.utils.PermutationsOfN;
 
 /**
  * http://fr.pokerlistings.com/potlimit-omaha-mains-de-depart
@@ -24,19 +26,18 @@ public class HandModel {
 
 	public HandModel(String handString) {
 		super();
+
+		cards = new TreeSet<CardModel>();
+
 		CardModel card1 = new CardModel(handString.substring(0, 2));
 		CardModel card2 = new CardModel(handString.substring(2, 4));
 		CardModel card3 = new CardModel(handString.substring(4, 6));
 		CardModel card4 = new CardModel(handString.substring(6, 8));
 
-		SortedSet<CardModel> cards = new TreeSet<CardModel>();
-
 		cards.add(card1);
 		cards.add(card2);
 		cards.add(card3);
 		cards.add(card4);
-
-		this.cards = cards;
 	}
 
 	public SortedSet<CardModel> getCards() {
@@ -73,7 +74,7 @@ public class HandModel {
 		SuitComparator suitComparator = new SuitComparator();
 
 		Collections.sort(listCards, suitComparator);
-		
+
 		String handSuit = "";
 
 		for (CardModel cardModel : listCards) {
@@ -154,5 +155,12 @@ public class HandModel {
 		return (listCards.get(0).getSuit() == listCards.get(1).getSuit()
 				&& listCards.get(1).getSuit() == listCards.get(2).getSuit()
 				&& listCards.get(2).getSuit() == listCards.get(3).getSuit());
+	}
+
+	public List<List<CardModel>> permutations() {
+		ArrayList<CardModel> listCards = new ArrayList<>(cards);
+		PermutationsOfN<CardModel> permutationsOrdered = new PermutationsOfN<CardModel>();
+
+		return permutationsOrdered.processSubsets(listCards, 2);
 	}
 }

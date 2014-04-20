@@ -19,12 +19,14 @@ public enum Rank {
 	SEVEN("7"),
 	HEIGHT("8"),
 	NINE("9"),
-	TEN("10"),
+	TEN("T"),
 	JACK("J"),
 	QUEEN("Q"),
 	KING("K"),
 	ACE("A"),
 	UNKNOW("?");
+	
+	public static String TEN_SCANED = "10";
 
 	private static final Map<String, Rank> map = new
 			HashMap<String, Rank>();

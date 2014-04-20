@@ -220,10 +220,14 @@ public class OcrServiceImpl implements OcrService {
 			// TODO à retirer
 			ImageIO.write(capture, "png", new File(CAPS_DIRECTORY + card.name() + ".png"));
 
-			Rank rankMatch = Rank.UNKNOW;
+			Rank rankMatch = Rank.TEN;// TODO à revoir
 			for (Rank rank : Rank.values()) {
-				if (cardRankScaned.equals(rank.getShortName())) {
-					rankMatch = rank;
+				if (cardRankScaned.equals(Rank.TEN_SCANED)) {
+					rankMatch = Rank.TEN;
+					break;
+				}
+				else if (cardRankScaned.equals(rank.getShortName())) {
+					rankMatch = rank;	
 					break;
 				}
 			}

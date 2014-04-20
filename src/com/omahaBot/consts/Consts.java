@@ -10,7 +10,7 @@ public final class Consts {
 
 	public static final int MY_TABLEPOSITION = 4;
 	
-	public static final boolean register = false;
+	public static final boolean register = true;
 	
 	/* peut varier */
 	public static final int TABLE_X = 391;// 393, bordure noire
@@ -69,8 +69,8 @@ public final class Consts {
 	public static final Rectangle BLOCK_CARD4 = new Rectangle(TABLE_X + 654, BLOCK_CARD_Y, BLOCK_CARD_WIDTH, BLOCK_CARD_HEIGHT);
 	public static final Rectangle BLOCK_CARD5 = new Rectangle(TABLE_X + 730, BLOCK_CARD_Y, BLOCK_CARD_WIDTH, BLOCK_CARD_HEIGHT);
 	
-	public static final Rectangle MY_CARD1 = new Rectangle(TABLE_X + 329, TABLE_Y + 557, BLOCK_CARD_WIDTH, BLOCK_CARD_HEIGHT);
-	public static final Rectangle MY_CARD2 = new Rectangle(TABLE_X + 364, TABLE_Y + 563, BLOCK_CARD_WIDTH, BLOCK_CARD_HEIGHT);
+	public static final Rectangle MY_CARD1 = new Rectangle(TABLE_X + 329, TABLE_Y + 556, BLOCK_CARD_WIDTH, BLOCK_CARD_HEIGHT);//557-->558
+	public static final Rectangle MY_CARD2 = new Rectangle(TABLE_X + 364, TABLE_Y + 562, BLOCK_CARD_WIDTH, BLOCK_CARD_HEIGHT);//563-->564
 	public static final Rectangle MY_CARD3 = new Rectangle(TABLE_X + 399, TABLE_Y + 568, BLOCK_CARD_WIDTH, BLOCK_CARD_HEIGHT);
 	public static final Rectangle MY_CARD4 = new Rectangle(TABLE_X + 434, TABLE_Y + 574, BLOCK_CARD_WIDTH, BLOCK_CARD_HEIGHT);
 	

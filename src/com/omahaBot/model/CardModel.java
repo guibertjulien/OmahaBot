@@ -44,16 +44,25 @@ public class CardModel implements Comparable<CardModel> {
 
 	@Override
 	public int compareTo(CardModel o) {
-		if (this.rank.ordinal() > o.rank.ordinal())
+		// compare rank
+		if (this.rank.ordinal() > o.rank.ordinal()) {
 			return 1;
-		if (this.rank.ordinal() < o.rank.ordinal())
-			return -1;
-		else if (this.suit.ordinal() > o.suit.ordinal())
-			return 1;
-		if (this.suit.ordinal() < o.suit.ordinal())
-			return -1;
-		else
-			return 0;
+		}
+		else if (this.rank.ordinal() < o.rank.ordinal()) {
+			return -1;	
+		} else {
+			// compare suit
+			if (this.suit.ordinal() > o.suit.ordinal()) {
+				return 1;
+			}
+			else if (this.suit.ordinal() < o.suit.ordinal()) {
+				return -1;	
+			}
+			else {
+				// TODO exception
+				return 0;	
+			}
+		}
 	}
 
 	public boolean isConnected(CardModel o) {
@@ -65,4 +74,31 @@ public class CardModel implements Comparable<CardModel> {
 			return (this.rank.ordinal() - o.rank.ordinal() == -1);
 		}
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((rank == null) ? 0 : rank.hashCode());
+		result = prime * result + ((suit == null) ? 0 : suit.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		CardModel other = (CardModel) obj;
+		if (rank != other.rank)
+			return false;
+		if (suit != other.suit)
+			return false;
+		return true;
+	}
+	
+	
 }

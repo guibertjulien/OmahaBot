@@ -6,7 +6,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.regex.Pattern;
 
-public enum PowerHandSuit {
+public enum PreFlopSuit {
 	
 	// TWO COLORS
 	TWO_COLORS("sshh","ssdd","sscc","hhdd","hhcc", "ddcc"),
@@ -14,17 +14,17 @@ public enum PowerHandSuit {
 	// ONE COLOR
 	ONE_COLOR("ss..","hh..",".hh.",".dd.", "..dd","..cc"),
 
-	// ZERO COLOR
-	ZERO_COLOR("shdc"),
+	// NO COLOR
+	NO_COLOR("shdc"),
 	
 	NO_POWER();
 
 	private final String[] arrayHand;
 
-	private static final Map<String, PowerHandSuit> mapHand = new
-			HashMap<String, PowerHandSuit>();
+	private static final Map<String, PreFlopSuit> mapHand = new
+			HashMap<String, PreFlopSuit>();
 
-	private PowerHandSuit(String... arrayHand) {
+	private PreFlopSuit(String... arrayHand) {
 		this.arrayHand = arrayHand;
 	}
 
@@ -34,23 +34,23 @@ public enum PowerHandSuit {
 
 	// map permettant de récupérer ke power avec une hand
 	static {
-		for (PowerHandSuit powerHandSuit : values()) {
-			for (int i = 0; i < powerHandSuit.getArrayHand().length; i++) {
-				mapHand.put(powerHandSuit.getArrayHand()[i], powerHandSuit);
+		for (PreFlopSuit preFlopSuit : values()) {
+			for (int i = 0; i < preFlopSuit.getArrayHand().length; i++) {
+				mapHand.put(preFlopSuit.getArrayHand()[i], preFlopSuit);
 			}
 		}
 	}
 
 	// récupération de l'instance
-	public static PowerHandSuit fromHand(String hand) {
-		PowerHandSuit value = mapHand.get(hand);
+	public static PreFlopSuit fromHand(String hand) {
+		PreFlopSuit value = mapHand.get(hand);
 		
 		if (value == null) {
 			for (Iterator i = mapHand.entrySet().iterator(); i.hasNext();) {
 				Entry couple = (Entry) i.next();
 
 				String handPattern = (String) couple.getKey();
-				PowerHandSuit powerHandSuitValue = (PowerHandSuit) couple.getValue();
+				PreFlopSuit powerHandSuitValue = (PreFlopSuit) couple.getValue();
 
 				if (Pattern.matches(handPattern, hand)) {
 					value = powerHandSuitValue;

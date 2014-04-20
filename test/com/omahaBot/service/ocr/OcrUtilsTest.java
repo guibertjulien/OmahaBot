@@ -1,4 +1,4 @@
-package com.omaha.service.ocr;
+package com.omahaBot.service.ocr;
 
 import static org.junit.Assert.assertTrue;
 

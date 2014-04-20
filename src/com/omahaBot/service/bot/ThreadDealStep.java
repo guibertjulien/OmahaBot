@@ -5,6 +5,8 @@ import java.awt.Color;
 import java.awt.Robot;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.SortedSet;
+import java.util.TreeSet;
 import java.util.logging.Logger;
 
 import org.eclipse.swt.widgets.Display;
@@ -13,8 +15,10 @@ import com.omahaBot.consts.Consts;
 import com.omahaBot.enums.CardBlock;
 import com.omahaBot.enums.DealStep;
 import com.omahaBot.enums.Suit;
+import com.omahaBot.model.BoardModel;
 import com.omahaBot.model.CardModel;
 import com.omahaBot.model.DealStepModel;
+import com.omahaBot.model.HandModel;
 import com.omahaBot.ui.form.MainForm;
 
 public class ThreadDealStep extends MyThread {
@@ -29,6 +33,8 @@ public class ThreadDealStep extends MyThread {
 
 	private DealStepModel dealStepModel;
 
+	private BoardModel board;
+	
 	private Robot robot;
 //
 //	private ThreadPot threadPot;
@@ -74,7 +80,7 @@ public class ThreadDealStep extends MyThread {
 				
 				if (running) {
 					// demarrage d'un nouveau thread
-					threadAction = new ThreadAction(mainForm, currentDealStep);
+					threadAction = new ThreadAction(mainForm, currentDealStep, board);
 					threadAction.start();
 				}
 				
@@ -146,7 +152,7 @@ public class ThreadDealStep extends MyThread {
 	}
 
 	public void initBoardCard() {
-
+		
 		switch (currentDealStep) {
 		case FLOP:
 			listBoardCard.clear();
@@ -176,6 +182,9 @@ public class ThreadDealStep extends MyThread {
 		default:
 			break;
 		}
+		
+		SortedSet<CardModel> listCard = new TreeSet<CardModel>(listBoardCard);
+		board = new BoardModel(listCard);
 	}
 
 	@Override
