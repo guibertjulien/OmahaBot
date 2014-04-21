@@ -56,6 +56,8 @@ public class ThreadAction extends MyThread {
 	private BoardModel board;
 
 	private DealStep dealStep;
+	
+	private boolean firstTurnBet = true;
 
 	public ThreadAction(MainForm mainForm, DealStep dealStep, BoardModel board) {
 		super();
@@ -147,23 +149,25 @@ public class ThreadAction extends MyThread {
 
 	private void play() {
 
-		BettingDecision bettingDecision = BettingDecision.FOLD;
+		BettingDecision bettingDecision = BettingDecision.CHECK_FOLD;
 
 		switch (dealStep) {
 		case PRE_FLOP:
 			PreFlopAnalyserServiceImpl preFlopAnalyserServiceImpl = new PreFlopAnalyserServiceImpl();
-			bettingDecision = preFlopAnalyserServiceImpl.decide(myHand);
+			bettingDecision = preFlopAnalyserServiceImpl.decide(myHand, firstTurnBet);
 			break;
 		case FLOP:
 		case TURN:
 		case RIVER:
 			PostFlopAnalyserServiceImpl postFlopAnalyserServiceImpl = new PostFlopAnalyserServiceImpl();
-			bettingDecision = postFlopAnalyserServiceImpl.decide(myHand, board);
+			bettingDecision = postFlopAnalyserServiceImpl.decide(myHand, board, firstTurnBet);
 			break;
 		default:
 			break;
 		}
 
+		firstTurnBet = false;
+		
 		try {
 			MyRobot robot = new MyRobot();
 			robot.clickAction(bettingDecision, this.getId());

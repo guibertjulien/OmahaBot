@@ -11,6 +11,7 @@ import java.util.Map;
  */
 public enum Rank {
 
+	// !!! do not modify order
 	TWO("2"),
 	THREE("3"),
 	FOUR("4"),

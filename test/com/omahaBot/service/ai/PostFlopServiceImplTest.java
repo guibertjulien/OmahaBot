@@ -85,6 +85,11 @@ public class PostFlopServiceImplTest {
 		BoardModel boardModel = new BoardModel("5sKsKd", DealStep.FLOP);
 		PostFlopPowerType postFlopPowerType = postFlopAnalyserServiceImpl.analyseHandPostFlop(handModel, boardModel);
 		assertTrue(postFlopPowerType.equals(PostFlopPowerType.FOUR_OF_A_KIND));	
+		
+		handModel = new HandModel("Kc4h3s8d");
+		boardModel = new BoardModel("KhKsKd", DealStep.FLOP);
+		postFlopPowerType = postFlopAnalyserServiceImpl.analyseHandPostFlop(handModel, boardModel);
+		assertTrue(postFlopPowerType.equals(PostFlopPowerType.FOUR_OF_A_KIND));	
 	}
 	
 	@Test
@@ -92,11 +97,6 @@ public class PostFlopServiceImplTest {
 		HandModel handModel = new HandModel("KcKhKs8d");
 		BoardModel boardModel = new BoardModel("5sAsKd", DealStep.FLOP);
 		PostFlopPowerType postFlopPowerType = postFlopAnalyserServiceImpl.analyseHandPostFlop(handModel, boardModel);
-		assertTrue(!postFlopPowerType.equals(PostFlopPowerType.FOUR_OF_A_KIND));	
-		
-		handModel = new HandModel("Kc4h3s8d");
-		boardModel = new BoardModel("KhKsKd", DealStep.FLOP);
-		postFlopPowerType = postFlopAnalyserServiceImpl.analyseHandPostFlop(handModel, boardModel);
 		assertTrue(!postFlopPowerType.equals(PostFlopPowerType.FOUR_OF_A_KIND));	
 	}
 	

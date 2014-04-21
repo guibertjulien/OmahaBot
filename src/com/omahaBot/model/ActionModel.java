@@ -11,6 +11,7 @@ public class ActionModel {
 	private PlayerAction playerAction;
 	private ArrayList<PlayerModel> listPlayer;
 	private Double lastBet;
+	private boolean firstTurnBet = true;
 
 	public ActionModel() {
 		super();
@@ -57,4 +58,13 @@ public class ActionModel {
 		this.lastBet = lastBet;
 	}
 
+	public boolean isFirstTurnBet() {
+		return firstTurnBet;
+	}
+
+	public void setFirstTurnBet(boolean firstTurnBet) {
+		this.firstTurnBet = firstTurnBet;
+	}
+
+	
 }

@@ -75,27 +75,27 @@ public class handAnalyserServiceImplTest {
 //		assertTrue(powerHandRank.equals(PreFlopRank.TWO_PAIR_MEDIUM));
 	}
 
-	@Test
-	public void test3() {
-		boolean b = Pattern.matches("..AA", "22AA");
-		assertTrue(b);
-
-		b = Pattern.matches(".3AA", "22AA");
-		assertTrue(!b);
-
-		b = Pattern.matches("3.AA", "22AA");
-		assertTrue(!b);
-
-		Pattern p = Pattern.compile("(55){2}");
-		Matcher m = p.matcher("2556557");
-
-		assertTrue(m.find());
-
-		p = Pattern.compile("55");
-		m = p.matcher("2556");
-
-		assertTrue(m.find());
-	}
+//	@Test
+//	public void test3() {
+//		boolean b = Pattern.matches("..AA", "22AA");
+//		assertTrue(b);
+//
+//		b = Pattern.matches(".3AA", "22AA");
+//		assertTrue(!b);
+//
+//		b = Pattern.matches("3.AA", "22AA");
+//		assertTrue(!b);
+//
+//		Pattern p = Pattern.compile("(55){2}");
+//		Matcher m = p.matcher("2556557");
+//
+//		assertTrue(m.find());
+//
+//		p = Pattern.compile("55");
+//		m = p.matcher("2556");
+//
+//		assertTrue(m.find());
+//	}
 
 	@Test
 	public void test4() {

@@ -1,12 +1,10 @@
 package com.omahaBot.model;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import com.omahaBot.model.comparator.SuitComparator;
 import com.omahaBot.utils.PermutationsOfN;
 
 /**
@@ -15,13 +13,10 @@ import com.omahaBot.utils.PermutationsOfN;
  * @author Julien
  * 
  */
-public class HandModel {
-
-	private SortedSet<CardModel> cards;
+public class HandModel extends CardPack {
 
 	public HandModel(SortedSet<CardModel> cards) {
-		super();
-		this.cards = cards;
+		super(cards);
 	}
 
 	public HandModel(String handString) {
@@ -40,81 +35,9 @@ public class HandModel {
 		cards.add(card4);
 	}
 
-	public SortedSet<CardModel> getCards() {
-		return cards;
-	}
-
-	public void setCards(SortedSet<CardModel> cards) {
-		this.cards = cards;
-	}
-
-	/**
-	 * ex : 2sJdKcAc --> 2JKA
-	 * 
-	 * @return
-	 */
-	public String handRank() {
-
-		String handRank = "";
-
-		for (CardModel cardModel : this.cards) {
-			handRank += cardModel.getRank().getShortName();
-		}
-
-		return handRank;
-	}
-
-	/**
-	 * ex : 2sJdKcAc --> sdcc
-	 * 
-	 * @return
-	 */
-	public String handSuit() {
-		ArrayList<CardModel> listCards = new ArrayList<>(cards);
-		SuitComparator suitComparator = new SuitComparator();
-
-		Collections.sort(listCards, suitComparator);
-
-		String handSuit = "";
-
-		for (CardModel cardModel : listCards) {
-			handSuit += cardModel.getSuit().getShortName();
-		}
-
-		return handSuit;
-	}
-
 	@Override
 	public String toString() {
 		return "HandModel [Cards=" + cards + "]";
-	}
-
-	public boolean isTwoPair()
-	{
-		ArrayList<CardModel> listCards = new ArrayList<>(cards);
-
-		return (listCards.get(0).getRank() == listCards.get(1).getRank()
-		&& listCards.get(2).getRank() == listCards.get(3).getRank());
-	}
-
-	public boolean isOnePair()
-	{
-		ArrayList<CardModel> listCards = new ArrayList<>(cards);
-
-		return (listCards.get(0).getRank() == listCards.get(1).getRank()
-				|| listCards.get(1).getRank() == listCards.get(2).getRank()
-				|| listCards.get(2).getRank() == listCards.get(3).getRank());
-	}
-
-	public boolean isTwoSuit()
-	{
-		ArrayList<CardModel> listCards = new ArrayList<>(cards);
-		SuitComparator suitComparator = new SuitComparator();
-
-		Collections.sort(listCards, suitComparator);
-
-		return (listCards.get(0).getSuit() == listCards.get(1).getSuit()
-		&& listCards.get(2).getSuit() == listCards.get(3).getSuit());
 	}
 
 	public boolean isTwoPairSuited()
@@ -124,37 +47,14 @@ public class HandModel {
 
 	public boolean isTwoPairConnected()
 	{
+		// TODO
 		return false;
 	}
 
 	public boolean isTwoPairSuitedConnector()
 	{
+		// TODO
 		return false;
-	}
-
-	public boolean isThreeOfKind() {
-		ArrayList<CardModel> listCards = new ArrayList<>(cards);
-
-		return (listCards.get(0).getRank() == listCards.get(1).getRank()
-				&& listCards.get(1).getRank() == listCards.get(2).getRank())
-				|| (listCards.get(1).getRank() == listCards.get(2).getRank()
-				&& listCards.get(2).getRank() == listCards.get(3).getRank());
-	}
-
-	public boolean isFourOfKind() {
-		ArrayList<CardModel> listCards = new ArrayList<>(cards);
-
-		return (listCards.get(0).getRank() == listCards.get(1).getRank()
-				&& listCards.get(1).getRank() == listCards.get(2).getRank()
-				&& listCards.get(2).getRank() == listCards.get(3).getRank());
-	}
-
-	public boolean isSameColor() {
-		ArrayList<CardModel> listCards = new ArrayList<>(cards);
-
-		return (listCards.get(0).getSuit() == listCards.get(1).getSuit()
-				&& listCards.get(1).getSuit() == listCards.get(2).getSuit()
-				&& listCards.get(2).getSuit() == listCards.get(3).getSuit());
 	}
 
 	public List<List<CardModel>> permutations() {

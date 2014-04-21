@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Random;
 
 public enum BettingDecision {
-	FOLD(KeyEvent.VK_1),
+	CHECK_FOLD(KeyEvent.VK_1),
 	FOLD_ALWAYS(KeyEvent.VK_2),
 	CHECK(KeyEvent.VK_3),
 	CALL(KeyEvent.VK_4),
@@ -36,5 +36,10 @@ public enum BettingDecision {
 
 	public static BettingDecision random() {
 		return VALUES.get(RANDOM.nextInt(SIZE));
+	}
+	
+	public static BettingDecision randomBetween(BettingDecision ... array) {
+		List<BettingDecision> list = Arrays.asList(array);
+		return list.get(RANDOM.nextInt(list.size()));
 	}
 }

@@ -8,6 +8,8 @@ public final class Consts {
 
 	public static final String CAPS_DIRECTORY = "C:/_DEV/caps/";
 
+	public static final int NB_CARD_BY_SUIT = 13;
+	
 	public static final int MY_TABLEPOSITION = 4;
 	
 	public static final boolean register = true;

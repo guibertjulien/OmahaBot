@@ -1,22 +1,23 @@
 package com.omahaBot.model;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import com.omahaBot.enums.BoardDrawPower;
 import com.omahaBot.enums.DealStep;
-import com.omahaBot.model.comparator.SuitComparator;
 import com.omahaBot.utils.PermutationsOfN;
 
-public class BoardModel {
+public class BoardModel extends CardPack {
 
-	private SortedSet<CardModel> cards;
+	private final DealStep dealStep;
 
-	public BoardModel(SortedSet<CardModel> cards) {
-		super();
-		this.cards = cards;
+	private BoardDrawPower boardDrawPower;
+
+	public BoardModel(SortedSet<CardModel> cards, DealStep dealStep) {
+		super(cards);
+		this.dealStep = dealStep;
 	}
 
 	public BoardModel(String handString, DealStep dealStep) {
@@ -31,62 +32,20 @@ public class BoardModel {
 			cards.add(card1);
 			cards.add(card2);
 			cards.add(card3);
-
 		}
-		if (dealStep.equals(DealStep.TURN)) {
+
+		if (dealStep.ordinal() >= DealStep.TURN.ordinal()) {
 			CardModel card4 = new CardModel(handString.substring(6, 8));
 			cards.add(card4);
-
 		}
 		if (dealStep.equals(DealStep.RIVER)) {
 			CardModel card5 = new CardModel(handString.substring(8, 10));
 			cards.add(card5);
-
-		}
-	}
-
-	public SortedSet<CardModel> getCards() {
-		return cards;
-	}
-
-	public void setCards(SortedSet<CardModel> cards) {
-		this.cards = cards;
-	}
-
-	/**
-	 * ex : 2sJdKcAc --> 2JKA
-	 * 
-	 * @return
-	 */
-	public String handRank() {
-
-		String handRank = "";
-
-		for (CardModel cardModel : this.cards) {
-			handRank += cardModel.getRank().getShortName();
 		}
 
-		return handRank;
-	}
+		this.dealStep = dealStep;
 
-	/**
-	 * ex : 2sJdKcAc --> sdcc
-	 * 
-	 * @return
-	 */
-	public String handSuit() {
-		ArrayList<CardModel> listCards = new ArrayList<>(cards);
-		SuitComparator suitComparator = new SuitComparator();
-
-		Collections.sort(listCards, suitComparator);
-
-		String handSuit = "";
-
-		for (CardModel cardModel : listCards) {
-			handSuit += cardModel.getSuit().getShortName();
-		}
-
-		return handSuit;
+		//initBoardDrawPower();
 	}
 
 	@Override
@@ -100,4 +59,93 @@ public class BoardModel {
 
 		return permutationsOrdered.processSubsets(listCards, 3);
 	}
+
+	/**
+	 * TODO : best practices ?
+	 */
+	private void initBoardDrawPower() {
+		if (isStraightFlush()) {
+			boardDrawPower = BoardDrawPower.STRAIGHT_FLUSH;
+		} else if (isFourOfAKindDraw()) {
+			boardDrawPower = BoardDrawPower.FOUR_OF_A_KIND;
+		} else if (isFullDraw()) {
+			boardDrawPower = BoardDrawPower.FULL;
+		} else if (isFlushDraw()) {
+			boardDrawPower = BoardDrawPower.FLUSH;
+		} else {
+			boardDrawPower = BoardDrawPower.TWO_PAIR;
+		}
+	}
+
+	public boolean isFourOfAKindDraw() {
+		return isThreeOfAKind();
+	}
+
+	/**
+	 * TODO : LEVEL
+	 * 
+	 * @return
+	 */
+	public boolean isFullDraw() {
+		return isFourOfAKind()
+				|| isTwoPair()
+				|| isOnePair();
+
+	}
+
+	/**
+	 * TODO : LEVEL 1 or 2 flush; Kicker
+	 * 
+	 * @return
+	 */
+	public boolean isFlushDraw() {
+
+		boolean result = false;
+
+		switch (dealStep) {
+		case FLOP:
+		case TURN:
+			result = isOneSuit();
+			break;
+		case RIVER:
+			result = isNbSameCardSuit(3);
+			break;
+		default:
+			break;
+		}
+
+		return result;
+	}
+
+	/**
+	 * TODO : LEVEL; Kicker; openEnded
+	 * 
+	 * @return
+	 */
+	public boolean isStraightDraw() {
+		boolean result = false;
+
+		switch (dealStep) {
+		case FLOP:
+		case TURN:
+			result = isNbConnected(2);
+			break;
+		case RIVER:
+			result = isNbConnected(3);
+			break;
+		default:
+			break;
+		}
+
+		return result;
+	}
+
+	public BoardDrawPower getBoardDrawPower() {
+		return boardDrawPower;
+	}
+
+	public void setBoardDrawPower(BoardDrawPower boardDrawPower) {
+		this.boardDrawPower = boardDrawPower;
+	}
+
 }

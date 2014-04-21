@@ -101,6 +101,13 @@ public class PreFlopServiceImplTest {
 	}
 	
 	@Test
+	public void testIfNotTwoColor() {
+		HandModel handModel = new HandModel("Kd2d8d4d");
+		PreFlopPower preFlopPower = preFlopAnalyserServiceImpl.analyseHand(handModel);
+		assertTrue(!preFlopPower.getPreFlopSuit().equals(PreFlopSuit.TWO_COLORS));
+	}
+	
+	@Test
 	public void testIfOneColor() {
 		HandModel handModel = new HandModel("Ks2c3c4d");
 		PreFlopPower preFlopPower = preFlopAnalyserServiceImpl.analyseHand(handModel);

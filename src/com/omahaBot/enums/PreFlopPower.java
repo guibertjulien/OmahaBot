@@ -1,9 +1,9 @@
 package com.omahaBot.enums;
 
 public enum PreFlopPower {
-	TWO_PAIRS_SUITED_H(PowerHandLevel.HIGHT, PreFlopRank.TWO_PAIR_HIGHT, PreFlopSuit.TWO_COLORS),
-	TWO_PAIRS_SUITED_M(PowerHandLevel.MEDIUM, PreFlopRank.TWO_PAIR_MEDIUM, PreFlopSuit.TWO_COLORS),
-	TWO_PAIRS_SUITED_L(PowerHandLevel.LOW, PreFlopRank.TWO_PAIR_LOW, PreFlopSuit.TWO_COLORS),
+	TWO_PAIRS_SUITED_H(PowerHandLevel.MAX, PreFlopRank.TWO_PAIR_HIGHT, PreFlopSuit.TWO_COLORS),//AA
+	TWO_PAIRS_SUITED_M(PowerHandLevel.HIGHT, PreFlopRank.TWO_PAIR_MEDIUM, PreFlopSuit.TWO_COLORS),
+	TWO_PAIRS_SUITED_L(PowerHandLevel.MEDIUM, PreFlopRank.TWO_PAIR_LOW, PreFlopSuit.TWO_COLORS),
 
 	TWO_PAIRS_ONE_COLOR_H(PowerHandLevel.HIGHT, PreFlopRank.TWO_PAIR_HIGHT, PreFlopSuit.ONE_COLOR),
 	TWO_PAIRS_ONE_COLOR_M(PowerHandLevel.MEDIUM, PreFlopRank.TWO_PAIR_MEDIUM, PreFlopSuit.ONE_COLOR),

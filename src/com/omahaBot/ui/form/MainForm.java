@@ -1,6 +1,7 @@
 package com.omahaBot.ui.form;
 
 import java.io.PrintStream;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
@@ -25,13 +26,16 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 
+import com.omahaBot.enums.BoardDrawPower;
 import com.omahaBot.model.ActionModel;
+import com.omahaBot.model.BoardDrawModel;
 import com.omahaBot.model.DealModel;
 import com.omahaBot.model.DealStepModel;
 import com.omahaBot.model.PlayerModel;
 import com.omahaBot.service.bot.ThreadDeal;
 import com.omahaBot.service.ocr.OcrServiceImpl;
 import com.omahaBot.utils.CustomOutputStream;
+
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.custom.StackLayout;
 
@@ -62,6 +66,8 @@ public class MainForm {
 	
 	private MainForm mainForm;
 	private TabItem tbtm3;
+	
+	private AnalyseWidget analyseWidget;
 
 	/**
 	 * Launch the application.
@@ -206,6 +212,9 @@ public class MainForm {
 		
 		tbtm3 = new TabItem(tabFolder, SWT.NONE);
 		tbtm3.setText("AI");
+		
+		analyseWidget = new AnalyseWidget(tabFolder, SWT.NONE);
+		tbtm3.setControl(analyseWidget);
 
 		// keeps reference of standard output stream
 		standardOut = System.out;
@@ -213,6 +222,8 @@ public class MainForm {
 		// re-assigns standard output stream and error output stream
 		System.setOut(printStream);
 		System.setErr(printStream);
+		
+		initAnalyseWidget();
 	}
 
 	public void initDealWidget(DealModel dealModel) {
@@ -239,5 +250,16 @@ public class MainForm {
 
 	public void initActionWidget(ActionModel actionModel) {
 		actionBlockWidget.setActionModel(actionModel);
+	}
+	
+	public void initAnalyseWidget() {
+		
+		ArrayList<BoardDrawModel> list = new ArrayList<>();
+		
+		for (BoardDrawPower boardDrawPower : BoardDrawPower.values()) {
+			list.add(new BoardDrawModel(boardDrawPower, 0, 0));
+		}	
+		
+		analyseWidget.displayBoardDraw(list);
 	}
 }

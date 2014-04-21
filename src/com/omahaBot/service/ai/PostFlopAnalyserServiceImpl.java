@@ -5,14 +5,14 @@ import java.util.Collections;
 import java.util.List;
 
 import com.omahaBot.enums.BettingDecision;
-import com.omahaBot.enums.DealStep;
+import com.omahaBot.enums.BoardDrawPower;
 import com.omahaBot.enums.PostFlopPowerType;
 import com.omahaBot.model.BoardModel;
 import com.omahaBot.model.CardModel;
 import com.omahaBot.model.CombinaisonModel;
 import com.omahaBot.model.HandModel;
 
-public class PostFlopAnalyserServiceImpl{
+public class PostFlopAnalyserServiceImpl {
 
 	public PostFlopPowerType analyseHandPostFlop(HandModel handModel, BoardModel boardModel) {
 
@@ -40,31 +40,83 @@ public class PostFlopAnalyserServiceImpl{
 		return postFlopPowerType;
 	}
 
-	public BettingDecision decide(HandModel handModel, BoardModel boardModel) {
+	private BoardDrawPower analyseBoard(BoardModel boardModel) {
+
+		System.out.println("------------------------");
+		System.out.println("- analyseBoardPostFlop -");
+		System.out.println("------------------------");
+
+		// analyse des tirages
+		BoardDrawPower boardDrawPower = boardModel.getBoardDrawPower();
+
+		return boardDrawPower;
+	}
+
+	/**
+	 * TODO :
+	 * 
+	 * SLOW_PLAY
+	 * 
+	 * @param handModel
+	 * @param boardModel
+	 * @return
+	 */
+	public BettingDecision decide(HandModel handModel, BoardModel boardModel, boolean firstTurnBet) {
 		BettingDecision bettingDecision;
 
-		PostFlopPowerType postFlopPowerType = analyseHandPostFlop(handModel, boardModel);
-
-		// TODO kicker / bluff / dealStep
-		switch (postFlopPowerType) {
-		case STRAIGHT_FLUSH:
-		case FOUR_OF_A_KIND:
-		case FULL_HOUSE:
-		case FLUSH:
+		if (canBluff()) {
 			bettingDecision = BettingDecision.BET_RAISE;
-			break;
-		case STRAIGHT:
-		case THREE_OF_A_KIND:
-		case TWO_PAIR:
-			bettingDecision = BettingDecision.CHECK_CALL;
-			break;
-		default:
-			bettingDecision = BettingDecision.FOLD;
-			break;
+		}
+		else {
+			PostFlopPowerType postFlopPowerTypeHand = analyseHandPostFlop(handModel, boardModel);
+			BoardDrawPower boardDrawPower = analyseBoard(boardModel);
+
+			// tests si tirage > hand : wheel
+
+			// TODO kicker / bluff / dealStep
+			switch (postFlopPowerTypeHand) {
+			case STRAIGHT_FLUSH:
+			case FOUR_OF_A_KIND:
+			case FULL_HOUSE:
+			case FLUSH:
+				if (firstTurnBet) {
+					bettingDecision = BettingDecision.randomBetween(BettingDecision.ALLIN, BettingDecision.BET_RAISE);
+				}
+				else {
+					bettingDecision = BettingDecision.randomBetween(BettingDecision.ALLIN, BettingDecision.BET_RAISE,
+							BettingDecision.CHECK_CALL);
+				}
+				break;
+			case STRAIGHT:
+			case THREE_OF_A_KIND:
+			case TWO_PAIR:
+				if (firstTurnBet) {
+					bettingDecision = BettingDecision.randomBetween(BettingDecision.BET_RAISE,
+							BettingDecision.CHECK_CALL);
+				}
+				else {
+					bettingDecision = BettingDecision.CHECK_CALL;
+				}
+				break;
+			default:
+				bettingDecision = BettingDecision.CHECK_FOLD;
+				break;
+			}
 		}
 
 		System.out.println(bettingDecision);
 
 		return bettingDecision;
+	}
+
+	/**
+	 * TODO à déterminer
+	 * 
+	 * @return
+	 */
+	public boolean canBluff() {
+
+		return false;
+
 	}
 }

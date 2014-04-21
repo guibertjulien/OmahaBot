@@ -184,7 +184,7 @@ public class ThreadDealStep extends MyThread {
 		}
 		
 		SortedSet<CardModel> listCard = new TreeSet<CardModel>(listBoardCard);
-		board = new BoardModel(listCard);
+		board = new BoardModel(listCard, currentDealStep);
 	}
 
 	@Override
