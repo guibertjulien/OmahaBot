@@ -2,18 +2,24 @@ package com.omahaBot.model;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.SortedSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.omahaBot.enums.Rank;
 import com.omahaBot.enums.Suit;
+import com.omahaBot.model.DrawModel.Type;
 import com.omahaBot.model.comparator.SuitComparator;
 
 public abstract class CardPack {
 
 	protected SortedSet<CardModel> cards;
-
+	
+	protected Rank kicker1;
+	
+	protected Rank kicker2;
+	
 	public CardPack(SortedSet<CardModel> cards) {
 		this.cards = cards;
 	}
@@ -55,6 +61,18 @@ public abstract class CardPack {
 		}
 
 		return handSuit;
+	}
+
+	public String toStringByRank() {
+		ArrayList<CardModel> listCards = new ArrayList<>(cards);
+
+		String result = "";
+
+		for (CardModel cardModel : listCards) {
+			result += cardModel;
+		}
+
+		return result;
 	}
 
 	public String toStringBySuit() {
@@ -255,34 +273,79 @@ public abstract class CardPack {
 		}
 	}
 
-	public FlushDraw searchFlush() {
-		boolean find = false;
+	public List<DrawModel> searchFlush(Type type) {
 
-		FlushDraw flushDraw = null;
-		Suit suitFinded = Suit.UNKNOW;
-		Rank kicker = Rank.UNKNOW;
-		int nbSuitedCard = 0;
+		ArrayList<DrawModel> listDraw = new ArrayList<>();
+
+		int nbSuitedCardMin = 3;
+
+		if (type.equals(Type.FLUSH_DRAW)) {
+			nbSuitedCardMin = 2;
+		}
 
 		for (Suit suit : Suit.values()) {
 			if (!suit.equals(Suit.UNKNOW)) {
-				Pattern pattern = Pattern.compile("(." + suit.getShortName() + "){3," + cards.size() + "}");
+				Pattern pattern = Pattern.compile("(." + suit.getShortName() + "){" + nbSuitedCardMin + ","
+						+ cards.size() + "}");
 				Matcher matcher = pattern.matcher(this.toStringBySuit());
 
 				if (matcher.find()) {
 					String group = matcher.group(0);
-					suitFinded = suit;
-					kicker = Rank.fromShortName(String.valueOf(group.charAt(group.length() - 2)));
-					nbSuitedCard = group.length() / 2;
-					find = true;
-					break;
+					listDraw.add(new DrawModel(type, group, kicker1, kicker2));
 				}
 			}
 		}
 
-		if (find) {
-			flushDraw = new FlushDraw(kicker, suitFinded, nbSuitedCard);
+		return listDraw;
+	}
+
+	public List<DrawModel> searchFull() {
+
+		ArrayList<DrawModel> listDraw = new ArrayList<>();
+
+		Type type = null;
+		
+		for (Rank rank : Rank.values()) {
+			if (!rank.equals(Rank.UNKNOW)) {
+				Pattern pattern = Pattern.compile("(" + rank.getShortName() + ".){2,4}");
+				Matcher matcher = pattern.matcher(this.toStringByRank());
+
+				if (matcher.find()) {
+					String group = matcher.group(0);
+
+					if (group.length() == 4) {
+						type = Type.FULL_PAIR_DRAW;
+					} else if (group.length() == 6) {
+						type = Type.FULL_THREE_DRAW;
+					} else if (group.length() == 8) {
+						type = Type.FULL_FOUR_DRAW;
+					}
+
+					listDraw.add(new DrawModel(type, group, kicker1, kicker2));
+				}
+			}
 		}
 
-		return flushDraw;
+		return listDraw;
+	}
+	
+	protected void initKickers() {
+		ArrayList<CardModel> listCards = new ArrayList<>(cards);
+		
+		Collections.reverse(listCards);
+		
+		kicker1 = listCards.get(0).getRank();
+		
+		Rank rank = kicker1;
+		
+		int i = 0;
+		while (kicker1.equals(rank) && i < listCards.size() - 1) {
+			rank = listCards.get(++i).getRank();
+		}
+		
+		kicker2 = listCards.get(i).getRank();
+		
+		System.out.println("kicker1 : " + kicker1);
+		System.out.println("kicker2 : " + kicker2);
 	}
 }

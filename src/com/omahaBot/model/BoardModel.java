@@ -1,12 +1,15 @@
 package com.omahaBot.model;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
 import com.omahaBot.enums.BoardDrawPower;
 import com.omahaBot.enums.DealStep;
+import com.omahaBot.enums.Rank;
+import com.omahaBot.model.DrawModel.Type;
 import com.omahaBot.utils.PermutationsOfN;
 
 public class BoardModel extends CardPack {
@@ -44,8 +47,10 @@ public class BoardModel extends CardPack {
 		}
 
 		this.dealStep = dealStep;
-
-		//initBoardDrawPower();
+		
+		initKickers();
+		
+		// initBoardDrawPower();
 	}
 
 	@Override
@@ -63,18 +68,40 @@ public class BoardModel extends CardPack {
 	/**
 	 * TODO : best practices ?
 	 */
-	private void initBoardDrawPower() {
-		if (isStraightFlush()) {
-			boardDrawPower = BoardDrawPower.STRAIGHT_FLUSH;
-		} else if (isFourOfAKindDraw()) {
-			boardDrawPower = BoardDrawPower.FOUR_OF_A_KIND;
-		} else if (isFullDraw()) {
-			boardDrawPower = BoardDrawPower.FULL;
-		} else if (isFlushDraw()) {
-			boardDrawPower = BoardDrawPower.FLUSH;
-		} else {
-			boardDrawPower = BoardDrawPower.TWO_PAIR;
+	public ArrayList<DrawModel> initBoardDrawPower() {
+		
+		ArrayList<DrawModel> listDraw = new ArrayList<>();
+		
+		switch (dealStep) {
+		case FLOP:
+			// FLUSH
+			listDraw.addAll(searchFlush(Type.FLUSH));
+			if (listDraw.isEmpty()) {
+				listDraw.addAll(searchFlush(Type.FLUSH_DRAW));// 1 tirage	
+			}
+			// FULL DRAW
+			listDraw.addAll(searchFull());// 1 tirage
+			break;
+		case TURN:
+			// FLUSH
+			listDraw.addAll(searchFlush(Type.FLUSH));
+			if (listDraw.isEmpty()) {
+				listDraw.addAll(searchFlush(Type.FLUSH_DRAW));// 1 ou 2 tirages	
+			}
+			// FULL DRAW
+			listDraw.addAll(searchFull());// 1 ou 2 tirages
+			break;
+		case RIVER:
+			// FLUSH
+			listDraw.addAll(searchFlush(Type.FLUSH));
+			// FULL DRAW
+			listDraw.addAll(searchFull());// 1 ou 2 tirages			
+			break;
+		default:
+			break;
 		}
+		
+		return listDraw;
 	}
 
 	public boolean isFourOfAKindDraw() {
@@ -91,30 +118,6 @@ public class BoardModel extends CardPack {
 				|| isTwoPair()
 				|| isOnePair();
 
-	}
-
-	/**
-	 * TODO : LEVEL 1 or 2 flush; Kicker
-	 * 
-	 * @return
-	 */
-	public boolean isFlushDraw() {
-
-		boolean result = false;
-
-		switch (dealStep) {
-		case FLOP:
-		case TURN:
-			result = isOneSuit();
-			break;
-		case RIVER:
-			result = isNbSameCardSuit(3);
-			break;
-		default:
-			break;
-		}
-
-		return result;
 	}
 
 	/**

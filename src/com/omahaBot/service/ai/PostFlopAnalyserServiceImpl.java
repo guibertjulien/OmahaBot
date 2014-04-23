@@ -6,6 +6,7 @@ import java.util.List;
 
 import com.omahaBot.enums.BettingDecision;
 import com.omahaBot.enums.BoardDrawPower;
+import com.omahaBot.enums.DealStep;
 import com.omahaBot.enums.PostFlopPowerType;
 import com.omahaBot.model.BoardModel;
 import com.omahaBot.model.CardModel;
@@ -45,6 +46,9 @@ public class PostFlopAnalyserServiceImpl {
 		System.out.println("------------------------");
 		System.out.println("- analyseBoardPostFlop -");
 		System.out.println("------------------------");
+		
+		DealStep dealStep;
+		
 
 		// analyse des tirages
 		BoardDrawPower boardDrawPower = boardModel.getBoardDrawPower();

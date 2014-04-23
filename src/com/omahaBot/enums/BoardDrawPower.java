@@ -10,5 +10,5 @@ public enum BoardDrawPower {
 	FULL,
 	FULL_AND_FLUSH,
 	FOUR_OF_A_KIND,
-	STRAIGHT_FLUSH;
+	STRAIGHT_FLUSH; 
 }
