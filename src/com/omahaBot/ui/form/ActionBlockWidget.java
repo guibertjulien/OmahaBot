@@ -1,6 +1,9 @@
 package com.omahaBot.ui.form;
 
 import org.eclipse.core.databinding.DataBindingContext;
+import org.eclipse.core.databinding.beans.PojoProperties;
+import org.eclipse.core.databinding.observable.value.IObservableValue;
+import org.eclipse.jface.databinding.swt.WidgetProperties;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
@@ -11,9 +14,6 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.wb.swt.SWTResourceManager;
 
 import com.omahaBot.model.ActionModel;
-import org.eclipse.core.databinding.observable.value.IObservableValue;
-import org.eclipse.jface.databinding.swt.WidgetProperties;
-import org.eclipse.core.databinding.beans.PojoProperties;
 
 public class ActionBlockWidget extends Composite {
 	private DataBindingContext m_bindingContext;

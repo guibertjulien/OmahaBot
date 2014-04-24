@@ -13,10 +13,18 @@ import com.omahaBot.enums.Rank;
 import com.omahaBot.enums.Suit;
 
 public @Data
-class DrawModel {
+class DrawModel implements Comparable<DrawModel> {
 
 	public enum Type {
-		FLUSH, FLUSH_DRAW, FULL_PAIR_DRAW, FULL_THREE_DRAW, FULL_FOUR_DRAW;
+		TWO_PAIR_DRAW, 
+		BRELAN_DRAW, 
+		FLUSH_DRAW, 
+		FLUSH, 
+		FULL_PAIR_DRAW, 
+		FULL_THREE_DRAW, 
+		FULL_FOUR_DRAW, 
+		CARRE_DRAW, 
+		STRAIGHT_FLUSH_DRAW;
 	}
 
 	private static String PREFIX_FLUSH = "FLUSH";
@@ -28,11 +36,13 @@ class DrawModel {
 	private SortedSet<CardModel> cards;
 	private Suit suit = Suit.UNKNOW;
 	private int nbOut = 0;
+	private double percent = 0.0;
 	private Rank bestHandkicker;
 	private SortedSet<CardModel> bestHand;
 
 	public DrawModel(Type type, String drawString, Rank kickerPack1, Rank kickerPack2) {
 		super();
+
 		this.type = type;
 		this.drawString = drawString;
 		this.kickerPack1 = kickerPack1;
@@ -45,7 +55,7 @@ class DrawModel {
 			drawString = drawString.substring(2, drawString.length());
 		}
 
-		if (type.equals(type.name().startsWith(PREFIX_FLUSH))) {
+		if (type.name().startsWith(PREFIX_FLUSH)) {
 			suit = cards.first().getSuit();
 		}
 
@@ -59,7 +69,9 @@ class DrawModel {
 	public void initBestHand() {
 		bestHand = new TreeSet<>();
 
-		if (type.equals(Type.FLUSH) || type.equals(Type.FLUSH_DRAW)) {
+		switch (type) {
+		case FLUSH:
+		case FLUSH_DRAW:
 			List<CardModel> listCard = Lists.reverse(new ArrayList<>(cards));
 			List<Rank> listRank = Lists.reverse(Arrays.asList(Rank.values()));
 
@@ -76,11 +88,10 @@ class DrawModel {
 				} else if (rank.equals(card.getRank())) {
 					card = listCard.get(++i);
 				}
-
 			}
-		}
+			break;
 
-		else if (type.equals(Type.FULL_PAIR_DRAW)) {
+		case FULL_PAIR_DRAW:
 			// TODO super best hand : same pair (carre)
 			if (cards.first().getRank().equals(kickerPack1)) {
 				// AA5 --> A5
@@ -92,21 +103,28 @@ class DrawModel {
 				bestHand.add(new CardModel(kickerPack1, Suit.SPADE));
 				bestHand.add(new CardModel(kickerPack1, Suit.HEART));
 			}
-		} else if (type.equals(Type.FULL_THREE_DRAW)) {
+			break;
+		case FULL_THREE_DRAW:
 			// TODO super best hand : same card (carre)
-			Rank rankBestHand;
 			if (cards.first().getRank().equals(kickerPack1)) {
-				// AAA5 --> 55
-				rankBestHand = Rank.values()[kickerPack1.ordinal()-1];
+				if (kickerPack1.equals(Rank.ACE)) {
+					// AAA5 --> KK
+					bestHand.add(new CardModel("Ks"));
+					bestHand.add(new CardModel("Kh"));
+				}
+				else {
+					// QQQ5 --> AA
+					bestHand.add(new CardModel("As"));
+					bestHand.add(new CardModel("Ah"));
+				}
 			}
 			else {
 				// 222K --> KK
-				rankBestHand = kickerPack1;
+				bestHand.add(new CardModel(kickerPack1, Suit.SPADE));
+				bestHand.add(new CardModel(kickerPack1, Suit.HEART));
 			}
-
-			bestHand.add(new CardModel(rankBestHand, Suit.SPADE));
-			bestHand.add(new CardModel(rankBestHand, Suit.HEART));
-		} else if (type.equals(Type.FULL_FOUR_DRAW)) {
+			break;
+		case FULL_FOUR_DRAW:
 			if (cards.first().getRank().equals(Rank.ACE)) {
 				bestHand.add(new CardModel("Ks"));
 				bestHand.add(new CardModel("Kh"));
@@ -115,6 +133,49 @@ class DrawModel {
 				bestHand.add(new CardModel("As"));
 				bestHand.add(new CardModel("Ah"));
 			}
+			break;
+		case BRELAN_DRAW:
+			bestHand.add(new CardModel(kickerPack1, Suit.SPADE));
+			bestHand.add(new CardModel(kickerPack1, Suit.HEART));
+			break;
+		case TWO_PAIR_DRAW:
+			bestHand.add(new CardModel(kickerPack1, Suit.UNKNOW));
+			bestHand.add(new CardModel(kickerPack2, Suit.UNKNOW));
+			break;
+		case CARRE_DRAW:
+			Rank rank = cards.first().getRank();
+			bestHand.add(new CardModel(rank, Suit.SPADE));
+			bestHand.add(new CardModel(rank, Suit.HEART));
+			break;
+		default:
+			break;
 		}
+	}
+
+	@Override
+	public int compareTo(DrawModel o) {
+		// compare Type
+		if (this.type.ordinal() < o.type.ordinal()) {
+			return 1;
+		}
+		else
+			return -1;
+	}
+
+	/**
+	 * if FLUSH, display AsKs else A?K?
+	 * 
+	 * @return
+	 */
+	public String displayBestHand() {
+		CardModel card1 = bestHand.first();
+		CardModel card2 = bestHand.last();
+
+		if (!type.name().startsWith(PREFIX_FLUSH)) {
+			card1.setSuit(suit.UNKNOW);
+			card2.setSuit(suit.UNKNOW);
+		}
+
+		return card1.toString().concat(card2.toString());
 	}
 }

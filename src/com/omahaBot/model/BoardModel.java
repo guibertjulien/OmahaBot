@@ -6,9 +6,7 @@ import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import com.omahaBot.enums.BoardDrawPower;
 import com.omahaBot.enums.DealStep;
-import com.omahaBot.enums.Rank;
 import com.omahaBot.model.DrawModel.Type;
 import com.omahaBot.utils.PermutationsOfN;
 
@@ -16,11 +14,10 @@ public class BoardModel extends CardPack {
 
 	private final DealStep dealStep;
 
-	private BoardDrawPower boardDrawPower;
-
 	public BoardModel(SortedSet<CardModel> cards, DealStep dealStep) {
 		super(cards);
 		this.dealStep = dealStep;
+		initKickers();
 	}
 
 	public BoardModel(String handString, DealStep dealStep) {
@@ -47,10 +44,7 @@ public class BoardModel extends CardPack {
 		}
 
 		this.dealStep = dealStep;
-		
 		initKickers();
-		
-		// initBoardDrawPower();
 	}
 
 	@Override
@@ -68,57 +62,59 @@ public class BoardModel extends CardPack {
 	/**
 	 * TODO : best practices ?
 	 */
-	public ArrayList<DrawModel> initBoardDrawPower() {
-		
+	public ArrayList<DrawModel> initBoardDraw() {
 		ArrayList<DrawModel> listDraw = new ArrayList<>();
-		
-		switch (dealStep) {
-		case FLOP:
-			// FLUSH
-			listDraw.addAll(searchFlush(Type.FLUSH));
-			if (listDraw.isEmpty()) {
-				listDraw.addAll(searchFlush(Type.FLUSH_DRAW));// 1 tirage	
+
+		if (dealStep.ordinal() > DealStep.PRE_FLOP.ordinal()) {
+
+			List<DrawModel> listFlushDraw = null;
+			List<DrawModel> listFullDraw = null;
+
+			// Search FLUSH draw
+			listFlushDraw = searchFlushDraw(Type.FLUSH);
+
+			if (listFlushDraw.isEmpty() && (dealStep.equals(DealStep.FLOP) || dealStep.equals(DealStep.TURN))) {
+				if (listFlushDraw.isEmpty()) {
+					// 1 (FLOP) ou 2 tirages (TURN)
+					listFlushDraw.addAll(searchFlushDraw(Type.FLUSH_DRAW));
+				}
 			}
-			// FULL DRAW
-			listDraw.addAll(searchFull());// 1 tirage
-			break;
-		case TURN:
-			// FLUSH
-			listDraw.addAll(searchFlush(Type.FLUSH));
-			if (listDraw.isEmpty()) {
-				listDraw.addAll(searchFlush(Type.FLUSH_DRAW));// 1 ou 2 tirages	
+
+			// Search FULL, BRELAN or DOUBLE PAIR draw
+			// 1 (FLOP) ou 2 tirages (TURN ou RIVER)
+			listFullDraw = searchFullDraw();
+
+			if (listFullDraw.isEmpty()) {
+				listFullDraw.add(searchBrelanDraw());
+				listFullDraw.add(searchTwoPairDraw());
 			}
-			// FULL DRAW
-			listDraw.addAll(searchFull());// 1 ou 2 tirages
-			break;
-		case RIVER:
-			// FLUSH
-			listDraw.addAll(searchFlush(Type.FLUSH));
-			// FULL DRAW
-			listDraw.addAll(searchFull());// 1 ou 2 tirages			
-			break;
-		default:
-			break;
+
+			//
+			listDraw.addAll(listFlushDraw);
+			listDraw.addAll(listFullDraw);
+
 		}
+
+		Collections.sort(listDraw);
 		
 		return listDraw;
 	}
 
-	public boolean isFourOfAKindDraw() {
-		return isThreeOfAKind();
-	}
-
-	/**
-	 * TODO : LEVEL
-	 * 
-	 * @return
-	 */
-	public boolean isFullDraw() {
-		return isFourOfAKind()
-				|| isTwoPair()
-				|| isOnePair();
-
-	}
+	// public boolean isFourOfAKindDraw() {
+	// return isThreeOfAKind();
+	// }
+	//
+	// /**
+	// * TODO : LEVEL
+	// *
+	// * @return
+	// */
+	// public boolean isFullDraw() {
+	// return isFourOfAKind()
+	// || isTwoPair()
+	// || isOnePair();
+	//
+	// }
 
 	/**
 	 * TODO : LEVEL; Kicker; openEnded
@@ -142,13 +138,4 @@ public class BoardModel extends CardPack {
 
 		return result;
 	}
-
-	public BoardDrawPower getBoardDrawPower() {
-		return boardDrawPower;
-	}
-
-	public void setBoardDrawPower(BoardDrawPower boardDrawPower) {
-		this.boardDrawPower = boardDrawPower;
-	}
-
 }

@@ -1,8 +1,6 @@
 package com.omahaBot.ui.form;
 
 import java.io.PrintStream;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -13,7 +11,6 @@ import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.layout.RowData;
@@ -26,19 +23,23 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 
-import com.omahaBot.enums.BoardDrawPower;
+import com.omahaBot.enums.PreFlopPower;
 import com.omahaBot.model.ActionModel;
-import com.omahaBot.model.BoardDrawModel;
+import com.omahaBot.model.BoardModel;
 import com.omahaBot.model.DealModel;
 import com.omahaBot.model.DealStepModel;
+import com.omahaBot.model.HandModel;
 import com.omahaBot.model.PlayerModel;
 import com.omahaBot.service.bot.ThreadDeal;
 import com.omahaBot.service.ocr.OcrServiceImpl;
 import com.omahaBot.utils.CustomOutputStream;
+import org.eclipse.wb.swt.SWTResourceManager;
 
-import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.custom.StackLayout;
-
+/**
+ * TODO BUILDER, HELPER...
+ * @author Julien
+ *
+ */
 public class MainForm {
 
 	private final static Logger LOGGER = Logger.getLogger(MainForm.class.getName());
@@ -68,6 +69,7 @@ public class MainForm {
 	private TabItem tbtm3;
 	
 	private AnalyseWidget analyseWidget;
+	private Button btn_register;
 
 	/**
 	 * Launch the application.
@@ -133,6 +135,8 @@ public class MainForm {
 		btn_checkTable.setText("CHECK TABLE");
 
 		final Button btnNewButton = new Button(grpActions, SWT.NONE);
+		btnNewButton.setFont(SWTResourceManager.getFont("Segoe UI", 9, SWT.BOLD));
+		btnNewButton.setForeground(SWTResourceManager.getColor(SWT.COLOR_RED));
 		btnNewButton.setLayoutData(new RowData(100, SWT.DEFAULT));
 
 		btnNewButton.setText("START BOT");
@@ -145,6 +149,9 @@ public class MainForm {
 			}
 		});
 		btn_clear.setText("Clear log");
+		
+		btn_register = new Button(grpActions, SWT.CHECK);
+		btn_register.setText("Register");
 		btnNewButton.addSelectionListener(new SelectionAdapter() {
 			private ThreadDeal threadDeal;
 
@@ -222,8 +229,6 @@ public class MainForm {
 		// re-assigns standard output stream and error output stream
 		System.setOut(printStream);
 		System.setErr(printStream);
-		
-		initAnalyseWidget();
 	}
 
 	public void initDealWidget(DealModel dealModel) {
@@ -252,14 +257,11 @@ public class MainForm {
 		actionBlockWidget.setActionModel(actionModel);
 	}
 	
-	public void initAnalyseWidget() {
-		
-		ArrayList<BoardDrawModel> list = new ArrayList<>();
-		
-		for (BoardDrawPower boardDrawPower : BoardDrawPower.values()) {
-			list.add(new BoardDrawModel(boardDrawPower, 0, 0));
-		}	
-		
-		analyseWidget.displayBoardDraw(list);
+	public void initAnalyseWidget(BoardModel boardModel) {
+		analyseWidget.displayBoardDraw(boardModel);
+	}
+
+	public void initAnalyseWidget(HandModel myHand, PreFlopPower preFlopPower) {
+		analyseWidget.displayPreFlopAnalyse(myHand, preFlopPower);
 	}
 }

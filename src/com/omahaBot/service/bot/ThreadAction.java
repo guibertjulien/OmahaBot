@@ -15,6 +15,7 @@ import com.omahaBot.enums.BettingDecision;
 import com.omahaBot.enums.DealStep;
 import com.omahaBot.enums.PlayerAction;
 import com.omahaBot.enums.PlayerBlock;
+import com.omahaBot.enums.PreFlopPower;
 import com.omahaBot.model.ActionModel;
 import com.omahaBot.model.BoardModel;
 import com.omahaBot.model.CardModel;
@@ -58,6 +59,8 @@ public class ThreadAction extends MyThread {
 	private DealStep dealStep;
 	
 	private boolean firstTurnBet = true;
+	
+	private PreFlopAnalyserServiceImpl preFlopAnalyserServiceImpl = new PreFlopAnalyserServiceImpl();
 
 	public ThreadAction(MainForm mainForm, DealStep dealStep, BoardModel board) {
 		super();
@@ -119,6 +122,11 @@ public class ThreadAction extends MyThread {
 					}
 					play();
 				}
+				else {
+					myHand = new HandModel("AsKsKh2d");
+				}
+				
+				final PreFlopPower preFlopPower = preFlopAnalyserServiceImpl.analyseHand(myHand);
 
 				positionPlayerTurnPlayOld = positionPlayerTurnPlay;
 
@@ -127,6 +135,7 @@ public class ThreadAction extends MyThread {
 						mainForm.initPotWidget(currentPot);
 						mainForm.initActionWidget(actionModel);
 						mainForm.initPlayerWidget(listCurrentPlayer);
+						mainForm.initAnalyseWidget(myHand, preFlopPower);
 					}
 				});
 			}

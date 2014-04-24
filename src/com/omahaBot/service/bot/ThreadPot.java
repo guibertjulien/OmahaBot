@@ -2,7 +2,6 @@ package com.omahaBot.service.bot;
 
 import java.awt.AWTException;
 import java.awt.Robot;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.eclipse.swt.widgets.Display;

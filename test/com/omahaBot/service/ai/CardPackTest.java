@@ -218,7 +218,7 @@ public class CardPackTest {
 		// RIVER
 		listDraw.clear();
 		boardModel = new BoardModel("7s4s6dKdAd", DealStep.RIVER);
-		listDraw = boardModel.initBoardDrawPower();
+		listDraw = boardModel.initBoardDraw();
 		System.out.println(listDraw);
 		assertTrue(listDraw.size() == 2);
 		assertTrue(listDraw.get(0).getType().equals(Type.FLUSH));
@@ -232,25 +232,25 @@ public class CardPackTest {
 		BoardModel boardModel;
 
 		boardModel = new BoardModel("7s7d6d6c7h", DealStep.RIVER);
-		listDraw = boardModel.initBoardDrawPower();
+		listDraw = boardModel.initBoardDraw();
 		System.out.println(listDraw);
 //		assertTrue(listDraw.size() == 2);
 //		assertTrue(listDraw.get(1).getType().equals(Type.FULL_PAIR_DRAW));
 		
 		boardModel = new BoardModel("7s7dKc", DealStep.FLOP);
-		listDraw = boardModel.initBoardDrawPower();
+		listDraw = boardModel.initBoardDraw();
 		System.out.println(listDraw);
 		
 		boardModel = new BoardModel("QsQdTc", DealStep.FLOP);
-		listDraw = boardModel.initBoardDrawPower();
+		listDraw = boardModel.initBoardDraw();
 		System.out.println(listDraw);
 		
 		boardModel = new BoardModel("7s7d7hKc", DealStep.TURN);
-		listDraw = boardModel.initBoardDrawPower();
+		listDraw = boardModel.initBoardDraw();
 		System.out.println(listDraw);
 		
 		boardModel = new BoardModel("QsQdQcTc", DealStep.TURN);
-		listDraw = boardModel.initBoardDrawPower();
+		listDraw = boardModel.initBoardDraw();
 		System.out.println(listDraw);
 	}
 }

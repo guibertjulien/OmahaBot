@@ -18,7 +18,6 @@ import com.omahaBot.enums.Suit;
 import com.omahaBot.model.BoardModel;
 import com.omahaBot.model.CardModel;
 import com.omahaBot.model.DealStepModel;
-import com.omahaBot.model.HandModel;
 import com.omahaBot.ui.form.MainForm;
 
 public class ThreadDealStep extends MyThread {
@@ -87,6 +86,7 @@ public class ThreadDealStep extends MyThread {
 				Display.getDefault().syncExec(new Runnable() {
 					public void run() {
 						mainForm.initBoardWidget(dealStepModel);
+						mainForm.initAnalyseWidget(board);
 					}
 				});
 			}
@@ -190,5 +190,4 @@ public class ThreadDealStep extends MyThread {
 	@Override
 	public void initialize() {
 	}
-
 }
