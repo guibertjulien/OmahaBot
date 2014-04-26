@@ -13,7 +13,23 @@ import com.omahaBot.model.CombinaisonModel;
 import com.omahaBot.model.HandModel;
 
 public class PostFlopAnalyserServiceImpl {
+	
+	public ArrayList<CombinaisonModel> initCombinaisons(HandModel handModel, BoardModel boardModel) {
+		
+		ArrayList<CombinaisonModel> combinaisons = new ArrayList<CombinaisonModel>();
 
+		for (List<CardModel> permutationHand : handModel.permutations()) {
+			for (List<CardModel> permutationBoard : boardModel.permutations()) {
+				CombinaisonModel combinaison = new CombinaisonModel(permutationHand, permutationBoard);
+				combinaisons.add(combinaison);
+			}
+		}
+
+		//Collections.sort(combinaisons);
+		
+		return combinaisons;
+	}
+	
 	public PostFlopPowerType analyseHandPostFlop(HandModel handModel, BoardModel boardModel) {
 
 		System.out.println("-----------------------");

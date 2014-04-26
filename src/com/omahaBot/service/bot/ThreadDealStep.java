@@ -18,12 +18,13 @@ import com.omahaBot.enums.Suit;
 import com.omahaBot.model.BoardModel;
 import com.omahaBot.model.CardModel;
 import com.omahaBot.model.DealStepModel;
+import com.omahaBot.model.HandModel;
 import com.omahaBot.ui.form.MainForm;
 
 public class ThreadDealStep extends MyThread {
 
 	private final static Logger LOGGER = Logger.getLogger(ThreadDealStep.class.getName());
-	
+
 	private final static String START_LOG = "    ";
 
 	private List<CardModel> listBoardCard = new ArrayList<CardModel>();
@@ -32,12 +33,14 @@ public class ThreadDealStep extends MyThread {
 
 	private DealStepModel dealStepModel;
 
+	private HandModel myHand;
+
 	private BoardModel board;
-	
+
 	private Robot robot;
-//
-//	private ThreadPot threadPot;
-	
+	//
+	// private ThreadPot threadPot;
+
 	private ThreadAction threadAction;
 
 	public ThreadDealStep(MainForm mainForm) {
@@ -57,7 +60,7 @@ public class ThreadDealStep extends MyThread {
 	@Override
 	public void run() {
 
-		System.out.println(START_LOG + ">> START ThreadDealStep : " + this.getId()); 
+		System.out.println(START_LOG + ">> START ThreadDealStep : " + this.getId());
 
 		while (running) {
 			// scan du dealStep toutes les 1s
@@ -66,7 +69,7 @@ public class ThreadDealStep extends MyThread {
 			if (!oldDealStep.equals(currentDealStep)) {
 				System.out.println(START_LOG + "---------------------------------------------");
 				System.out.println(START_LOG + "NEW DEAL STEP : " + currentDealStep);
-				
+
 				oldDealStep = currentDealStep;
 
 				initBoardCard();
@@ -74,19 +77,32 @@ public class ThreadDealStep extends MyThread {
 				dealStepModel = new DealStepModel();
 				dealStepModel.setDealStep(currentDealStep);
 				dealStepModel.setListBoardCard(listBoardCard);
-				
+
+				if (Consts.register) {
+					if (myHand == null) {
+						initMyHand();
+					}
+				}
+				else {
+					myHand = new HandModel("AsKsKh2d");
+				}
+
 				arretThreadChild();
-				
+
 				if (running) {
 					// demarrage d'un nouveau thread
-					threadAction = new ThreadAction(mainForm, currentDealStep, board);
+					threadAction = new ThreadAction(mainForm, currentDealStep, myHand, board);
 					threadAction.start();
 				}
-				
+
 				Display.getDefault().syncExec(new Runnable() {
 					public void run() {
 						mainForm.initBoardWidget(dealStepModel);
-						mainForm.initAnalyseWidget(board);
+
+						if (dealStepModel.getDealStep().ordinal() > DealStep.PRE_FLOP.ordinal()) {
+							mainForm.initAnalyseWidget(board);
+							mainForm.initAnalyseWidget(postFlopAnalyserServiceImpl.initCombinaisons(myHand, board));
+						}
 					}
 				});
 			}
@@ -100,19 +116,19 @@ public class ThreadDealStep extends MyThread {
 
 		}
 
-		System.out.println(START_LOG + "<< STOP ThreadDealStep : " + this.getId()); 
+		System.out.println(START_LOG + "<< STOP ThreadDealStep : " + this.getId());
 	}
 
 	@Override
 	public void arretThreadChild() {
-//		if (threadPot != null && threadPot.isAlive()) {
-//			threadPot.arret();
-//		}
+		// if (threadPot != null && threadPot.isAlive()) {
+		// threadPot.arret();
+		// }
 		if (threadAction != null && threadAction.isAlive()) {
 			threadAction.arret();
 		}
 	}
-	
+
 	public DealStep initDealStep() {
 
 		ArrayList<CardBlock> listCard = new ArrayList<>();
@@ -121,12 +137,12 @@ public class ThreadDealStep extends MyThread {
 		listCard.add(CardBlock.CARD3_FLOP);
 
 		int nbCardScaned = 0;
-		
+
 		for (CardBlock card : listCard) {
 			if (nbCardScaned > 5) {
 				return DealStep.PRE_FLOP;
 			}
-			
+
 			Color colorScaned = robot.getPixelColor(card.getBlock().x + Consts.PT_SUIT.x, card.getBlock().y
 					+ Consts.PT_SUIT.y);
 
@@ -144,7 +160,7 @@ public class ThreadDealStep extends MyThread {
 					}
 				}
 			}
-			
+
 			nbCardScaned++;
 		}
 
@@ -152,7 +168,7 @@ public class ThreadDealStep extends MyThread {
 	}
 
 	public void initBoardCard() {
-		
+
 		switch (currentDealStep) {
 		case FLOP:
 			listBoardCard.clear();
@@ -182,12 +198,17 @@ public class ThreadDealStep extends MyThread {
 		default:
 			break;
 		}
-		
+
 		SortedSet<CardModel> listCard = new TreeSet<CardModel>(listBoardCard);
 		board = new BoardModel(listCard, currentDealStep);
 	}
 
 	@Override
 	public void initialize() {
+	}
+
+	private void initMyHand() {
+		SortedSet<CardModel> listCard = ocrService.scanMyHand();
+		myHand = new HandModel(listCard);
 	}
 }

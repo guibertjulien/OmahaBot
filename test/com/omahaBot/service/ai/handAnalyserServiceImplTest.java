@@ -1,21 +1,12 @@
 package com.omahaBot.service.ai;
 
-import static org.junit.Assert.assertTrue;
-
 import java.util.SortedSet;
 import java.util.TreeSet;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.junit.Test;
 
-import com.omahaBot.enums.DealStep;
-import com.omahaBot.enums.PowerHandLevel;
-import com.omahaBot.enums.PreFlopPower;
-import com.omahaBot.enums.PreFlopRank;
 import com.omahaBot.enums.Rank;
 import com.omahaBot.enums.Suit;
-import com.omahaBot.model.BoardModel;
 import com.omahaBot.model.CardModel;
 import com.omahaBot.model.HandModel;
 

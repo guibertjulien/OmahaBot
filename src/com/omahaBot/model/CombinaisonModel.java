@@ -1,17 +1,26 @@
 package com.omahaBot.model;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import com.omahaBot.enums.PostFlopPowerType;
 import com.omahaBot.enums.Rank;
+import com.omahaBot.model.DrawModel.Type;
+import com.omahaBot.model.handCategory.FullModel;
 
 /**
+ * 5 cards (permutations of 2 hole cards and 3 board cards)
+ * 
  * @author Julien
  * 
  */
-public class CombinaisonModel extends CardPack implements Comparable<CombinaisonModel> {
+public class CombinaisonModel extends CardPackModel implements Comparable<CombinaisonModel> {
 
 	private Rank kicker;
 
@@ -22,7 +31,7 @@ public class CombinaisonModel extends CardPack implements Comparable<Combinaison
 		cards.addAll(permutationHand);
 		cards.addAll(permutationBoard);
 
-		initHandPowerType();
+		// initHandPowerType();
 	}
 
 	public SortedSet<CardModel> getCards() {
@@ -31,6 +40,53 @@ public class CombinaisonModel extends CardPack implements Comparable<Combinaison
 
 	public void setCards(SortedSet<CardModel> cards) {
 		this.cards = cards;
+	}
+
+	/**
+	 * TODO : best practices ?
+	 */
+	public ArrayList<DrawModel> initDraw() {
+		ArrayList<DrawModel> listDraw = new ArrayList<>();
+
+		if (!cards.isEmpty()) {
+			listDraw.addAll(searchFlushDraw(4, 5));
+			listDraw.addAll(searchFullDraw());
+		}
+
+		Collections.sort(listDraw);
+
+		return listDraw;
+	}
+
+	public List<DrawModel> searchFullDraw() {
+
+		ArrayList<DrawModel> listDraw = new ArrayList<>();
+
+		ArrayList<List<CardModel>> listCoupleCard = new ArrayList<>();
+		listCoupleCard.add(Arrays.asList(cards.first(), cards.last()));
+		listCoupleCard.add(Arrays.asList(cards.last(), cards.first()));
+
+		for (List<CardModel> listCard : listCoupleCard) {
+			Pattern patternPair = Pattern.compile("(" + listCard.get(0).getRank().getShortName() + ".){2,2}");
+			Pattern patternSet = Pattern.compile("(" + listCard.get(1).getRank().getShortName() + ".){3,3}");
+
+			Matcher matcherPair = patternPair.matcher(this.toStringByRank());
+			Matcher matcherSet = patternSet.matcher(this.toStringByRank());
+
+			if (matcherPair.find() && matcherSet.find()) {
+				Rank rankPair = Rank.fromShortName(String.valueOf(matcherSet.group(0).charAt(0)));
+				Rank rankSet = Rank.fromShortName(String.valueOf(matcherPair.group(0).charAt(0)));
+
+				FullModel fullModel = new FullModel(rankPair, rankSet);
+
+				DrawModel<FullModel> drawModel = new DrawModel(Type.FULL, fullModel, this.toStringByRank(),
+						kickerPack1, kickerPack2);
+				listDraw.add(drawModel);
+				break;
+			}
+		}
+
+		return listDraw;
 	}
 
 	/**

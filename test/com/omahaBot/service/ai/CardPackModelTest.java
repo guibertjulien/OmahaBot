@@ -12,7 +12,7 @@ import com.omahaBot.model.DrawModel;
 import com.omahaBot.model.DrawModel.Type;
 import com.omahaBot.model.HandModel;
 
-public class CardPackTest {
+public class CardPackModelTest {
 
 	@Test
 	public void testIfTwoPair() {
@@ -186,41 +186,41 @@ public class CardPackTest {
 		ArrayList<DrawModel> listDraw = new ArrayList<>();
 		BoardModel boardModel;
 		
-//		// FLOP
-//		boardModel = new BoardModel("7s4s6d", DealStep.FLOP);
-//		listDraw = boardModel.initBoardDrawPower();
-//		System.out.println(listDraw);
-//		assertTrue(listDraw.size() == 1);
-//		assertTrue(listDraw.get(0).getType().equals(Type.FLUSH_DRAW));
-//
-//		listDraw.clear();
-//		boardModel = new BoardModel("7s4sKs", DealStep.FLOP);
-//		listDraw = boardModel.initBoardDrawPower();
-//		System.out.println(listDraw);
-//		assertTrue(listDraw.size() == 1);
-//		assertTrue(listDraw.get(0).getType().equals(Type.FLUSH));
-//
-//		// TURN
-//		listDraw.clear();
-//		boardModel = new BoardModel("7s4s6dKd", DealStep.TURN);
-//		listDraw = boardModel.initBoardDrawPower();
-//		System.out.println(listDraw);
-//		assertTrue(listDraw.size() == 2);
-//		assertTrue(listDraw.get(0).getType().equals(Type.FLUSH_DRAW));
-//
-//		listDraw.clear();
-//		boardModel = new BoardModel("7d4s6dAd", DealStep.TURN);
-//		listDraw = boardModel.initBoardDrawPower();
-//		System.out.println(listDraw);
-//		assertTrue(listDraw.size() == 1);
-//		assertTrue(listDraw.get(0).getType().equals(Type.FLUSH));
+		// FLOP
+		boardModel = new BoardModel("7s4s6d", DealStep.FLOP);
+		listDraw = boardModel.initDraw();
+		System.out.println(listDraw);
+		assertTrue(listDraw.size() == 1);
+		assertTrue(listDraw.get(0).getType().equals(Type.FLUSH_DRAW));
+
+		listDraw.clear();
+		boardModel = new BoardModel("7s4sKs", DealStep.FLOP);
+		listDraw = boardModel.initDraw();
+		System.out.println(listDraw);
+		assertTrue(listDraw.size() == 1);
+		assertTrue(listDraw.get(0).getType().equals(Type.FLUSH));
+
+		// TURN
+		listDraw.clear();
+		boardModel = new BoardModel("7s4s6dKd", DealStep.TURN);
+		listDraw = boardModel.initDraw();
+		System.out.println(listDraw);
+		assertTrue(listDraw.size() == 2);
+		assertTrue(listDraw.get(0).getType().equals(Type.FLUSH_DRAW));
+
+		listDraw.clear();
+		boardModel = new BoardModel("7d4s6dAd", DealStep.TURN);
+		listDraw = boardModel.initDraw();
+		System.out.println(listDraw);
+		assertTrue(listDraw.size() == 1);
+		assertTrue(listDraw.get(0).getType().equals(Type.FLUSH));
 
 		// RIVER
 		listDraw.clear();
 		boardModel = new BoardModel("7s4s6dKdAd", DealStep.RIVER);
-		listDraw = boardModel.initBoardDraw();
+		listDraw = boardModel.initDraw();
 		System.out.println(listDraw);
-		assertTrue(listDraw.size() == 2);
+		assertTrue(listDraw.size() == 1);
 		assertTrue(listDraw.get(0).getType().equals(Type.FLUSH));
 
 	}
@@ -232,25 +232,42 @@ public class CardPackTest {
 		BoardModel boardModel;
 
 		boardModel = new BoardModel("7s7d6d6c7h", DealStep.RIVER);
-		listDraw = boardModel.initBoardDraw();
+		listDraw = boardModel.initDraw();
 		System.out.println(listDraw);
-//		assertTrue(listDraw.size() == 2);
-//		assertTrue(listDraw.get(1).getType().equals(Type.FULL_PAIR_DRAW));
+		assertTrue(listDraw.size() == 2);
+		assertTrue(listDraw.get(0).getType().equals(Type.FULL_SET_DRAW));
+		assertTrue(listDraw.get(1).getType().equals(Type.FULL_PAIR_DRAW));
 		
-		boardModel = new BoardModel("7s7dKc", DealStep.FLOP);
-		listDraw = boardModel.initBoardDraw();
+		boardModel = new BoardModel("7s7dAcKh", DealStep.TURN);
+		listDraw = boardModel.initDraw();
 		System.out.println(listDraw);
+		assertTrue(listDraw.size() == 1);
+		assertTrue(listDraw.get(0).getType().equals(Type.FULL_PAIR_DRAW));
 		
 		boardModel = new BoardModel("QsQdTc", DealStep.FLOP);
-		listDraw = boardModel.initBoardDraw();
+		listDraw = boardModel.initDraw();
 		System.out.println(listDraw);
+		assertTrue(listDraw.size() == 1);
+		assertTrue(listDraw.get(0).getType().equals(Type.FULL_PAIR_DRAW));
 		
 		boardModel = new BoardModel("7s7d7hKc", DealStep.TURN);
-		listDraw = boardModel.initBoardDraw();
+		listDraw = boardModel.initDraw();
 		System.out.println(listDraw);
+		assertTrue(listDraw.size() == 1);
+		assertTrue(listDraw.get(0).getType().equals(Type.FULL_SET_DRAW));
 		
-		boardModel = new BoardModel("QsQdQcTc", DealStep.TURN);
-		listDraw = boardModel.initBoardDraw();
+		boardModel = new BoardModel("QsQdQcTh", DealStep.TURN);
+		listDraw = boardModel.initDraw();
 		System.out.println(listDraw);
+		assertTrue(listDraw.size() == 1);
+		assertTrue(listDraw.get(0).getType().equals(Type.FULL_SET_DRAW));
+		
+		boardModel = new BoardModel("AdAsAh4s4c", DealStep.RIVER);
+		listDraw = boardModel.initDraw();
+		System.out.println(listDraw);
+		assertTrue(listDraw.size() == 1);
+		assertTrue(listDraw.get(0).getType().equals(Type.FULL_SET_DRAW));
+		assertTrue(false);// nuts KO
+
 	}
 }

@@ -25,7 +25,7 @@ public enum Rank {
 	QUEEN("Q"),
 	KING("K"),
 	ACE("A"),
-	UNKNOW("?");
+	UNKNOWN("?");
 	
 	public static String TEN_SCANED = "10";
 

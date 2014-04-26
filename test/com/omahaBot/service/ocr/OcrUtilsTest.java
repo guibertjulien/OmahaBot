@@ -10,18 +10,14 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
+import net.sourceforge.tess4j.TessAPI1.TessPageSegMode;
 import net.sourceforge.tess4j.Tesseract;
 import net.sourceforge.tess4j.TesseractException;
-import net.sourceforge.tess4j.TessAPI1.TessPageSegMode;
 import net.sourceforge.vietocr.ImageHelper;
 
-import org.eclipse.swt.events.KeyEvent;
 import org.junit.Test;
 
-import com.omahaBot.consts.Consts;
 import com.omahaBot.enums.Block;
-import com.omahaBot.service.ocr.OcrServiceImpl;
-import com.omahaBot.service.ocr.OcrUtils;
 
 public class OcrUtilsTest {
 

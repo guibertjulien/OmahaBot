@@ -13,7 +13,7 @@ import com.omahaBot.utils.PermutationsOfN;
  * @author Julien
  * 
  */
-public class HandModel extends CardPack {
+public class HandModel extends CardPackModel {
 
 	public HandModel(SortedSet<CardModel> cards) {
 		super(cards);

@@ -5,7 +5,6 @@ import java.awt.Color;
 import java.awt.Robot;
 import java.util.ArrayList;
 import java.util.EnumSet;
-import java.util.SortedSet;
 import java.util.logging.Logger;
 
 import org.eclipse.swt.widgets.Display;
@@ -18,11 +17,8 @@ import com.omahaBot.enums.PlayerBlock;
 import com.omahaBot.enums.PreFlopPower;
 import com.omahaBot.model.ActionModel;
 import com.omahaBot.model.BoardModel;
-import com.omahaBot.model.CardModel;
 import com.omahaBot.model.HandModel;
 import com.omahaBot.model.PlayerModel;
-import com.omahaBot.service.ai.PostFlopAnalyserServiceImpl;
-import com.omahaBot.service.ai.PreFlopAnalyserServiceImpl;
 import com.omahaBot.ui.form.MainForm;
 
 public class ThreadAction extends MyThread {
@@ -53,19 +49,19 @@ public class ThreadAction extends MyThread {
 
 	private Double lastBet = 0.0;
 
-	private HandModel myHand;
-	private BoardModel board;
+	private final DealStep dealStep;
 
-	private DealStep dealStep;
-	
+	private final HandModel myHand;
+
+	private final BoardModel board;
+
 	private boolean firstTurnBet = true;
-	
-	private PreFlopAnalyserServiceImpl preFlopAnalyserServiceImpl = new PreFlopAnalyserServiceImpl();
 
-	public ThreadAction(MainForm mainForm, DealStep dealStep, BoardModel board) {
+	public ThreadAction(MainForm mainForm, DealStep dealStep, HandModel myHand, BoardModel board) {
 		super();
 		this.mainForm = mainForm;
 		this.dealStep = dealStep;
+		this.myHand = myHand;
 		this.board = board;
 
 		try {
@@ -117,15 +113,9 @@ public class ThreadAction extends MyThread {
 				oldPot = currentPot;
 
 				if (Consts.register && positionPlayerTurnPlay == Consts.MY_TABLEPOSITION) {
-					if (myHand == null) {
-						initMyHand();
-					}
 					play();
 				}
-				else {
-					myHand = new HandModel("AsKsKh2d");
-				}
-				
+
 				final PreFlopPower preFlopPower = preFlopAnalyserServiceImpl.analyseHand(myHand);
 
 				positionPlayerTurnPlayOld = positionPlayerTurnPlay;
@@ -151,24 +141,17 @@ public class ThreadAction extends MyThread {
 		System.out.println(START_LOG + "<< STOP ThreadAction : " + this.getId());
 	}
 
-	private void initMyHand() {
-		SortedSet<CardModel> listCard = ocrService.scanMyHand();
-		myHand = new HandModel(listCard);
-	}
-
 	private void play() {
 
 		BettingDecision bettingDecision = BettingDecision.CHECK_FOLD;
 
 		switch (dealStep) {
 		case PRE_FLOP:
-			PreFlopAnalyserServiceImpl preFlopAnalyserServiceImpl = new PreFlopAnalyserServiceImpl();
 			bettingDecision = preFlopAnalyserServiceImpl.decide(myHand, firstTurnBet);
 			break;
 		case FLOP:
 		case TURN:
 		case RIVER:
-			PostFlopAnalyserServiceImpl postFlopAnalyserServiceImpl = new PostFlopAnalyserServiceImpl();
 			bettingDecision = postFlopAnalyserServiceImpl.decide(myHand, board, firstTurnBet);
 			break;
 		default:
@@ -176,7 +159,7 @@ public class ThreadAction extends MyThread {
 		}
 
 		firstTurnBet = false;
-		
+
 		try {
 			MyRobot robot = new MyRobot();
 			robot.clickAction(bettingDecision, this.getId());

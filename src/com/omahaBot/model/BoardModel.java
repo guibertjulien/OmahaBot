@@ -5,12 +5,17 @@ import java.util.Collections;
 import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import com.omahaBot.enums.DealStep;
+import com.omahaBot.enums.Rank;
 import com.omahaBot.model.DrawModel.Type;
+import com.omahaBot.model.handCategory.FullModel;
+import com.omahaBot.model.handCategory.QuadsModel;
 import com.omahaBot.utils.PermutationsOfN;
 
-public class BoardModel extends CardPack {
+public class BoardModel extends CardPackModel {
 
 	private final DealStep dealStep;
 
@@ -62,41 +67,32 @@ public class BoardModel extends CardPack {
 	/**
 	 * TODO : best practices ?
 	 */
-	public ArrayList<DrawModel> initBoardDraw() {
+	public ArrayList<DrawModel> initDraw() {
 		ArrayList<DrawModel> listDraw = new ArrayList<>();
 
-		if (dealStep.ordinal() > DealStep.PRE_FLOP.ordinal()) {
+		if (!cards.isEmpty()) {
 
-			List<DrawModel> listFlushDraw = null;
-			List<DrawModel> listFullDraw = null;
-
-			// Search FLUSH draw
-			listFlushDraw = searchFlushDraw(Type.FLUSH);
-
-			if (listFlushDraw.isEmpty() && (dealStep.equals(DealStep.FLOP) || dealStep.equals(DealStep.TURN))) {
-				if (listFlushDraw.isEmpty()) {
-					// 1 (FLOP) ou 2 tirages (TURN)
-					listFlushDraw.addAll(searchFlushDraw(Type.FLUSH_DRAW));
-				}
+			if (dealStep.equals(DealStep.FLOP) || dealStep.equals(DealStep.TURN)) {
+				listDraw.addAll(searchFlushDraw(2, 3));
+			}
+			else if (dealStep.equals(DealStep.RIVER)) {
+				listDraw.addAll(searchFlushDraw(3, 3));
 			}
 
 			// Search FULL, BRELAN or DOUBLE PAIR draw
 			// 1 (FLOP) ou 2 tirages (TURN ou RIVER)
-			listFullDraw = searchFullDraw();
+			List<DrawModel> listFullDraw = searchFullDraw();
 
 			if (listFullDraw.isEmpty()) {
-				listFullDraw.add(searchBrelanDraw());
-				listFullDraw.add(searchTwoPairDraw());
+				listDraw.add(searchTopSetDraw());
+				listDraw.add(searchTopTwoPairDraw());
+			} else {
+				listDraw.addAll(listFullDraw);
 			}
-
-			//
-			listDraw.addAll(listFlushDraw);
-			listDraw.addAll(listFullDraw);
-
 		}
 
 		Collections.sort(listDraw);
-		
+
 		return listDraw;
 	}
 
@@ -137,5 +133,61 @@ public class BoardModel extends CardPack {
 		}
 
 		return result;
+	}
+
+	public List<DrawModel> searchFullDraw() {
+
+		ArrayList<DrawModel> listDraw = new ArrayList<>();
+
+		Type type = null;
+
+		for (Rank rank : Rank.values()) {
+			if (!rank.equals(Rank.UNKNOWN)) {
+				Pattern pattern = Pattern.compile("(" + rank.getShortName() + ".){2,4}");
+				Matcher matcher = pattern.matcher(this.toStringByRank());
+
+				if (matcher.find()) {
+					String drawString = matcher.group(0);
+
+					Rank rankPair = Rank.UNKNOWN;
+					Rank rankSet = Rank.UNKNOWN;
+
+					if (drawString.length() == 4) {
+						type = Type.FULL_PAIR_DRAW;
+						rankPair = Rank.fromShortName(String.valueOf(drawString.charAt(0)));
+					} else if (drawString.length() == 6) {
+						type = Type.FULL_SET_DRAW;
+						rankSet = Rank.fromShortName(String.valueOf(drawString.charAt(0)));
+					} else if (drawString.length() == 8) {
+						type = Type.FULL_FOUR_DRAW;
+						rankSet = Rank.fromShortName(String.valueOf(drawString.charAt(0)));
+					}
+
+					FullModel fullModel = new FullModel(rankPair, rankSet);
+					DrawModel<FullModel> drawModel1 = new DrawModel<FullModel>(type, fullModel, drawString,
+							kickerPack1, kickerPack2);
+					listDraw.add(drawModel1);
+
+					Rank rankQuads = Rank.UNKNOWN;
+
+					if (type.equals(Type.FULL_PAIR_DRAW)) {
+						type = Type.QUADS_PAIR_DRAW;
+						rankQuads = rankPair;
+					} else if (type.equals(Type.FULL_PAIR_DRAW)) {
+						type = Type.QUADS_SET_DRAW;
+						rankQuads = rankSet;
+					}
+
+					if (!rankQuads.equals(Rank.UNKNOWN)) {
+						QuadsModel quadsModel = new QuadsModel(rankQuads);
+						DrawModel<QuadsModel> drawModel2 = new DrawModel<QuadsModel>(type, quadsModel, drawString,
+								kickerPack1, kickerPack2);
+						listDraw.add(drawModel2);
+					}
+				}
+			}
+		}
+
+		return listDraw;
 	}
 }

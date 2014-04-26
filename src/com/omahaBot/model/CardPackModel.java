@@ -11,20 +11,23 @@ import com.omahaBot.enums.Rank;
 import com.omahaBot.enums.Suit;
 import com.omahaBot.model.DrawModel.Type;
 import com.omahaBot.model.comparator.SuitComparator;
+import com.omahaBot.model.handCategory.FlushModel;
+import com.omahaBot.model.handCategory.FullModel;
+import com.omahaBot.model.handCategory.TopSetModel;
+import com.omahaBot.model.handCategory.TopTwoPairModel;
 
-public abstract class CardPack {
+public abstract class CardPackModel {
 
 	protected SortedSet<CardModel> cards;
 
-	protected Rank kicker1 = Rank.UNKNOW;
+	protected Rank kickerPack1 = Rank.UNKNOWN;
+	protected Rank kickerPack2 = Rank.UNKNOWN;
 
-	protected Rank kicker2 = Rank.UNKNOW;
-
-	public CardPack(SortedSet<CardModel> cards) {
+	public CardPackModel(SortedSet<CardModel> cards) {
 		this.cards = cards;
 	}
 
-	public CardPack() {
+	public CardPackModel() {
 	}
 
 	/**
@@ -145,7 +148,7 @@ public abstract class CardPack {
 
 		int nbPair = 0;
 		CardModel cardPrec = null;
-		Rank rankPrec = Rank.UNKNOW;
+		Rank rankPrec = Rank.UNKNOWN;
 
 		for (int i = 0; i < listCards.size() && nbPair < nbPairShould; i++) {
 			CardModel card = listCards.get(i);
@@ -272,25 +275,33 @@ public abstract class CardPack {
 		}
 	}
 
-	public List<DrawModel> searchFlushDraw(Type type) {
+	public List<DrawModel> searchFlushDraw(int min, int max) {
 
 		ArrayList<DrawModel> listDraw = new ArrayList<>();
 
-		int nbSuitedCardMin = 3;
-
-		if (type.equals(Type.FLUSH_DRAW)) {
-			nbSuitedCardMin = 2;
-		}
+		Type type;
 
 		for (Suit suit : Suit.values()) {
 			if (!suit.equals(Suit.UNKNOW)) {
-				Pattern pattern = Pattern.compile("(." + suit.getShortName() + "){" + nbSuitedCardMin + ","
-						+ cards.size() + "}");
+
+				Pattern pattern = Pattern.compile("(." + suit.getShortName() + "){" + min + "," + max + "}");
 				Matcher matcher = pattern.matcher(this.toStringBySuit());
 
 				if (matcher.find()) {
 					String group = matcher.group(0);
-					listDraw.add(new DrawModel(type, group, kicker1, kicker2));
+
+					if (group.length() == max * 2) {
+						type = Type.FLUSH;
+					}
+					else {
+						type = Type.FLUSH_DRAW;
+					}
+
+					CardModel cardSuitKicker = new CardModel(group.substring(group.length() - 2));
+					FlushModel flushModel = new FlushModel(cardSuitKicker.getRank(), suit);
+
+					DrawModel<FullModel> drawModel = new DrawModel(type, flushModel, group, kickerPack1, kickerPack2);
+					listDraw.add(drawModel);
 				}
 			}
 		}
@@ -298,85 +309,58 @@ public abstract class CardPack {
 		return listDraw;
 	}
 
-	public List<DrawModel> searchFullDraw() {
-
-		ArrayList<DrawModel> listDraw = new ArrayList<>();
-
-		Type type = null;
-
-		for (Rank rank : Rank.values()) {
-			if (!rank.equals(Rank.UNKNOW)) {
-				Pattern pattern = Pattern.compile("(" + rank.getShortName() + ".){2,4}");
-				Matcher matcher = pattern.matcher(this.toStringByRank());
-
-				if (matcher.find()) {
-					String group = matcher.group(0);
-
-					if (group.length() == 4) {
-						type = Type.FULL_PAIR_DRAW;
-					} else if (group.length() == 6) {
-						type = Type.FULL_THREE_DRAW;
-					} else if (group.length() == 8) {
-						type = Type.FULL_FOUR_DRAW;
-					}
-
-					if (type.equals(Type.FULL_PAIR_DRAW)) {
-						listDraw.add(new DrawModel(Type.CARRE_DRAW, group, kicker1, kicker2));
-					}
-					
-					listDraw.add(new DrawModel(type, group, kicker1, kicker2));
-				}
-			}
-		}
-
-		return listDraw;
-	}
-
-	public DrawModel searchTwoPairDraw() {
+	public DrawModel<TopTwoPairModel> searchTopTwoPairDraw() {
 
 		ArrayList<CardModel> listCards = new ArrayList<>(cards);
 		Collections.reverse(listCards);
-		
-		CardModel card1 = listCards.get(0);
-		CardModel card2 = listCards.get(1);
-		String drawString = card1.toString().concat(card2.toString());
-		
-		DrawModel drawModel = new DrawModel(Type.TWO_PAIR_DRAW, drawString, kicker1, kicker2);
+
+		CardModel topPair1 = listCards.get(0);
+		CardModel topPair2 = listCards.get(1);
+		String drawString = topPair1.toString().concat(topPair2.toString());
+
+		TopTwoPairModel topTwoPairModel = new TopTwoPairModel(topPair1.getRank(), topPair2.getRank());
+
+		DrawModel<TopTwoPairModel> drawModel = new DrawModel<TopTwoPairModel>(Type.TOP_TWO_PAIR_DRAW, topTwoPairModel,
+				drawString, kickerPack1, kickerPack2);
 
 		return drawModel;
 	}
-	
+
 	/**
 	 * ThreeOfAKind
+	 * 
 	 * @return
 	 */
-	public DrawModel searchBrelanDraw() {
+	public DrawModel<TopSetModel> searchTopSetDraw() {
 		ArrayList<CardModel> listCards = new ArrayList<>(cards);
 		Collections.reverse(listCards);
-		
-		CardModel card1 = listCards.get(0);
-		String drawString = card1.toString();
-				
-		DrawModel drawModel = new DrawModel(Type.BRELAN_DRAW, drawString, kicker1, kicker2);
-		
+
+		CardModel topSet = listCards.get(0);
+		String drawString = topSet.toString();
+
+		TopSetModel topSetModel = new TopSetModel(topSet.getRank());
+
+		DrawModel<TopSetModel> drawModel = new DrawModel<TopSetModel>(Type.TOP_SET_DRAW, topSetModel, drawString,
+				kickerPack1, kickerPack2);
+
 		return drawModel;
 	}
-	
+
 	protected void initKickers() {
 		if (cards != null && !cards.isEmpty()) {
 			ArrayList<CardModel> listCards = new ArrayList<>(cards);
 			Collections.reverse(listCards);
 
-			kicker1 = listCards.get(0).getRank();
+			kickerPack1 = listCards.get(0).getRank();
 
-			Rank rank = kicker1;
+			Rank rank = kickerPack1;
 
 			int i = 0;
-			while (kicker1.equals(rank) && i < listCards.size() - 1) {
+			while (kickerPack1.equals(rank) && i < listCards.size() - 1) {
 				rank = listCards.get(++i).getRank();
 			}
 
-			kicker2 = listCards.get(i).getRank();
+			kickerPack2 = listCards.get(i).getRank();
 		}
 	}
 }

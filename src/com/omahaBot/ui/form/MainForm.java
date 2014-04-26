@@ -1,6 +1,7 @@
 package com.omahaBot.ui.form;
 
 import java.io.PrintStream;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -22,10 +23,12 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
+import org.eclipse.wb.swt.SWTResourceManager;
 
 import com.omahaBot.enums.PreFlopPower;
 import com.omahaBot.model.ActionModel;
 import com.omahaBot.model.BoardModel;
+import com.omahaBot.model.CombinaisonModel;
 import com.omahaBot.model.DealModel;
 import com.omahaBot.model.DealStepModel;
 import com.omahaBot.model.HandModel;
@@ -33,7 +36,6 @@ import com.omahaBot.model.PlayerModel;
 import com.omahaBot.service.bot.ThreadDeal;
 import com.omahaBot.service.ocr.OcrServiceImpl;
 import com.omahaBot.utils.CustomOutputStream;
-import org.eclipse.wb.swt.SWTResourceManager;
 
 /**
  * TODO BUILDER, HELPER...
@@ -223,12 +225,12 @@ public class MainForm {
 		analyseWidget = new AnalyseWidget(tabFolder, SWT.NONE);
 		tbtm3.setControl(analyseWidget);
 
-		// keeps reference of standard output stream
-		standardOut = System.out;
-
-		// re-assigns standard output stream and error output stream
-		System.setOut(printStream);
-		System.setErr(printStream);
+//		// keeps reference of standard output stream
+//		standardOut = System.out;
+//
+//		// re-assigns standard output stream and error output stream
+//		System.setOut(printStream);
+//		System.setErr(printStream);
 	}
 
 	public void initDealWidget(DealModel dealModel) {
@@ -259,6 +261,10 @@ public class MainForm {
 	
 	public void initAnalyseWidget(BoardModel boardModel) {
 		analyseWidget.displayBoardDraw(boardModel);
+	}
+	
+	public void initAnalyseWidget(ArrayList<CombinaisonModel> combinaisons) {
+		analyseWidget.displayCombinaisonDraw(combinaisons);
 	}
 
 	public void initAnalyseWidget(HandModel myHand, PreFlopPower preFlopPower) {
