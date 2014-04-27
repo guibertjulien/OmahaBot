@@ -17,6 +17,7 @@ import com.omahaBot.enums.DealStep;
 import com.omahaBot.enums.Suit;
 import com.omahaBot.model.BoardModel;
 import com.omahaBot.model.CardModel;
+import com.omahaBot.model.CombinaisonModel;
 import com.omahaBot.model.DealStepModel;
 import com.omahaBot.model.HandModel;
 import com.omahaBot.ui.form.MainForm;
@@ -37,6 +38,8 @@ public class ThreadDealStep extends MyThread {
 
 	private BoardModel board;
 
+	private ArrayList<CombinaisonModel> combinaisonModels;
+	
 	private Robot robot;
 	//
 	// private ThreadPot threadPot;
@@ -84,8 +87,11 @@ public class ThreadDealStep extends MyThread {
 					}
 				}
 				else {
-					myHand = new HandModel("AsKsKh2d");
+					myHand = new HandModel("AsKsKdAd");
 				}
+				
+				// analyse des permutations hand / board
+				combinaisonModels = postFlopAnalyserServiceImpl.initCombinaisons(myHand, board);
 
 				arretThreadChild();
 
@@ -101,7 +107,7 @@ public class ThreadDealStep extends MyThread {
 
 						if (dealStepModel.getDealStep().ordinal() > DealStep.PRE_FLOP.ordinal()) {
 							mainForm.initAnalyseWidget(board);
-							mainForm.initAnalyseWidget(postFlopAnalyserServiceImpl.initCombinaisons(myHand, board));
+							mainForm.initAnalyseWidget(myHand, board, combinaisonModels);
 						}
 					}
 				});

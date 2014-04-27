@@ -21,11 +21,13 @@ import com.omahaBot.model.BoardModel;
 import com.omahaBot.model.CombinaisonModel;
 import com.omahaBot.model.DrawModel;
 import com.omahaBot.model.HandModel;
+import com.omahaBot.utils.CardUtils;
 
 public class AnalyseWidget extends Composite {
 	private Table table_boardDraw;
 	private Table table_hand;
 	private Label lbl_boardDrawValue;
+	private Label lbl_handDrawValue;
 	private Label lbl_handValue;
 	private Label lbl_rankPowerValue;
 	private Label lbl_suitPowerValue;
@@ -104,25 +106,25 @@ public class AnalyseWidget extends Composite {
 		TableViewerColumn tableViewerColumn_1 = new TableViewerColumn(tableViewer, SWT.NONE);
 		TableColumn tblclmnDraw = tableViewerColumn_1.getColumn();
 		tblclmnDraw.setResizable(false);
-		tblclmnDraw.setWidth(60);
+		tblclmnDraw.setWidth(80);
 		tblclmnDraw.setText("Draws");
 
 		TableViewerColumn tableViewerColumn_3 = new TableViewerColumn(tableViewer, SWT.NONE);
 		TableColumn tblclmnBestHand = tableViewerColumn_3.getColumn();
-		tblclmnBestHand.setToolTipText("Best hole cards");
+		tblclmnBestHand.setToolTipText("");
 		tblclmnBestHand.setWidth(50);
 		tblclmnBestHand.setText("Nuts");
 
 		TableViewerColumn tableViewerColumn_2 = new TableViewerColumn(tableViewer, SWT.NONE);
 		TableColumn tblclmnOuts = tableViewerColumn_2.getColumn();
 		tblclmnOuts.setResizable(false);
-		tblclmnOuts.setWidth(50);
+		tblclmnOuts.setWidth(40);
 		tblclmnOuts.setText("Outs");
 
 		TableViewerColumn tableViewerColumn = new TableViewerColumn(tableViewer, SWT.NONE);
 		TableColumn tblclmnPercent = tableViewerColumn.getColumn();
 		tblclmnPercent.setResizable(false);
-		tblclmnPercent.setWidth(40);
+		tblclmnPercent.setWidth(30);
 		tblclmnPercent.setText("%");
 
 		Composite composite_1 = new Composite(this, SWT.NONE);
@@ -132,7 +134,7 @@ public class AnalyseWidget extends Composite {
 		lbl_hand.setFont(SWTResourceManager.getFont("Segoe UI", 9, SWT.BOLD));
 		lbl_hand.setText("HandDraws for :");
 
-		Label lbl_handDrawValue = new Label(composite_1, SWT.NONE);
+		lbl_handDrawValue = new Label(composite_1, SWT.NONE);
 		GridData gd_lbl_handDrawValue = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
 		gd_lbl_handDrawValue.widthHint = 150;
 		lbl_handDrawValue.setLayoutData(gd_lbl_handDrawValue);
@@ -140,6 +142,7 @@ public class AnalyseWidget extends Composite {
 
 		TableViewer tableViewer_1 = new TableViewer(this, SWT.BORDER | SWT.FULL_SELECTION);
 		table_hand = tableViewer_1.getTable();
+		table_hand.setFont(SWTResourceManager.getFont("Segoe UI", 8, SWT.NORMAL));
 		GridData gd_table_hand = new GridData(SWT.LEFT, SWT.TOP, true, false, 1, 1);
 		gd_table_hand.heightHint = 150;
 		table_hand.setLayoutData(gd_table_hand);
@@ -152,27 +155,27 @@ public class AnalyseWidget extends Composite {
 		tableColumn.setWidth(120);
 		tableColumn.setText("Type");
 		
+		TableViewerColumn tableViewerColumn_8 = new TableViewerColumn(tableViewer_1, SWT.NONE);
+		TableColumn tblclmnHole = tableViewerColumn_8.getColumn();
+		tblclmnHole.setWidth(80);
+		tblclmnHole.setText("Permutation");
+		tblclmnHole.setResizable(false);
+		
 		TableViewerColumn tableViewerColumn_6 = new TableViewerColumn(tableViewer_1, SWT.NONE);
-		TableColumn tableColumn_1 = tableViewerColumn_6.getColumn();
-		tableColumn_1.setWidth(60);
-		tableColumn_1.setText("Draws");
-		tableColumn_1.setResizable(false);
+		TableColumn tblclmnBoard = tableViewerColumn_6.getColumn();
+		tblclmnBoard.setWidth(50);
+		tblclmnBoard.setText("Nuts");
+		tblclmnBoard.setResizable(false);
 		
 		TableViewerColumn tableViewerColumn_7 = new TableViewerColumn(tableViewer_1, SWT.NONE);
-		TableColumn tableColumn_2 = tableViewerColumn_7.getColumn();
-		tableColumn_2.setWidth(50);
-		tableColumn_2.setToolTipText("Best hole cards");
-		tableColumn_2.setText("Nuts");
-		
-		TableViewerColumn tableViewerColumn_8 = new TableViewerColumn(tableViewer_1, SWT.NONE);
-		TableColumn tableColumn_3 = tableViewerColumn_8.getColumn();
-		tableColumn_3.setWidth(50);
-		tableColumn_3.setText("Outs");
-		tableColumn_3.setResizable(false);
+		TableColumn tblclmnOuts_1 = tableViewerColumn_7.getColumn();
+		tblclmnOuts_1.setWidth(40);
+		tblclmnOuts_1.setToolTipText("");
+		tblclmnOuts_1.setText("Outs");
 		
 		TableViewerColumn tableViewerColumn_9 = new TableViewerColumn(tableViewer_1, SWT.NONE);
 		TableColumn tableColumn_4 = tableViewerColumn_9.getColumn();
-		tableColumn_4.setWidth(40);
+		tableColumn_4.setWidth(30);
 		tableColumn_4.setText("%");
 		tableColumn_4.setResizable(false);
 
@@ -198,15 +201,17 @@ public class AnalyseWidget extends Composite {
 		}
 	}
 
-	public void displayCombinaisonDraw(ArrayList<CombinaisonModel> combinaisons) {
+	public void displayCombinaisonDraw(HandModel myHand, BoardModel board, ArrayList<CombinaisonModel> combinaisons) {
 		table_hand.removeAll();
 
+		lbl_handDrawValue.setText("" + myHand.toStringByRank() + "][" + board.toStringByRank() + "]");
+		
 		for (CombinaisonModel combinaisonModel : combinaisons) {
 			ArrayList<DrawModel> listDraw = combinaisonModel.initDraw();
 			
 			for (DrawModel drawModel : listDraw) {
 				TableItem item1 = new TableItem(table_hand, SWT.NONE);
-				item1.setText(new String[] { drawModel.getType().name(), drawModel.getDrawString(),
+				item1.setText(new String[] { drawModel.getType().name(), combinaisonModel.toString(), 
 						drawModel.displayNuts(), String.valueOf(drawModel.getNbOut()),
 						String.valueOf(drawModel.getPercent()) });
 			}	

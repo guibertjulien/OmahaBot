@@ -4,9 +4,12 @@ import java.util.ArrayList;
 
 import org.junit.Test;
 
+import com.omahaBot.enums.DealStep;
+import com.omahaBot.model.BoardModel;
 import com.omahaBot.model.CardModel;
 import com.omahaBot.model.CombinaisonModel;
 import com.omahaBot.model.DrawModel;
+import com.omahaBot.model.HandModel;
 
 public class CombinaisonModelTest {
 
@@ -21,9 +24,9 @@ public class CombinaisonModelTest {
 
 		listHoleCard.add(new CardModel("As"));
 		listHoleCard.add(new CardModel("Ks"));
-		listHoleCard.add(new CardModel("2s"));
-		listHoleCard.add(new CardModel("3s"));
-		listHoleCard.add(new CardModel("4s"));
+		listBoardCard.add(new CardModel("2s"));
+		listBoardCard.add(new CardModel("3s"));
+		listBoardCard.add(new CardModel("4d"));
 		
 		combinaisonModel = new CombinaisonModel(listHoleCard, listBoardCard);
 		listDraw = combinaisonModel.initDraw();
@@ -62,5 +65,29 @@ public class CombinaisonModelTest {
 		listDraw = combinaisonModel.initDraw();
 		System.out.println(listDraw);
 
+	}
+	
+	@Test
+	public void test1() {
+		ArrayList<DrawModel> listDraw = new ArrayList<>();
+		
+		ArrayList<CardModel> listHoleCard = new ArrayList<>();
+		ArrayList<CardModel> listBoardCard = new ArrayList<>();
+
+		HandModel handModel = new HandModel("AsAdKsKd");
+		BoardModel boardModel = new BoardModel("8s6sAh8c7s", DealStep.RIVER);   
+		
+		PostFlopAnalyserServiceImpl analyserServiceImpl = new PostFlopAnalyserServiceImpl();
+		
+		ArrayList<CombinaisonModel> combinaisonModels = analyserServiceImpl.initCombinaisons(handModel, boardModel);
+		
+		System.out.println(combinaisonModels);
+		
+		for (CombinaisonModel combinaisonModel : combinaisonModels) {
+			listDraw.addAll(combinaisonModel.initDraw());
+		}
+		
+		System.out.println("-----------");
+		System.out.println(listDraw);
 	}
 }

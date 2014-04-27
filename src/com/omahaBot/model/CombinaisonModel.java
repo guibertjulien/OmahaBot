@@ -9,10 +9,13 @@ import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import lombok.Data;
+
 import com.omahaBot.enums.PostFlopPowerType;
 import com.omahaBot.enums.Rank;
 import com.omahaBot.model.DrawModel.Type;
 import com.omahaBot.model.handCategory.FullModel;
+import com.omahaBot.utils.CardUtils;
 
 /**
  * 5 cards (permutations of 2 hole cards and 3 board cards)
@@ -26,7 +29,14 @@ public class CombinaisonModel extends CardPackModel implements Comparable<Combin
 
 	private PostFlopPowerType postFlopPowerType;
 
+	private final List<CardModel> permutationHand;
+
+	private final List<CardModel> permutationBoard;
+
 	public CombinaisonModel(List<CardModel> permutationHand, List<CardModel> permutationBoard) {
+		this.permutationHand = permutationHand;
+		this.permutationBoard = permutationBoard;
+
 		cards = new TreeSet<CardModel>();
 		cards.addAll(permutationHand);
 		cards.addAll(permutationBoard);
@@ -145,6 +155,7 @@ public class CombinaisonModel extends CardPackModel implements Comparable<Combin
 
 	@Override
 	public String toString() {
-		return "CombinaisonModel [cards=" + cards + ", postFlopPowerType=" + postFlopPowerType + "]";
+		return "[" + CardUtils.cardsToString(permutationHand) + "][" + CardUtils.cardsToString(permutationBoard) + "]";
 	}
+
 }

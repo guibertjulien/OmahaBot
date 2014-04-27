@@ -225,12 +225,12 @@ public class MainForm {
 		analyseWidget = new AnalyseWidget(tabFolder, SWT.NONE);
 		tbtm3.setControl(analyseWidget);
 
-//		// keeps reference of standard output stream
-//		standardOut = System.out;
-//
-//		// re-assigns standard output stream and error output stream
-//		System.setOut(printStream);
-//		System.setErr(printStream);
+		// keeps reference of standard output stream
+		standardOut = System.out;
+
+		// re-assigns standard output stream and error output stream
+		System.setOut(printStream);
+		System.setErr(printStream);
 	}
 
 	public void initDealWidget(DealModel dealModel) {
@@ -263,8 +263,8 @@ public class MainForm {
 		analyseWidget.displayBoardDraw(boardModel);
 	}
 	
-	public void initAnalyseWidget(ArrayList<CombinaisonModel> combinaisons) {
-		analyseWidget.displayCombinaisonDraw(combinaisons);
+	public void initAnalyseWidget(HandModel myHand, BoardModel board, ArrayList<CombinaisonModel> combinaisons) {
+		analyseWidget.displayCombinaisonDraw(myHand, board, combinaisons);
 	}
 
 	public void initAnalyseWidget(HandModel myHand, PreFlopPower preFlopPower) {
