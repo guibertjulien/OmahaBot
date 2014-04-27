@@ -9,8 +9,8 @@ import com.omahaBot.enums.Rank;
 import com.omahaBot.model.handCategory.FlushModel;
 import com.omahaBot.model.handCategory.FullModel;
 import com.omahaBot.model.handCategory.QuadsModel;
-import com.omahaBot.model.handCategory.TopSetModel;
-import com.omahaBot.model.handCategory.TopTwoPairModel;
+import com.omahaBot.model.handCategory.SetModel;
+import com.omahaBot.model.handCategory.TwoPairModel;
 
 public @Data
 class DrawModel<T> implements Comparable<DrawModel> {
@@ -28,6 +28,10 @@ class DrawModel<T> implements Comparable<DrawModel> {
 		QUADS_SET_DRAW,
 		FULL_FOUR_DRAW,
 		STRAIGHT_FLUSH_DRAW,
+		ONE_PAIR,
+		TWO_PAIR,
+		THREE_OF_A_KIND,
+		FOUR_OF_A_KIND;
 	}
 
 	private static String PREFIX_FLUSH = "FLUSH";
@@ -75,10 +79,10 @@ class DrawModel<T> implements Comparable<DrawModel> {
 			nuts = ((FullModel) handCategory).initNuts(type, kickerPack1, kickerPack2);
 		} else if (handCategory instanceof QuadsModel) {
 			nuts = ((QuadsModel) handCategory).initNuts();
-		} else if (handCategory instanceof TopSetModel) {
-			nuts = ((TopSetModel) handCategory).initNuts();
-		} else if (handCategory instanceof TopTwoPairModel) {
-			nuts = ((TopTwoPairModel) handCategory).initNuts();
+		} else if (handCategory instanceof SetModel) {
+			nuts = ((SetModel) handCategory).initNuts();
+		} else if (handCategory instanceof TwoPairModel) {
+			nuts = ((TwoPairModel) handCategory).initNuts();
 		}
 	}
 
@@ -90,7 +94,7 @@ class DrawModel<T> implements Comparable<DrawModel> {
 	public String displayNuts() {
 		String display = "";
 
-		if (!nuts.isEmpty()) {
+		if (nuts != null && !nuts.isEmpty()) {
 			CardModel card1 = nuts.first();
 			CardModel card2 = nuts.last();
 

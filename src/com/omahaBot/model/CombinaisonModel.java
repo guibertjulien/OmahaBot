@@ -1,20 +1,20 @@
 package com.omahaBot.model;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import lombok.Data;
-
 import com.omahaBot.enums.PostFlopPowerType;
 import com.omahaBot.enums.Rank;
 import com.omahaBot.model.DrawModel.Type;
 import com.omahaBot.model.handCategory.FullModel;
+import com.omahaBot.model.handCategory.OnePairModel;
+import com.omahaBot.model.handCategory.QuadsModel;
+import com.omahaBot.model.handCategory.SetModel;
+import com.omahaBot.model.handCategory.TwoPairModel;
 import com.omahaBot.utils.CardUtils;
 
 /**
@@ -59,44 +59,74 @@ public class CombinaisonModel extends CardPackModel implements Comparable<Combin
 		ArrayList<DrawModel> listDraw = new ArrayList<>();
 
 		if (!cards.isEmpty()) {
-			listDraw.addAll(searchFlushDraw(4, 5));
-			listDraw.addAll(searchFullDraw());
+			if (hasFlushDraw()) {
+				listDraw.addAll(searchFlushDraw(4, 5));
+			}
+
+			listDraw.add(searchRankDraw());
 		}
 
-		Collections.sort(listDraw);
+		// Collections.sort(listDraw);
 
 		return listDraw;
 	}
 
-	public List<DrawModel> searchFullDraw() {
+	public <T> DrawModel<T> searchRankDraw() {
 
-		ArrayList<DrawModel> listDraw = new ArrayList<>();
+		DrawModel<T> drawModel = null;
 
-		ArrayList<List<CardModel>> listCoupleCard = new ArrayList<>();
-		listCoupleCard.add(Arrays.asList(cards.first(), cards.last()));
-		listCoupleCard.add(Arrays.asList(cards.last(), cards.first()));
+		String combinaisonWhithoutSuit = this.toStringByRank().replaceAll("(s|h|d|c)", ".");
 
-		for (List<CardModel> listCard : listCoupleCard) {
-			Pattern patternPair = Pattern.compile("(" + listCard.get(0).getRank().getShortName() + ".){2,2}");
-			Pattern patternSet = Pattern.compile("(" + listCard.get(1).getRank().getShortName() + ".){3,3}");
+		Pattern pattern = Pattern.compile("(\\w.)\\1{1,}");
+		Matcher matcher = pattern.matcher(combinaisonWhithoutSuit);
 
-			Matcher matcherPair = patternPair.matcher(this.toStringByRank());
-			Matcher matcherSet = patternSet.matcher(this.toStringByRank());
+		if (matcher.find()) {
+			String group1 = matcher.group(0);
+			Rank rank1 = Rank.fromShortName(String.valueOf(matcher.group(0).charAt(0)));
+			Rank rank2 = Rank.UNKNOWN;
 
-			if (matcherPair.find() && matcherSet.find()) {
-				Rank rankPair = Rank.fromShortName(String.valueOf(matcherSet.group(0).charAt(0)));
-				Rank rankSet = Rank.fromShortName(String.valueOf(matcherPair.group(0).charAt(0)));
-
-				FullModel fullModel = new FullModel(rankPair, rankSet);
-
-				DrawModel<FullModel> drawModel = new DrawModel(Type.FULL, fullModel, this.toStringByRank(),
+			if (group1.length() == 8) {
+				QuadsModel quadsModel = new QuadsModel(rank1);
+				drawModel = new DrawModel(Type.FOUR_OF_A_KIND, quadsModel, this.toStringByRank(),
 						kickerPack1, kickerPack2);
-				listDraw.add(drawModel);
-				break;
+			} else if (group1.length() == 6) {
+				if (matcher.find()) {
+					rank2 = Rank.fromShortName(String.valueOf(matcher.group(1).charAt(0)));
+					FullModel fullModel = new FullModel(rank2, rank1);
+					drawModel = new DrawModel(Type.FULL, fullModel, this.toStringByRank(),
+							kickerPack1, kickerPack2);
+				}
+				else {
+					SetModel setModel = new SetModel(rank1);
+					drawModel = new DrawModel(Type.THREE_OF_A_KIND, setModel, this.toStringByRank(),
+							kickerPack1, kickerPack2);
+				}
+			} else if (group1.length() == 4) {
+				if (matcher.find()) {
+					String group2 = matcher.group(0);
+
+					if (group2.length() == 6) {
+						rank2 = Rank.fromShortName(String.valueOf(matcher.group(1).charAt(0)));
+						FullModel fullModel = new FullModel(rank1, rank2);
+						drawModel = new DrawModel(Type.FULL, fullModel, this.toStringByRank(),
+								kickerPack1, kickerPack2);
+					}
+					else {
+						rank2 = Rank.fromShortName(String.valueOf(matcher.group(1).charAt(0)));
+						TwoPairModel twoPairModel = new TwoPairModel(rank2, rank1);
+						drawModel = new DrawModel(Type.TWO_PAIR, twoPairModel, this.toStringByRank(),
+								kickerPack1, kickerPack2);
+					}
+				}
+				else {
+					OnePairModel onePairModel = new OnePairModel(rank1);
+					drawModel = new DrawModel(Type.ONE_PAIR, onePairModel, this.toStringByRank(),
+							kickerPack1, kickerPack2);
+				}
 			}
 		}
 
-		return listDraw;
+		return drawModel;
 	}
 
 	/**
@@ -142,15 +172,18 @@ public class CombinaisonModel extends CardPackModel implements Comparable<Combin
 
 	@Override
 	public int compareTo(CombinaisonModel o) {
-		if (this.getHandPowerType().ordinal() < o.getHandPowerType().ordinal()) {
-			return 1;
-		}
-		else if (this.getHandPowerType().ordinal() > o.getHandPowerType().ordinal()) {
-			return -1;
-		}
-		else {
-			return 0;
-		}
+		return 1;
+		// if (this.getHandPowerType().ordinal() <
+		// o.getHandPowerType().ordinal()) {
+		// return 1;
+		// }
+		// else if (this.getHandPowerType().ordinal() >
+		// o.getHandPowerType().ordinal()) {
+		// return -1;
+		// }
+		// else {
+		// return 0;
+		// }
 	}
 
 	@Override
@@ -158,4 +191,11 @@ public class CombinaisonModel extends CardPackModel implements Comparable<Combin
 		return "[" + CardUtils.cardsToString(permutationHand) + "][" + CardUtils.cardsToString(permutationBoard) + "]";
 	}
 
+	public boolean hasFlushDraw() {
+		CardModel holeCard1 = permutationHand.get(0);
+		CardModel holeCard2 = permutationHand.get(1);
+
+		return holeCard1.getSuit().equals(holeCard2.getSuit());
+
+	}
 }

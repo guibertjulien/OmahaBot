@@ -5,6 +5,7 @@ import java.awt.Color;
 import java.awt.Robot;
 import java.util.ArrayList;
 import java.util.EnumSet;
+import java.util.SortedSet;
 import java.util.logging.Logger;
 
 import org.eclipse.swt.widgets.Display;
@@ -17,6 +18,8 @@ import com.omahaBot.enums.PlayerBlock;
 import com.omahaBot.enums.PreFlopPower;
 import com.omahaBot.model.ActionModel;
 import com.omahaBot.model.BoardModel;
+import com.omahaBot.model.CardModel;
+import com.omahaBot.model.CombinaisonModel;
 import com.omahaBot.model.HandModel;
 import com.omahaBot.model.PlayerModel;
 import com.omahaBot.ui.form.MainForm;
@@ -51,17 +54,20 @@ public class ThreadAction extends MyThread {
 
 	private final DealStep dealStep;
 
-	private final HandModel myHand;
-
 	private final BoardModel board;
+
+	private HandModel myHand;
+
+	private ArrayList<CombinaisonModel> combinaisonModels = new ArrayList<>();
+
+	private PreFlopPower preFlopPower;
 
 	private boolean firstTurnBet = true;
 
-	public ThreadAction(MainForm mainForm, DealStep dealStep, HandModel myHand, BoardModel board) {
+	public ThreadAction(MainForm mainForm, DealStep dealStep, BoardModel board) {
 		super();
 		this.mainForm = mainForm;
 		this.dealStep = dealStep;
-		this.myHand = myHand;
 		this.board = board;
 
 		try {
@@ -113,10 +119,27 @@ public class ThreadAction extends MyThread {
 				oldPot = currentPot;
 
 				if (Consts.register && positionPlayerTurnPlay == Consts.MY_TABLEPOSITION) {
-					play();
-				}
+					combinaisonModels.clear();
 
-				final PreFlopPower preFlopPower = preFlopAnalyserServiceImpl.analyseHand(myHand);
+					if (myHand == null) {
+						initMyHand();
+					}
+
+					switch (dealStep) {
+					case PRE_FLOP:
+						preFlopPower = preFlopAnalyserServiceImpl.analyseHand(myHand);
+						break;
+					case FLOP:
+					case TURN:
+					case RIVER:
+						combinaisonModels.addAll(postFlopAnalyserServiceImpl.initCombinaisons(myHand, board));
+						break;
+					default:
+						break;
+					}
+
+					// play();
+				}
 
 				positionPlayerTurnPlayOld = positionPlayerTurnPlay;
 
@@ -125,7 +148,20 @@ public class ThreadAction extends MyThread {
 						mainForm.initPotWidget(currentPot);
 						mainForm.initActionWidget(actionModel);
 						mainForm.initPlayerWidget(listCurrentPlayer);
-						mainForm.initAnalyseWidget(myHand, preFlopPower);
+
+						switch (dealStep) {
+						case PRE_FLOP:
+							mainForm.initAnalyseWidget(myHand, preFlopPower);
+							break;
+						case FLOP:
+						case TURN:
+						case RIVER:
+							mainForm.initAnalyseWidget(board);
+							mainForm.initAnalyseWidget(myHand, board, combinaisonModels);
+							break;
+						default:
+							break;
+						}
 					}
 				});
 			}
@@ -304,5 +340,10 @@ public class ThreadAction extends MyThread {
 				mainForm.initPotWidget(oldPot);
 			}
 		});
+	}
+
+	private void initMyHand() {
+		SortedSet<CardModel> listCard = ocrService.scanMyHand();
+		myHand = new HandModel(listCard);
 	}
 }

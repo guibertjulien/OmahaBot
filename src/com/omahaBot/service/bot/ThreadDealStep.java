@@ -17,9 +17,7 @@ import com.omahaBot.enums.DealStep;
 import com.omahaBot.enums.Suit;
 import com.omahaBot.model.BoardModel;
 import com.omahaBot.model.CardModel;
-import com.omahaBot.model.CombinaisonModel;
 import com.omahaBot.model.DealStepModel;
-import com.omahaBot.model.HandModel;
 import com.omahaBot.ui.form.MainForm;
 
 public class ThreadDealStep extends MyThread {
@@ -34,11 +32,7 @@ public class ThreadDealStep extends MyThread {
 
 	private DealStepModel dealStepModel;
 
-	private HandModel myHand;
-
 	private BoardModel board;
-
-	private ArrayList<CombinaisonModel> combinaisonModels;
 	
 	private Robot robot;
 	//
@@ -81,34 +75,17 @@ public class ThreadDealStep extends MyThread {
 				dealStepModel.setDealStep(currentDealStep);
 				dealStepModel.setListBoardCard(listBoardCard);
 
-				if (Consts.register) {
-					if (myHand == null) {
-						initMyHand();
-					}
-				}
-				else {
-					myHand = new HandModel("AsKsKdAd");
-				}
-				
-				// analyse des permutations hand / board
-				combinaisonModels = postFlopAnalyserServiceImpl.initCombinaisons(myHand, board);
-
 				arretThreadChild();
 
 				if (running) {
 					// demarrage d'un nouveau thread
-					threadAction = new ThreadAction(mainForm, currentDealStep, myHand, board);
+					threadAction = new ThreadAction(mainForm, currentDealStep, board);
 					threadAction.start();
 				}
 
 				Display.getDefault().syncExec(new Runnable() {
 					public void run() {
 						mainForm.initBoardWidget(dealStepModel);
-
-						if (dealStepModel.getDealStep().ordinal() > DealStep.PRE_FLOP.ordinal()) {
-							mainForm.initAnalyseWidget(board);
-							mainForm.initAnalyseWidget(myHand, board, combinaisonModels);
-						}
 					}
 				});
 			}
@@ -211,10 +188,5 @@ public class ThreadDealStep extends MyThread {
 
 	@Override
 	public void initialize() {
-	}
-
-	private void initMyHand() {
-		SortedSet<CardModel> listCard = ocrService.scanMyHand();
-		myHand = new HandModel(listCard);
 	}
 }

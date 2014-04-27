@@ -13,8 +13,8 @@ import com.omahaBot.model.DrawModel.Type;
 import com.omahaBot.model.comparator.SuitComparator;
 import com.omahaBot.model.handCategory.FlushModel;
 import com.omahaBot.model.handCategory.FullModel;
-import com.omahaBot.model.handCategory.TopSetModel;
-import com.omahaBot.model.handCategory.TopTwoPairModel;
+import com.omahaBot.model.handCategory.SetModel;
+import com.omahaBot.model.handCategory.TwoPairModel;
 
 public abstract class CardPackModel {
 
@@ -309,7 +309,7 @@ public abstract class CardPackModel {
 		return listDraw;
 	}
 
-	public DrawModel<TopTwoPairModel> searchTopTwoPairDraw() {
+	public DrawModel<TwoPairModel> searchTopTwoPairDraw() {
 
 		ArrayList<CardModel> listCards = new ArrayList<>(cards);
 		Collections.reverse(listCards);
@@ -318,9 +318,9 @@ public abstract class CardPackModel {
 		CardModel topPair2 = listCards.get(1);
 		String drawString = topPair1.toString().concat(topPair2.toString());
 
-		TopTwoPairModel topTwoPairModel = new TopTwoPairModel(topPair1.getRank(), topPair2.getRank());
+		TwoPairModel twoPairModel = new TwoPairModel(topPair1.getRank(), topPair2.getRank());
 
-		DrawModel<TopTwoPairModel> drawModel = new DrawModel<TopTwoPairModel>(Type.TOP_TWO_PAIR_DRAW, topTwoPairModel,
+		DrawModel<TwoPairModel> drawModel = new DrawModel<TwoPairModel>(Type.TOP_TWO_PAIR_DRAW, twoPairModel,
 				drawString, kickerPack1, kickerPack2);
 
 		return drawModel;
@@ -331,16 +331,16 @@ public abstract class CardPackModel {
 	 * 
 	 * @return
 	 */
-	public DrawModel<TopSetModel> searchTopSetDraw() {
+	public DrawModel<SetModel> searchTopSetDraw() {
 		ArrayList<CardModel> listCards = new ArrayList<>(cards);
 		Collections.reverse(listCards);
 
 		CardModel topSet = listCards.get(0);
 		String drawString = topSet.toString();
 
-		TopSetModel topSetModel = new TopSetModel(topSet.getRank());
+		SetModel setModel = new SetModel(topSet.getRank());
 
-		DrawModel<TopSetModel> drawModel = new DrawModel<TopSetModel>(Type.TOP_SET_DRAW, topSetModel, drawString,
+		DrawModel<SetModel> drawModel = new DrawModel<SetModel>(Type.TOP_SET_DRAW, setModel, drawString,
 				kickerPack1, kickerPack2);
 
 		return drawModel;

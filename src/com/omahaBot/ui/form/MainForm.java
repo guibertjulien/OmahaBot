@@ -72,6 +72,7 @@ public class MainForm {
 	
 	private AnalyseWidget analyseWidget;
 	private Button btn_register;
+	private Button btnNewButton_1;
 
 	/**
 	 * Launch the application.
@@ -136,7 +137,7 @@ public class MainForm {
 		});
 		btn_checkTable.setText("CHECK TABLE");
 
-		final Button btnNewButton = new Button(grpActions, SWT.NONE);
+		final Button btnNewButton = new Button(grpActions, SWT.TOGGLE);
 		btnNewButton.setFont(SWTResourceManager.getFont("Segoe UI", 9, SWT.BOLD));
 		btnNewButton.setForeground(SWTResourceManager.getColor(SWT.COLOR_RED));
 		btnNewButton.setLayoutData(new RowData(100, SWT.DEFAULT));
@@ -152,8 +153,11 @@ public class MainForm {
 		});
 		btn_clear.setText("Clear log");
 		
-		btn_register = new Button(grpActions, SWT.CHECK);
+		btn_register = new Button(grpActions, SWT.TOGGLE);
 		btn_register.setText("Register");
+		
+		btnNewButton_1 = new Button(grpActions, SWT.TOGGLE);
+		btnNewButton_1.setText("In play");
 		btnNewButton.addSelectionListener(new SelectionAdapter() {
 			private ThreadDeal threadDeal;
 
@@ -225,12 +229,12 @@ public class MainForm {
 		analyseWidget = new AnalyseWidget(tabFolder, SWT.NONE);
 		tbtm3.setControl(analyseWidget);
 
-		// keeps reference of standard output stream
-		standardOut = System.out;
-
-		// re-assigns standard output stream and error output stream
-		System.setOut(printStream);
-		System.setErr(printStream);
+//		// keeps reference of standard output stream
+//		standardOut = System.out;
+//
+//		// re-assigns standard output stream and error output stream
+//		System.setOut(printStream);
+//		System.setErr(printStream);
 	}
 
 	public void initDealWidget(DealModel dealModel) {

@@ -11,7 +11,7 @@ import com.omahaBot.enums.Suit;
 import com.omahaBot.model.CardModel;
 
 public @Data
-class TopSetModel {
+class SetModel {
 
 	private final Rank rank;
 

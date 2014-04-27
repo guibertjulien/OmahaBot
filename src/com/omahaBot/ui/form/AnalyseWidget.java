@@ -21,7 +21,6 @@ import com.omahaBot.model.BoardModel;
 import com.omahaBot.model.CombinaisonModel;
 import com.omahaBot.model.DrawModel;
 import com.omahaBot.model.HandModel;
-import com.omahaBot.utils.CardUtils;
 
 public class AnalyseWidget extends Composite {
 	private Table table_boardDraw;
@@ -149,30 +148,24 @@ public class AnalyseWidget extends Composite {
 		table_hand.setLinesVisible(true);
 		table_hand.setSize(new Point(0, 200));
 		table_hand.setHeaderVisible(true);
-		
+
 		TableViewerColumn tableViewerColumn_5 = new TableViewerColumn(tableViewer_1, SWT.NONE);
 		TableColumn tableColumn = tableViewerColumn_5.getColumn();
 		tableColumn.setWidth(120);
 		tableColumn.setText("Type");
-		
+
 		TableViewerColumn tableViewerColumn_8 = new TableViewerColumn(tableViewer_1, SWT.NONE);
 		TableColumn tblclmnHole = tableViewerColumn_8.getColumn();
-		tblclmnHole.setWidth(80);
+		tblclmnHole.setWidth(130);
 		tblclmnHole.setText("Permutation");
 		tblclmnHole.setResizable(false);
-		
-		TableViewerColumn tableViewerColumn_6 = new TableViewerColumn(tableViewer_1, SWT.NONE);
-		TableColumn tblclmnBoard = tableViewerColumn_6.getColumn();
-		tblclmnBoard.setWidth(50);
-		tblclmnBoard.setText("Nuts");
-		tblclmnBoard.setResizable(false);
-		
+
 		TableViewerColumn tableViewerColumn_7 = new TableViewerColumn(tableViewer_1, SWT.NONE);
 		TableColumn tblclmnOuts_1 = tableViewerColumn_7.getColumn();
 		tblclmnOuts_1.setWidth(40);
 		tblclmnOuts_1.setToolTipText("");
 		tblclmnOuts_1.setText("Outs");
-		
+
 		TableViewerColumn tableViewerColumn_9 = new TableViewerColumn(tableViewer_1, SWT.NONE);
 		TableColumn tableColumn_4 = tableViewerColumn_9.getColumn();
 		tableColumn_4.setWidth(30);
@@ -189,38 +182,61 @@ public class AnalyseWidget extends Composite {
 	public void displayBoardDraw(BoardModel boardModel) {
 		table_boardDraw.removeAll();
 
-		ArrayList<DrawModel> listDraw = boardModel.initDraw();
+		if (boardModel == null) {
+			lbl_boardDrawValue.setText("");
+		}
+		else {
+			lbl_boardDrawValue.setText(boardModel.toStringByRank());
 
-		lbl_boardDrawValue.setText(boardModel.toStringByRank());
-
-		for (DrawModel drawModel : listDraw) {
-			TableItem item1 = new TableItem(table_boardDraw, SWT.NONE);
-			item1.setText(new String[] { drawModel.getType().name(), drawModel.getDrawString(),
-					drawModel.displayNuts(), String.valueOf(drawModel.getNbOut()),
-					String.valueOf(drawModel.getPercent()) });
+			for (DrawModel drawModel : boardModel.initDraw()) {
+				TableItem item1 = new TableItem(table_boardDraw, SWT.NONE);
+				item1.setText(new String[] { drawModel.getType().name(), drawModel.getDrawString(),
+						drawModel.displayNuts(), String.valueOf(drawModel.getNbOut()),
+						String.valueOf(drawModel.getPercent()) });
+			}
 		}
 	}
 
 	public void displayCombinaisonDraw(HandModel myHand, BoardModel board, ArrayList<CombinaisonModel> combinaisons) {
 		table_hand.removeAll();
-
-		lbl_handDrawValue.setText("" + myHand.toStringByRank() + "][" + board.toStringByRank() + "]");
 		
-		for (CombinaisonModel combinaisonModel : combinaisons) {
-			ArrayList<DrawModel> listDraw = combinaisonModel.initDraw();
-			
-			for (DrawModel drawModel : listDraw) {
-				TableItem item1 = new TableItem(table_hand, SWT.NONE);
-				item1.setText(new String[] { drawModel.getType().name(), combinaisonModel.toString(), 
-						drawModel.displayNuts(), String.valueOf(drawModel.getNbOut()),
-						String.valueOf(drawModel.getPercent()) });
-			}	
+		if (myHand == null) {
+			lbl_handDrawValue.setText("");
+		}
+		else {
+			lbl_handDrawValue.setText("[" + myHand.toStringByRank() + "][" + board.toStringByRank() + "]");
+
+			for (CombinaisonModel combinaisonModel : combinaisons) {
+
+				for (DrawModel drawModel : combinaisonModel.initDraw()) {
+					if (drawModel != null) {
+						TableItem item1 = new TableItem(table_hand, SWT.NONE);
+						item1.setText(new String[] { drawModel.getType().name(), combinaisonModel.toString(), "", "" });
+					}
+				}
+			}
 		}
 	}
-	
+
 	public void displayPreFlopAnalyse(HandModel myHand, PreFlopPower preFlopPower) {
-		lbl_handValue.setText(myHand.toStringByRank());
-		lbl_rankPowerValue.setText(preFlopPower.getPreFlopRank().toString());
-		lbl_suitPowerValue.setText(preFlopPower.getPreFlopSuit().toString());
+		init();
+		
+		if (myHand == null) {
+			lbl_handValue.setText("");
+			lbl_rankPowerValue.setText("");
+			lbl_suitPowerValue.setText("");
+		} else {
+			lbl_handValue.setText(myHand.toStringByRank());
+			lbl_rankPowerValue.setText(preFlopPower.getPreFlopRank().toString());
+			lbl_suitPowerValue.setText(preFlopPower.getPreFlopSuit().toString());
+		}
+	}
+
+	private void init() {
+		table_boardDraw.removeAll();
+		lbl_boardDrawValue.setText("");
+		table_hand.removeAll();
+		lbl_handDrawValue.setText("");
+
 	}
 }

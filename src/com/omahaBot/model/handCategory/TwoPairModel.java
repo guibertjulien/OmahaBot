@@ -11,7 +11,7 @@ import com.omahaBot.enums.Suit;
 import com.omahaBot.model.CardModel;
 
 public @Data
-class TopTwoPairModel {
+class TwoPairModel {
 
 	private final Rank rankPair1;
 
@@ -19,7 +19,7 @@ class TopTwoPairModel {
 
 	@Override
 	public String toString() {
-		return "Top Pairs of " + rankPair1 + " and " + rankPair2;
+		return "Two pairs of " + rankPair1 + " and " + rankPair2;
 	}
 
 	public SortedSet<CardModel> initNuts() {
