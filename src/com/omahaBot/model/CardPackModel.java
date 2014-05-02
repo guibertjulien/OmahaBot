@@ -2,21 +2,18 @@ package com.omahaBot.model;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 import java.util.SortedSet;
+import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.omahaBot.enums.DrawType;
 import com.omahaBot.enums.Rank;
 import com.omahaBot.enums.Suit;
-import com.omahaBot.model.DrawModel.Type;
 import com.omahaBot.model.comparator.SuitComparator;
-import com.omahaBot.model.handCategory.FlushModel;
-import com.omahaBot.model.handCategory.FullModel;
-import com.omahaBot.model.handCategory.SetModel;
-import com.omahaBot.model.handCategory.TwoPairModel;
+import com.omahaBot.model.draw.FlushModel;
 
-public abstract class CardPackModel {
+public class CardPackModel {
 
 	protected SortedSet<CardModel> cards;
 
@@ -25,6 +22,17 @@ public abstract class CardPackModel {
 
 	public CardPackModel(SortedSet<CardModel> cards) {
 		this.cards = cards;
+	}
+	
+	public CardPackModel(String cardPackString) {
+		super();
+
+		cards = new TreeSet<CardModel>();
+
+		while(cardPackString.length()>0) {
+			cards.add(new CardModel(cardPackString.substring(0, 2)));
+			cardPackString = cardPackString.substring(2);
+		}
 	}
 
 	public CardPackModel() {
@@ -275,75 +283,29 @@ public abstract class CardPackModel {
 		}
 	}
 
-	public List<DrawModel> searchFlushDraw(int min, int max) {
+	public ArrayList<FlushModel> searchFlushDraw(int min, int max) {
 
-		ArrayList<DrawModel> listDraw = new ArrayList<>();
+		ArrayList<FlushModel> listDraw = new ArrayList<>();
 
-		Type type;
+		String whithoutRank = this.toStringBySuit().replaceAll("[^shdc]", ".");
 
-		for (Suit suit : Suit.values()) {
-			if (!suit.equals(Suit.UNKNOW)) {
+		Pattern pattern = Pattern.compile("(.\\w)\\1{" + (min - 1) + "," + (max - 1) + "}");
+		Matcher matcher = pattern.matcher(whithoutRank);
 
-				Pattern pattern = Pattern.compile("(." + suit.getShortName() + "){" + min + "," + max + "}");
-				Matcher matcher = pattern.matcher(this.toStringBySuit());
+		DrawType drawType = DrawType.UNKNOWN;
 
-				if (matcher.find()) {
-					String group = matcher.group(0);
+		while (matcher.find()) {
+			String group = matcher.group(0);
+			String drawString = this.toStringBySuit().substring(matcher.start(), matcher.end());
+			drawType = (group.length() == 4) ? DrawType.FLUSH_DRAW : DrawType.FLUSH;
+			Suit suit = Suit.fromShortName(group.substring(1, 2));
 
-					if (group.length() == max * 2) {
-						type = Type.FLUSH;
-					}
-					else {
-						type = Type.FLUSH_DRAW;
-					}
+			FlushModel flushModel = new FlushModel(drawType, suit, drawString);
 
-					CardModel cardSuitKicker = new CardModel(group.substring(group.length() - 2));
-					FlushModel flushModel = new FlushModel(cardSuitKicker.getRank(), suit);
-
-					DrawModel<FullModel> drawModel = new DrawModel(type, flushModel, group, kickerPack1, kickerPack2);
-					listDraw.add(drawModel);
-				}
-			}
+			listDraw.add(flushModel);
 		}
 
 		return listDraw;
-	}
-
-	public DrawModel<TwoPairModel> searchTopTwoPairDraw() {
-
-		ArrayList<CardModel> listCards = new ArrayList<>(cards);
-		Collections.reverse(listCards);
-
-		CardModel topPair1 = listCards.get(0);
-		CardModel topPair2 = listCards.get(1);
-		String drawString = topPair1.toString().concat(topPair2.toString());
-
-		TwoPairModel twoPairModel = new TwoPairModel(topPair1.getRank(), topPair2.getRank());
-
-		DrawModel<TwoPairModel> drawModel = new DrawModel<TwoPairModel>(Type.TOP_TWO_PAIR_DRAW, twoPairModel,
-				drawString, kickerPack1, kickerPack2);
-
-		return drawModel;
-	}
-
-	/**
-	 * ThreeOfAKind
-	 * 
-	 * @return
-	 */
-	public DrawModel<SetModel> searchTopSetDraw() {
-		ArrayList<CardModel> listCards = new ArrayList<>(cards);
-		Collections.reverse(listCards);
-
-		CardModel topSet = listCards.get(0);
-		String drawString = topSet.toString();
-
-		SetModel setModel = new SetModel(topSet.getRank());
-
-		DrawModel<SetModel> drawModel = new DrawModel<SetModel>(Type.TOP_SET_DRAW, setModel, drawString,
-				kickerPack1, kickerPack2);
-
-		return drawModel;
 	}
 
 	protected void initKickers() {

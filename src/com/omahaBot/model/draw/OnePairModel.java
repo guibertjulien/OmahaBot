@@ -1,4 +1,4 @@
-package com.omahaBot.model.handCategory;
+package com.omahaBot.model.draw;
 
 import lombok.Data;
 

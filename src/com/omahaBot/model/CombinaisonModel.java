@@ -1,20 +1,11 @@
 package com.omahaBot.model;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import com.omahaBot.enums.PostFlopPowerType;
 import com.omahaBot.enums.Rank;
-import com.omahaBot.model.DrawModel.Type;
-import com.omahaBot.model.handCategory.FullModel;
-import com.omahaBot.model.handCategory.OnePairModel;
-import com.omahaBot.model.handCategory.QuadsModel;
-import com.omahaBot.model.handCategory.SetModel;
-import com.omahaBot.model.handCategory.TwoPairModel;
 import com.omahaBot.utils.CardUtils;
 
 /**
@@ -52,82 +43,82 @@ public class CombinaisonModel extends CardPackModel implements Comparable<Combin
 		this.cards = cards;
 	}
 
-	/**
-	 * TODO : best practices ?
-	 */
-	public ArrayList<DrawModel> initDraw() {
-		ArrayList<DrawModel> listDraw = new ArrayList<>();
-
-		if (!cards.isEmpty()) {
-			if (hasFlushDraw()) {
-				listDraw.addAll(searchFlushDraw(4, 5));
-			}
-
-			listDraw.add(searchRankDraw());
-		}
-
-		// Collections.sort(listDraw);
-
-		return listDraw;
-	}
-
-	public <T> DrawModel<T> searchRankDraw() {
-
-		DrawModel<T> drawModel = null;
-
-		String combinaisonWhithoutSuit = this.toStringByRank().replaceAll("(s|h|d|c)", ".");
-
-		Pattern pattern = Pattern.compile("(\\w.)\\1{1,}");
-		Matcher matcher = pattern.matcher(combinaisonWhithoutSuit);
-
-		if (matcher.find()) {
-			String group1 = matcher.group(0);
-			Rank rank1 = Rank.fromShortName(String.valueOf(matcher.group(0).charAt(0)));
-			Rank rank2 = Rank.UNKNOWN;
-
-			if (group1.length() == 8) {
-				QuadsModel quadsModel = new QuadsModel(rank1);
-				drawModel = new DrawModel(Type.FOUR_OF_A_KIND, quadsModel, this.toStringByRank(),
-						kickerPack1, kickerPack2);
-			} else if (group1.length() == 6) {
-				if (matcher.find()) {
-					rank2 = Rank.fromShortName(String.valueOf(matcher.group(1).charAt(0)));
-					FullModel fullModel = new FullModel(rank2, rank1);
-					drawModel = new DrawModel(Type.FULL, fullModel, this.toStringByRank(),
-							kickerPack1, kickerPack2);
-				}
-				else {
-					SetModel setModel = new SetModel(rank1);
-					drawModel = new DrawModel(Type.THREE_OF_A_KIND, setModel, this.toStringByRank(),
-							kickerPack1, kickerPack2);
-				}
-			} else if (group1.length() == 4) {
-				if (matcher.find()) {
-					String group2 = matcher.group(0);
-
-					if (group2.length() == 6) {
-						rank2 = Rank.fromShortName(String.valueOf(matcher.group(1).charAt(0)));
-						FullModel fullModel = new FullModel(rank1, rank2);
-						drawModel = new DrawModel(Type.FULL, fullModel, this.toStringByRank(),
-								kickerPack1, kickerPack2);
-					}
-					else {
-						rank2 = Rank.fromShortName(String.valueOf(matcher.group(1).charAt(0)));
-						TwoPairModel twoPairModel = new TwoPairModel(rank2, rank1);
-						drawModel = new DrawModel(Type.TWO_PAIR, twoPairModel, this.toStringByRank(),
-								kickerPack1, kickerPack2);
-					}
-				}
-				else {
-					OnePairModel onePairModel = new OnePairModel(rank1);
-					drawModel = new DrawModel(Type.ONE_PAIR, onePairModel, this.toStringByRank(),
-							kickerPack1, kickerPack2);
-				}
-			}
-		}
-
-		return drawModel;
-	}
+//	/**
+//	 * TODO : best practices ?
+//	 */
+//	public ArrayList<DrawModel> initDraw() {
+//		ArrayList<DrawModel> listDraw = new ArrayList<>();
+//
+//		if (!cards.isEmpty()) {
+//			if (hasFlushDraw()) {
+//				listDraw.addAll(searchFlushDraw(4, 5));
+//			}
+//
+//			listDraw.add(searchRankDraw());
+//		}
+//
+//		// Collections.sort(listDraw);
+//
+//		return listDraw;
+//	}
+//
+//	public <T> DrawModel<T> searchRankDraw() {
+//
+//		DrawModel<T> drawModel = null;
+//
+//		String combinaisonWhithoutSuit = this.toStringByRank().replaceAll("(s|h|d|c)", ".");
+//
+//		Pattern pattern = Pattern.compile("(\\w.)\\1{1,}");
+//		Matcher matcher = pattern.matcher(combinaisonWhithoutSuit);
+//
+//		if (matcher.find()) {
+//			String group1 = matcher.group(0);
+//			Rank rank1 = Rank.fromShortName(String.valueOf(matcher.group(0).charAt(0)));
+//			Rank rank2 = Rank.UNKNOWN;
+//
+//			if (group1.length() == 8) {
+//				QuadsModel quadsModel = new QuadsModel(rank1);
+//				drawModel = new DrawModel(Type.FOUR_OF_A_KIND, quadsModel, this.toStringByRank(),
+//						kickerPack1, kickerPack2);
+//			} else if (group1.length() == 6) {
+//				if (matcher.find()) {
+//					rank2 = Rank.fromShortName(String.valueOf(matcher.group(1).charAt(0)));
+//					FullModel fullModel = new FullModel(rank2, rank1);
+//					drawModel = new DrawModel(Type.FULL, fullModel, this.toStringByRank(),
+//							kickerPack1, kickerPack2);
+//				}
+//				else {
+//					SetModel setModel = new SetModel(rank1);
+//					drawModel = new DrawModel(Type.THREE_OF_A_KIND, setModel, this.toStringByRank(),
+//							kickerPack1, kickerPack2);
+//				}
+//			} else if (group1.length() == 4) {
+//				if (matcher.find()) {
+//					String group2 = matcher.group(0);
+//
+//					if (group2.length() == 6) {
+//						rank2 = Rank.fromShortName(String.valueOf(matcher.group(1).charAt(0)));
+//						FullModel fullModel = new FullModel(rank1, rank2);
+//						drawModel = new DrawModel(Type.FULL, fullModel, this.toStringByRank(),
+//								kickerPack1, kickerPack2);
+//					}
+//					else {
+//						rank2 = Rank.fromShortName(String.valueOf(matcher.group(1).charAt(0)));
+//						TwoPairModel twoPairModel = new TwoPairModel(rank2, rank1);
+//						drawModel = new DrawModel(Type.TWO_PAIR, twoPairModel, this.toStringByRank(),
+//								kickerPack1, kickerPack2);
+//					}
+//				}
+//				else {
+//					OnePairModel onePairModel = new OnePairModel(rank1);
+//					drawModel = new DrawModel(Type.ONE_PAIR, onePairModel, this.toStringByRank(),
+//							kickerPack1, kickerPack2);
+//				}
+//			}
+//		}
+//
+//		return drawModel;
+//	}
 
 	/**
 	 * TODO : best practices ?

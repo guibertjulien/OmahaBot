@@ -9,10 +9,13 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.omahaBot.enums.DealStep;
+import com.omahaBot.enums.HandCategory;
 import com.omahaBot.enums.Rank;
-import com.omahaBot.model.DrawModel.Type;
-import com.omahaBot.model.handCategory.FullModel;
-import com.omahaBot.model.handCategory.QuadsModel;
+import com.omahaBot.model.draw.DrawModel;
+import com.omahaBot.model.draw.FullModel;
+import com.omahaBot.model.draw.QuadsModel;
+import com.omahaBot.model.draw.SetModel;
+import com.omahaBot.model.draw.TwoPairModel;
 import com.omahaBot.utils.PermutationsOfN;
 
 public class BoardModel extends CardPackModel {
@@ -54,7 +57,7 @@ public class BoardModel extends CardPackModel {
 
 	@Override
 	public String toString() {
-		return "HandModel [Cards=" + cards + "]";
+		return "Board : " + cards;
 	}
 
 	public List<List<CardModel>> permutations() {
@@ -62,6 +65,154 @@ public class BoardModel extends CardPackModel {
 		PermutationsOfN<CardModel> permutationsOrdered = new PermutationsOfN<CardModel>();
 
 		return permutationsOrdered.processSubsets(listCards, 3);
+	}
+
+	/**
+	 * 
+	 * @return
+	 */
+	public FullModel searchBestFullDraw() {
+
+		HandCategory handCategory = null;
+
+		String whithoutSuit = this.toStringByRank().replaceAll("[shdc]", ".");
+
+		Pattern pattern = Pattern.compile("(\\w.)\\1{1,}");
+		Matcher matcher = pattern.matcher(whithoutSuit);
+
+		Rank rankGroup = Rank.UNKNOWN;
+		Rank rankThree = Rank.UNKNOWN;
+		Rank rankPair = Rank.UNKNOWN;
+
+		String group1 = "";
+		String group2 = "";
+
+		if (matcher.find()) {
+			group1 = matcher.group(0);
+		}
+		if (matcher.find()) {
+			group2 = matcher.group(0);
+		}
+
+		if (group1.length() > 0 && group2.length() > 0) {
+			Rank rankGroup1 = Rank.fromShortName(String.valueOf(group1.charAt(0)));
+			Rank rankGroup2 = Rank.fromShortName(String.valueOf(group2.charAt(0)));
+
+			// FULL_HOUSE
+			if (group1.length() == 6 || group2.length() == 6) {
+				handCategory = HandCategory.FULL_HOUSE;
+
+				if (group1.length() == 6) {
+					rankThree = rankGroup1;
+				}
+				else {
+					rankThree = rankGroup2;
+				}
+			}
+			// TWO_PAIR
+			else {
+				handCategory = HandCategory.TWO_PAIR;
+				rankGroup = Rank.fromShortName(String.valueOf(group2.charAt(0)));
+
+				rankThree = (kickerPack1.ordinal() > rankGroup2.ordinal()) ? kickerPack1 : rankGroup2;
+				rankPair = (rankGroup.ordinal() == kickerPack1.ordinal()) ? rankGroup1 : rankGroup;
+			}
+		}
+		else if (group1.length() > 0) {
+
+			if (group1.length() == 8) {
+				// FOUR_OF_A_KIND
+				handCategory = HandCategory.FOUR_OF_A_KIND;
+				rankGroup = Rank.fromShortName(String.valueOf(group1.charAt(0)));
+				rankThree = (kickerPack1.ordinal() > rankGroup.ordinal()) ? kickerPack1 : rankGroup;
+				// THREE_OF_A_KIND
+			} else if (group1.length() == 6) {
+				handCategory = HandCategory.THREE_OF_A_KIND;
+				rankGroup = Rank.fromShortName(String.valueOf(group1.charAt(0)));
+				rankThree = (kickerPack1.ordinal() > rankGroup.ordinal()) ? kickerPack1 : rankGroup;
+				// ONE_PAIR
+			} else if (group1.length() == 4) {
+				handCategory = HandCategory.ONE_PAIR;
+				rankGroup = Rank.fromShortName(String.valueOf(group1.charAt(0)));
+
+				rankThree = kickerPack1;
+				rankPair = (rankGroup.ordinal() == kickerPack1.ordinal()) ? kickerPack2 : rankGroup;
+			}
+		}
+
+		FullModel fullModel = new FullModel(rankThree, rankPair, handCategory, rankGroup, kickerPack1, kickerPack2);
+
+		return fullModel;
+	}
+
+
+	/**
+	 * 
+	 * @return
+	 */
+	public ArrayList<QuadsModel> searchQuadsDraw() {
+
+		ArrayList<QuadsModel> listDraw = new ArrayList<>();
+
+		HandCategory handCategory = null;
+
+		String whithoutSuit = this.toStringByRank().replaceAll("[shdc]", ".");
+
+		Pattern pattern = Pattern.compile("(\\w.)\\1{1,}");
+		Matcher matcher = pattern.matcher(whithoutSuit);
+
+		Rank rankGroup = Rank.UNKNOWN;
+
+		while (matcher.find()) {
+			String group = matcher.group(0);
+
+			if (group.length() == 4) {
+				// ONE_PAIR
+				handCategory = HandCategory.ONE_PAIR;
+			} else if (group.length() == 6) {
+				// THREE_OF_A_KIND
+				handCategory = HandCategory.THREE_OF_A_KIND;
+			}
+
+			rankGroup = Rank.fromShortName(String.valueOf(group.charAt(0)));
+			QuadsModel quadsModel = new QuadsModel(rankGroup, handCategory);
+
+			listDraw.add(quadsModel);
+		}
+
+		return listDraw;
+	}
+
+	/**
+	 * 
+	 * @return
+	 */
+	public DrawModel searchBestTwoPairDraw() {
+
+		ArrayList<CardModel> listCards = new ArrayList<>(cards);
+		Collections.reverse(listCards);
+
+		CardModel topPair1 = listCards.get(0);
+		CardModel topPair2 = listCards.get(1);
+
+		TwoPairModel twoPairModel = new TwoPairModel(topPair1.getRank(), topPair2.getRank());
+
+		return twoPairModel;
+	}
+
+	/**
+	 * 
+	 * @return
+	 */
+	public SetModel searchBestSetDraw() {
+		ArrayList<CardModel> listCards = new ArrayList<>(cards);
+		Collections.reverse(listCards);
+
+		CardModel topSet = listCards.get(0);
+
+		SetModel setModel = new SetModel(topSet.getRank());
+
+		return setModel;
 	}
 
 	/**
@@ -73,25 +224,25 @@ public class BoardModel extends CardPackModel {
 		if (!cards.isEmpty()) {
 
 			if (dealStep.equals(DealStep.FLOP) || dealStep.equals(DealStep.TURN)) {
-				listDraw.addAll(searchFlushDraw(2, 3));
+				listDraw.addAll(searchFlushDraw(2, 4));
 			}
 			else if (dealStep.equals(DealStep.RIVER)) {
-				listDraw.addAll(searchFlushDraw(3, 3));
+				listDraw.addAll(searchFlushDraw(3, 5));
 			}
 
-			// Search FULL, BRELAN or DOUBLE PAIR draw
-			// 1 (FLOP) ou 2 tirages (TURN ou RIVER)
-			List<DrawModel> listFullDraw = searchFullDraw();
+			FullModel fullModel = searchBestFullDraw();
 
-			if (listFullDraw.isEmpty()) {
-				listDraw.add(searchTopSetDraw());
-				listDraw.add(searchTopTwoPairDraw());
+			if (fullModel != null) {
+				listDraw.add(searchBestSetDraw());
+				listDraw.add(searchBestTwoPairDraw());
 			} else {
-				listDraw.addAll(listFullDraw);
+				listDraw.add(fullModel);
 			}
+			
+			listDraw.addAll(searchQuadsDraw());
 		}
 
-		Collections.sort(listDraw);
+		//Collections.sort(listDraw);
 
 		return listDraw;
 	}
@@ -133,61 +284,5 @@ public class BoardModel extends CardPackModel {
 		}
 
 		return result;
-	}
-
-	public List<DrawModel> searchFullDraw() {
-
-		ArrayList<DrawModel> listDraw = new ArrayList<>();
-
-		Type type = null;
-
-		for (Rank rank : Rank.values()) {
-			if (!rank.equals(Rank.UNKNOWN)) {
-				Pattern pattern = Pattern.compile("(" + rank.getShortName() + ".){2,4}");
-				Matcher matcher = pattern.matcher(this.toStringByRank());
-
-				if (matcher.find()) {
-					String drawString = matcher.group(0);
-
-					Rank rankPair = Rank.UNKNOWN;
-					Rank rankSet = Rank.UNKNOWN;
-
-					if (drawString.length() == 4) {
-						type = Type.FULL_PAIR_DRAW;
-						rankPair = Rank.fromShortName(String.valueOf(drawString.charAt(0)));
-					} else if (drawString.length() == 6) {
-						type = Type.FULL_SET_DRAW;
-						rankSet = Rank.fromShortName(String.valueOf(drawString.charAt(0)));
-					} else if (drawString.length() == 8) {
-						type = Type.FULL_FOUR_DRAW;
-						rankSet = Rank.fromShortName(String.valueOf(drawString.charAt(0)));
-					}
-
-					FullModel fullModel = new FullModel(rankPair, rankSet);
-					DrawModel<FullModel> drawModel1 = new DrawModel<FullModel>(type, fullModel, drawString,
-							kickerPack1, kickerPack2);
-					listDraw.add(drawModel1);
-
-					Rank rankQuads = Rank.UNKNOWN;
-
-					if (type.equals(Type.FULL_PAIR_DRAW)) {
-						type = Type.QUADS_PAIR_DRAW;
-						rankQuads = rankPair;
-					} else if (type.equals(Type.FULL_PAIR_DRAW)) {
-						type = Type.QUADS_SET_DRAW;
-						rankQuads = rankSet;
-					}
-
-					if (!rankQuads.equals(Rank.UNKNOWN)) {
-						QuadsModel quadsModel = new QuadsModel(rankQuads);
-						DrawModel<QuadsModel> drawModel2 = new DrawModel<QuadsModel>(type, quadsModel, drawString,
-								kickerPack1, kickerPack2);
-						listDraw.add(drawModel2);
-					}
-				}
-			}
-		}
-
-		return listDraw;
 	}
 }

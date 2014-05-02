@@ -13,13 +13,11 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
-import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.wb.swt.SWTResourceManager;
 
 import com.omahaBot.enums.PreFlopPower;
 import com.omahaBot.model.BoardModel;
 import com.omahaBot.model.CombinaisonModel;
-import com.omahaBot.model.DrawModel;
 import com.omahaBot.model.HandModel;
 
 public class AnalyseWidget extends Composite {
@@ -188,12 +186,12 @@ public class AnalyseWidget extends Composite {
 		else {
 			lbl_boardDrawValue.setText(boardModel.toStringByRank());
 
-			for (DrawModel drawModel : boardModel.initDraw()) {
-				TableItem item1 = new TableItem(table_boardDraw, SWT.NONE);
-				item1.setText(new String[] { drawModel.getType().name(), drawModel.getDrawString(),
-						drawModel.displayNuts(), String.valueOf(drawModel.getNbOut()),
-						String.valueOf(drawModel.getPercent()) });
-			}
+//			for (DrawModel drawModel : boardModel.initDraw()) {
+//				TableItem item1 = new TableItem(table_boardDraw, SWT.NONE);
+//				item1.setText(new String[] { drawModel.getType().name(), drawModel.getDrawString(),
+//						drawModel.displayNuts(), String.valueOf(drawModel.getNbOut()),
+//						String.valueOf(drawModel.getPercent()) });
+//			}
 		}
 	}
 
@@ -208,12 +206,12 @@ public class AnalyseWidget extends Composite {
 
 			for (CombinaisonModel combinaisonModel : combinaisons) {
 
-				for (DrawModel drawModel : combinaisonModel.initDraw()) {
-					if (drawModel != null) {
-						TableItem item1 = new TableItem(table_hand, SWT.NONE);
-						item1.setText(new String[] { drawModel.getType().name(), combinaisonModel.toString(), "", "" });
-					}
-				}
+//				for (DrawModel drawModel : combinaisonModel.initDraw()) {
+//					if (drawModel != null) {
+//						TableItem item1 = new TableItem(table_hand, SWT.NONE);
+//						item1.setText(new String[] { drawModel.getType().name(), combinaisonModel.toString(), "", "" });
+//					}
+//				}
 			}
 		}
 	}

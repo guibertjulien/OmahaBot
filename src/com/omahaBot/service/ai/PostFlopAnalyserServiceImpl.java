@@ -137,4 +137,29 @@ public class PostFlopAnalyserServiceImpl {
 		return false;
 
 	}
+	
+//	public <T> void foo() {
+//		
+//		ArrayList<DrawModel<T>> listDraw1 = new ArrayList<>();
+//		
+//		ArrayList<DrawModel<T>> listDraw2 = new ArrayList<>();
+//		
+//		// trier les 2 listes
+//		
+//		for (DrawModel<T> drawModel : listDraw2) {
+//			
+//			// search type in boardDraw
+//			DrawModel<T> drawModel2 = null;
+//			
+//			drawModel.getHandCategory().equals(drawModel2.getHandCategory());
+//			
+//			
+//			
+//			
+//			
+//		}
+//		
+//		
+//		
+//	}
 }

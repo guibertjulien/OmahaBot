@@ -15,24 +15,19 @@ import com.omahaBot.utils.PermutationsOfN;
  */
 public class HandModel extends CardPackModel {
 
-	public HandModel(SortedSet<CardModel> cards) {
-		super(cards);
+	public HandModel() {
+		super();
+		// TODO Auto-generated constructor stub
 	}
 
-	public HandModel(String handString) {
-		super();
+	public HandModel(SortedSet<CardModel> cards) {
+		super(cards);
+		// TODO Auto-generated constructor stub
+	}
 
-		cards = new TreeSet<CardModel>();
-
-		CardModel card1 = new CardModel(handString.substring(0, 2));
-		CardModel card2 = new CardModel(handString.substring(2, 4));
-		CardModel card3 = new CardModel(handString.substring(4, 6));
-		CardModel card4 = new CardModel(handString.substring(6, 8));
-
-		cards.add(card1);
-		cards.add(card2);
-		cards.add(card3);
-		cards.add(card4);
+	public HandModel(String cardPackString) {
+		super(cardPackString);
+		// TODO Auto-generated constructor stub
 	}
 
 	@Override
