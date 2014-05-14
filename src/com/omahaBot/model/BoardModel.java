@@ -140,7 +140,7 @@ public class BoardModel extends CardPackModel {
 			}
 		}
 
-		FullModel fullModel = new FullModel(rankThree, rankPair, handCategory, rankGroup, kickerPack1, kickerPack2);
+		FullModel fullModel = new FullModel(rankThree, rankPair, handCategory, rankGroup, kickerPack1, kickerPack2, true);
 
 		return fullModel;
 	}
@@ -175,7 +175,7 @@ public class BoardModel extends CardPackModel {
 			}
 
 			rankGroup = Rank.fromShortName(String.valueOf(group.charAt(0)));
-			QuadsModel quadsModel = new QuadsModel(rankGroup, handCategory);
+			QuadsModel quadsModel = new QuadsModel(rankGroup, handCategory, true);
 
 			listDraw.add(quadsModel);
 		}
@@ -195,7 +195,7 @@ public class BoardModel extends CardPackModel {
 		CardModel topPair1 = listCards.get(0);
 		CardModel topPair2 = listCards.get(1);
 
-		TwoPairModel twoPairModel = new TwoPairModel(topPair1.getRank(), topPair2.getRank());
+		TwoPairModel twoPairModel = new TwoPairModel(topPair1.getRank(), topPair2.getRank(), true);
 
 		return twoPairModel;
 	}
@@ -210,7 +210,7 @@ public class BoardModel extends CardPackModel {
 
 		CardModel topSet = listCards.get(0);
 
-		SetModel setModel = new SetModel(topSet.getRank());
+		SetModel setModel = new SetModel(topSet.getRank(), true);
 
 		return setModel;
 	}
@@ -232,7 +232,7 @@ public class BoardModel extends CardPackModel {
 
 			FullModel fullModel = searchBestFullDraw();
 
-			if (fullModel != null) {
+			if (fullModel == null) {
 				listDraw.add(searchBestSetDraw());
 				listDraw.add(searchBestTwoPairDraw());
 			} else {

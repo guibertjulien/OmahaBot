@@ -23,13 +23,13 @@ public class CardPackModel {
 	public CardPackModel(SortedSet<CardModel> cards) {
 		this.cards = cards;
 	}
-	
+
 	public CardPackModel(String cardPackString) {
 		super();
 
 		cards = new TreeSet<CardModel>();
 
-		while(cardPackString.length()>0) {
+		while (cardPackString.length() > 0) {
 			cards.add(new CardModel(cardPackString.substring(0, 2)));
 			cardPackString = cardPackString.substring(2);
 		}
@@ -300,7 +300,7 @@ public class CardPackModel {
 			drawType = (group.length() == 4) ? DrawType.FLUSH_DRAW : DrawType.FLUSH;
 			Suit suit = Suit.fromShortName(group.substring(1, 2));
 
-			FlushModel flushModel = new FlushModel(drawType, suit, drawString);
+			FlushModel flushModel = new FlushModel(drawType, suit, drawString, false);
 
 			listDraw.add(flushModel);
 		}

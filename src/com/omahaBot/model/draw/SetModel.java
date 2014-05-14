@@ -14,23 +14,31 @@ class SetModel extends DrawModel {
 
 	private final Rank rank;
 
-	public SetModel(Rank rank) {
-		super(DrawType.BEST_SET_DRAW);
+	public SetModel(Rank rank, boolean isDraw) {
+		super(DrawType.BEST_SET_DRAW, isDraw);
 		this.rank = rank;
 
-		initialize();
+		if (isDraw) {
+			initialize();			
+		}
 	}
 
 	@Override
 	public String toString() {
-		return "Set of " + rank;
+		String display = "";
+
+		display = "Set of " + rank + "; ";
+		display += isDraw ? "nuts" : "holeCards";
+		display += "=[" + displayNutsOrHoleCards() + "]";
+
+		return display;
 	}
 
 	private void initialize() {
 		CardModel card1 = new CardModel(rank, Suit.SPADE);
 		CardModel card2 = new CardModel(rank, Suit.HEART);
 
-		nuts.addAll(Arrays.asList(card1, card2));
+		nutsOrHoleCards.addAll(Arrays.asList(card1, card2));
 	}
 
 }

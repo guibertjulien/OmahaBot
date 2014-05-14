@@ -42,8 +42,8 @@ public class BoardModelTest {
 		drawModel = boardModel.searchBestFullDraw();
 		assertTrue(drawModel instanceof FullModel);
 		fullModel = (FullModel) drawModel;
-		assertTrue(fullModel.getNuts().first().getRank().equals(Rank.KING));
-		assertTrue(fullModel.getNuts().last().getRank().equals(Rank.ACE));
+		assertTrue(fullModel.getNutsOrHoleCards().first().getRank().equals(Rank.KING));
+		assertTrue(fullModel.getNutsOrHoleCards().last().getRank().equals(Rank.ACE));
 		System.out.println(boardModel + " " + fullModel);
 
 		// ONE_PAIR LOW
@@ -51,8 +51,8 @@ public class BoardModelTest {
 		drawModel = boardModel.searchBestFullDraw();
 		assertTrue(drawModel instanceof FullModel);
 		fullModel = (FullModel) drawModel;
-		assertTrue(fullModel.getNuts().first().getRank().equals(Rank.KING));
-		assertTrue(fullModel.getNuts().last().getRank().equals(Rank.KING));
+		assertTrue(fullModel.getNutsOrHoleCards().first().getRank().equals(Rank.KING));
+		assertTrue(fullModel.getNutsOrHoleCards().last().getRank().equals(Rank.KING));
 		System.out.println(boardModel + " " + fullModel);
 
 		// TWO_PAIR HIGH
@@ -60,8 +60,8 @@ public class BoardModelTest {
 		drawModel = boardModel.searchBestFullDraw();
 		assertTrue(drawModel instanceof FullModel);
 		fullModel = (FullModel) drawModel;
-		assertTrue(fullModel.getNuts().first().getRank().equals(Rank.KING));
-		assertTrue(fullModel.getNuts().last().getRank().equals(Rank.ACE));
+		assertTrue(fullModel.getNutsOrHoleCards().first().getRank().equals(Rank.KING));
+		assertTrue(fullModel.getNutsOrHoleCards().last().getRank().equals(Rank.ACE));
 		System.out.println(boardModel + " " + fullModel);
 
 		// TWO_PAIR LOW
@@ -69,8 +69,8 @@ public class BoardModelTest {
 		drawModel = boardModel.searchBestFullDraw();
 		assertTrue(drawModel instanceof FullModel);
 		fullModel = (FullModel) drawModel;
-		assertTrue(fullModel.getNuts().first().getRank().equals(Rank.QUEEN));
-		assertTrue(fullModel.getNuts().last().getRank().equals(Rank.QUEEN));
+		assertTrue(fullModel.getNutsOrHoleCards().first().getRank().equals(Rank.QUEEN));
+		assertTrue(fullModel.getNutsOrHoleCards().last().getRank().equals(Rank.QUEEN));
 		System.out.println(boardModel + " " + fullModel);
 
 		// BRELAN ACE
@@ -78,8 +78,8 @@ public class BoardModelTest {
 		drawModel = boardModel.searchBestFullDraw();
 		assertTrue(drawModel instanceof FullModel);
 		fullModel = (FullModel) drawModel;
-		assertTrue(fullModel.getNuts().first().getRank().equals(Rank.KING));
-		assertTrue(fullModel.getNuts().last().getRank().equals(Rank.KING));
+		assertTrue(fullModel.getNutsOrHoleCards().first().getRank().equals(Rank.KING));
+		assertTrue(fullModel.getNutsOrHoleCards().last().getRank().equals(Rank.KING));
 		System.out.println(boardModel + " " + fullModel);
 
 		// BRELAN HIGH
@@ -87,8 +87,8 @@ public class BoardModelTest {
 		drawModel = boardModel.searchBestFullDraw();
 		assertTrue(drawModel instanceof FullModel);
 		fullModel = (FullModel) drawModel;
-		assertTrue(fullModel.getNuts().first().getRank().equals(Rank.ACE));
-		assertTrue(fullModel.getNuts().last().getRank().equals(Rank.ACE));
+		assertTrue(fullModel.getNutsOrHoleCards().first().getRank().equals(Rank.ACE));
+		assertTrue(fullModel.getNutsOrHoleCards().last().getRank().equals(Rank.ACE));
 		System.out.println(boardModel + " " + fullModel);
 
 		// BRELAN LOW
@@ -96,8 +96,8 @@ public class BoardModelTest {
 		drawModel = boardModel.searchBestFullDraw();
 		assertTrue(drawModel instanceof FullModel);
 		fullModel = (FullModel) drawModel;
-		assertTrue(fullModel.getNuts().first().getRank().equals(Rank.KING));
-		assertTrue(fullModel.getNuts().last().getRank().equals(Rank.KING));
+		assertTrue(fullModel.getNutsOrHoleCards().first().getRank().equals(Rank.KING));
+		assertTrue(fullModel.getNutsOrHoleCards().last().getRank().equals(Rank.KING));
 		System.out.println(boardModel + " " + fullModel);
 
 		// FULL ACE
@@ -105,8 +105,8 @@ public class BoardModelTest {
 		drawModel = boardModel.searchBestFullDraw();
 		assertTrue(drawModel instanceof FullModel);
 		fullModel = (FullModel) drawModel;
-		assertTrue(fullModel.getNuts().first().getRank().equals(Rank.QUEEN));
-		assertTrue(fullModel.getNuts().last().getRank().equals(Rank.QUEEN));
+		assertTrue(fullModel.getNutsOrHoleCards().first().getRank().equals(Rank.QUEEN));
+		assertTrue(fullModel.getNutsOrHoleCards().last().getRank().equals(Rank.QUEEN));
 		System.out.println(boardModel + " " + fullModel);
 
 		// FULL HIGH
@@ -114,8 +114,8 @@ public class BoardModelTest {
 		drawModel = boardModel.searchBestFullDraw();
 		assertTrue(drawModel instanceof FullModel);
 		fullModel = (FullModel) drawModel;
-		assertTrue(fullModel.getNuts().first().getRank().equals(Rank.QUEEN));
-		assertTrue(fullModel.getNuts().last().getRank().equals(Rank.QUEEN));
+		assertTrue(fullModel.getNutsOrHoleCards().first().getRank().equals(Rank.QUEEN));
+		assertTrue(fullModel.getNutsOrHoleCards().last().getRank().equals(Rank.QUEEN));
 		System.out.println(boardModel + " " + fullModel);
 
 		// FULL LOW
@@ -123,8 +123,8 @@ public class BoardModelTest {
 		drawModel = boardModel.searchBestFullDraw();
 		assertTrue(drawModel instanceof FullModel);
 		fullModel = (FullModel) drawModel;
-		assertTrue(fullModel.getNuts().first().getRank().equals(Rank.ACE));
-		assertTrue(fullModel.getNuts().last().getRank().equals(Rank.ACE));
+		assertTrue(fullModel.getNutsOrHoleCards().first().getRank().equals(Rank.ACE));
+		assertTrue(fullModel.getNutsOrHoleCards().last().getRank().equals(Rank.ACE));
 		System.out.println(boardModel + " " + fullModel);
 
 		// CARRE ACE
@@ -132,8 +132,8 @@ public class BoardModelTest {
 		drawModel = boardModel.searchBestFullDraw();
 		assertTrue(drawModel instanceof FullModel);
 		fullModel = (FullModel) drawModel;
-		assertTrue(fullModel.getNuts().first().getRank().equals(Rank.KING));
-		assertTrue(fullModel.getNuts().last().getRank().equals(Rank.KING));
+		assertTrue(fullModel.getNutsOrHoleCards().first().getRank().equals(Rank.KING));
+		assertTrue(fullModel.getNutsOrHoleCards().last().getRank().equals(Rank.KING));
 		System.out.println(boardModel + " " + fullModel);
 
 		// CARRE HIGH
@@ -141,8 +141,8 @@ public class BoardModelTest {
 		drawModel = boardModel.searchBestFullDraw();
 		assertTrue(drawModel instanceof FullModel);
 		fullModel = (FullModel) drawModel;
-		assertTrue(fullModel.getNuts().first().getRank().equals(Rank.ACE));
-		assertTrue(fullModel.getNuts().last().getRank().equals(Rank.ACE));
+		assertTrue(fullModel.getNutsOrHoleCards().first().getRank().equals(Rank.ACE));
+		assertTrue(fullModel.getNutsOrHoleCards().last().getRank().equals(Rank.ACE));
 		System.out.println(boardModel + " " + fullModel);
 
 		// CARRE LOW
@@ -150,8 +150,8 @@ public class BoardModelTest {
 		drawModel = boardModel.searchBestFullDraw();
 		assertTrue(drawModel instanceof FullModel);
 		fullModel = (FullModel) drawModel;
-		assertTrue(fullModel.getNuts().first().getRank().equals(Rank.THREE));
-		assertTrue(fullModel.getNuts().last().getRank().equals(Rank.THREE));
+		assertTrue(fullModel.getNutsOrHoleCards().first().getRank().equals(Rank.THREE));
+		assertTrue(fullModel.getNutsOrHoleCards().last().getRank().equals(Rank.THREE));
 		System.out.println(boardModel + " " + fullModel);
 	}
 
@@ -166,8 +166,8 @@ public class BoardModelTest {
 		drawModel = boardModel.searchBestFullDraw();
 		assertTrue(drawModel instanceof FullModel);
 		fullModel = (FullModel) drawModel;
-		assertTrue(fullModel.getNuts().first().getRank().equals(Rank.KING));
-		assertTrue(fullModel.getNuts().last().getRank().equals(Rank.ACE));
+		assertTrue(fullModel.getNutsOrHoleCards().first().getRank().equals(Rank.KING));
+		assertTrue(fullModel.getNutsOrHoleCards().last().getRank().equals(Rank.ACE));
 		System.out.println(boardModel + " " + fullModel);
 
 		// ONE_PAIR LOW
@@ -175,8 +175,8 @@ public class BoardModelTest {
 		drawModel = boardModel.searchBestFullDraw();
 		assertTrue(drawModel instanceof FullModel);
 		fullModel = (FullModel) drawModel;
-		assertTrue(fullModel.getNuts().first().getRank().equals(Rank.KING));
-		assertTrue(fullModel.getNuts().last().getRank().equals(Rank.KING));
+		assertTrue(fullModel.getNutsOrHoleCards().first().getRank().equals(Rank.KING));
+		assertTrue(fullModel.getNutsOrHoleCards().last().getRank().equals(Rank.KING));
 		System.out.println(boardModel + " " + fullModel);
 
 		// TWO_PAIR HIGH
@@ -184,8 +184,8 @@ public class BoardModelTest {
 		drawModel = boardModel.searchBestFullDraw();
 		assertTrue(drawModel instanceof FullModel);
 		fullModel = (FullModel) drawModel;
-		assertTrue(fullModel.getNuts().first().getRank().equals(Rank.KING));
-		assertTrue(fullModel.getNuts().last().getRank().equals(Rank.ACE));
+		assertTrue(fullModel.getNutsOrHoleCards().first().getRank().equals(Rank.KING));
+		assertTrue(fullModel.getNutsOrHoleCards().last().getRank().equals(Rank.ACE));
 		System.out.println(boardModel + " " + fullModel);
 
 		// TWO_PAIR LOW
@@ -193,8 +193,8 @@ public class BoardModelTest {
 		drawModel = boardModel.searchBestFullDraw();
 		assertTrue(drawModel instanceof FullModel);
 		fullModel = (FullModel) drawModel;
-		assertTrue(fullModel.getNuts().first().getRank().equals(Rank.TWO));
-		assertTrue(fullModel.getNuts().last().getRank().equals(Rank.JACK));
+		assertTrue(fullModel.getNutsOrHoleCards().first().getRank().equals(Rank.TWO));
+		assertTrue(fullModel.getNutsOrHoleCards().last().getRank().equals(Rank.JACK));
 		System.out.println(boardModel + " " + fullModel);
 
 		// BRELAN ACE
@@ -202,8 +202,8 @@ public class BoardModelTest {
 		drawModel = boardModel.searchBestFullDraw();
 		assertTrue(drawModel instanceof FullModel);
 		fullModel = (FullModel) drawModel;
-		assertTrue(fullModel.getNuts().first().getRank().equals(Rank.KING));
-		assertTrue(fullModel.getNuts().last().getRank().equals(Rank.KING));
+		assertTrue(fullModel.getNutsOrHoleCards().first().getRank().equals(Rank.KING));
+		assertTrue(fullModel.getNutsOrHoleCards().last().getRank().equals(Rank.KING));
 		System.out.println(boardModel + " " + fullModel);
 
 		// BRELAN HIGH
@@ -211,8 +211,8 @@ public class BoardModelTest {
 		drawModel = boardModel.searchBestFullDraw();
 		assertTrue(drawModel instanceof FullModel);
 		fullModel = (FullModel) drawModel;
-		assertTrue(fullModel.getNuts().first().getRank().equals(Rank.ACE));
-		assertTrue(fullModel.getNuts().last().getRank().equals(Rank.ACE));
+		assertTrue(fullModel.getNutsOrHoleCards().first().getRank().equals(Rank.ACE));
+		assertTrue(fullModel.getNutsOrHoleCards().last().getRank().equals(Rank.ACE));
 		System.out.println(boardModel + " " + fullModel);
 
 		// BRELAN LOW
@@ -220,8 +220,8 @@ public class BoardModelTest {
 		drawModel = boardModel.searchBestFullDraw();
 		assertTrue(drawModel instanceof FullModel);
 		fullModel = (FullModel) drawModel;
-		assertTrue(fullModel.getNuts().first().getRank().equals(Rank.KING));
-		assertTrue(fullModel.getNuts().last().getRank().equals(Rank.KING));
+		assertTrue(fullModel.getNutsOrHoleCards().first().getRank().equals(Rank.KING));
+		assertTrue(fullModel.getNutsOrHoleCards().last().getRank().equals(Rank.KING));
 		System.out.println(boardModel + " " + fullModel);
 
 		// CARRE ACE
@@ -229,8 +229,8 @@ public class BoardModelTest {
 		drawModel = boardModel.searchBestFullDraw();
 		assertTrue(drawModel instanceof FullModel);
 		fullModel = (FullModel) drawModel;
-		assertTrue(fullModel.getNuts().first().getRank().equals(Rank.KING));
-		assertTrue(fullModel.getNuts().last().getRank().equals(Rank.KING));
+		assertTrue(fullModel.getNutsOrHoleCards().first().getRank().equals(Rank.KING));
+		assertTrue(fullModel.getNutsOrHoleCards().last().getRank().equals(Rank.KING));
 		System.out.println(boardModel + " " + fullModel);
 
 		// CARRE HIGH
@@ -238,8 +238,8 @@ public class BoardModelTest {
 		drawModel = boardModel.searchBestFullDraw();
 		assertTrue(drawModel instanceof FullModel);
 		fullModel = (FullModel) drawModel;
-		assertTrue(fullModel.getNuts().first().getRank().equals(Rank.ACE));
-		assertTrue(fullModel.getNuts().last().getRank().equals(Rank.ACE));
+		assertTrue(fullModel.getNutsOrHoleCards().first().getRank().equals(Rank.ACE));
+		assertTrue(fullModel.getNutsOrHoleCards().last().getRank().equals(Rank.ACE));
 		System.out.println(boardModel + " " + fullModel);
 
 		// CARRE LOW
@@ -247,8 +247,8 @@ public class BoardModelTest {
 		drawModel = boardModel.searchBestFullDraw();
 		assertTrue(drawModel instanceof FullModel);
 		fullModel = (FullModel) drawModel;
-		assertTrue(fullModel.getNuts().first().getRank().equals(Rank.ACE));
-		assertTrue(fullModel.getNuts().last().getRank().equals(Rank.ACE));
+		assertTrue(fullModel.getNutsOrHoleCards().first().getRank().equals(Rank.ACE));
+		assertTrue(fullModel.getNutsOrHoleCards().last().getRank().equals(Rank.ACE));
 		System.out.println(boardModel + " " + fullModel);
 	}
 
@@ -257,14 +257,14 @@ public class BoardModelTest {
 		BoardModel boardModel;
 		DrawModel drawModel;
 		FullModel fullModel;
-
+		
 		// ONE_PAIR HIGH
 		boardModel = new BoardModel("AdAsKs", DealStep.FLOP);
 		drawModel = boardModel.searchBestFullDraw();
 		assertTrue(drawModel instanceof FullModel);
 		fullModel = (FullModel) drawModel;
-		assertTrue(fullModel.getNuts().first().getRank().equals(Rank.KING));
-		assertTrue(fullModel.getNuts().last().getRank().equals(Rank.ACE));
+		assertTrue(fullModel.getNutsOrHoleCards().first().getRank().equals(Rank.KING));
+		assertTrue(fullModel.getNutsOrHoleCards().last().getRank().equals(Rank.ACE));
 		System.out.println(boardModel + " " + fullModel);
 
 		// ONE_PAIR LOW
@@ -272,8 +272,8 @@ public class BoardModelTest {
 		drawModel = boardModel.searchBestFullDraw();
 		assertTrue(drawModel instanceof FullModel);
 		fullModel = (FullModel) drawModel;
-		assertTrue(fullModel.getNuts().first().getRank().equals(Rank.KING));
-		assertTrue(fullModel.getNuts().last().getRank().equals(Rank.KING));
+		assertTrue(fullModel.getNutsOrHoleCards().first().getRank().equals(Rank.KING));
+		assertTrue(fullModel.getNutsOrHoleCards().last().getRank().equals(Rank.KING));
 		System.out.println(boardModel + " " + fullModel);
 
 		// BRELAN ACE
@@ -281,8 +281,8 @@ public class BoardModelTest {
 		drawModel = boardModel.searchBestFullDraw();
 		assertTrue(drawModel instanceof FullModel);
 		fullModel = (FullModel) drawModel;
-		assertTrue(fullModel.getNuts().first().getRank().equals(Rank.KING));
-		assertTrue(fullModel.getNuts().last().getRank().equals(Rank.KING));
+		assertTrue(fullModel.getNutsOrHoleCards().first().getRank().equals(Rank.KING));
+		assertTrue(fullModel.getNutsOrHoleCards().last().getRank().equals(Rank.KING));
 		System.out.println(boardModel + " " + fullModel);
 
 		// BRELAN HIGH
@@ -290,8 +290,8 @@ public class BoardModelTest {
 		drawModel = boardModel.searchBestFullDraw();
 		assertTrue(drawModel instanceof FullModel);
 		fullModel = (FullModel) drawModel;
-		assertTrue(fullModel.getNuts().first().getRank().equals(Rank.ACE));
-		assertTrue(fullModel.getNuts().last().getRank().equals(Rank.ACE));
+		assertTrue(fullModel.getNutsOrHoleCards().first().getRank().equals(Rank.ACE));
+		assertTrue(fullModel.getNutsOrHoleCards().last().getRank().equals(Rank.ACE));
 		System.out.println(boardModel + " " + fullModel);
 
 		// BRELAN LOW
@@ -299,8 +299,8 @@ public class BoardModelTest {
 		drawModel = boardModel.searchBestFullDraw();
 		assertTrue(drawModel instanceof FullModel);
 		fullModel = (FullModel) drawModel;
-		assertTrue(fullModel.getNuts().first().getRank().equals(Rank.ACE));
-		assertTrue(fullModel.getNuts().last().getRank().equals(Rank.ACE));
+		assertTrue(fullModel.getNutsOrHoleCards().first().getRank().equals(Rank.ACE));
+		assertTrue(fullModel.getNutsOrHoleCards().last().getRank().equals(Rank.ACE));
 		System.out.println(boardModel + " " + fullModel);
 	}
 
@@ -314,8 +314,8 @@ public class BoardModelTest {
 		listDraw.addAll(boardModel.searchFlushDraw(2, 4));
 		flushModel = (FlushModel) listDraw.get(0);
 		assertTrue(flushModel.getSuit().equals(Suit.SPADE));
-		assertTrue(flushModel.getNuts().first().getRank().equals(Rank.QUEEN));
-		assertTrue(flushModel.getNuts().last().getRank().equals(Rank.ACE));		
+		assertTrue(flushModel.getNutsOrHoleCards().first().getRank().equals(Rank.QUEEN));
+		assertTrue(flushModel.getNutsOrHoleCards().last().getRank().equals(Rank.ACE));		
 		System.out.println(boardModel + " " + flushModel);
 
 		listDraw.clear();
@@ -323,8 +323,8 @@ public class BoardModelTest {
 		listDraw.addAll(boardModel.searchFlushDraw(2, 4));
 		flushModel = (FlushModel) listDraw.get(0);
 		assertTrue(flushModel.getSuit().equals(Suit.CLUB));
-		assertTrue(flushModel.getNuts().first().getRank().equals(Rank.QUEEN));
-		assertTrue(flushModel.getNuts().last().getRank().equals(Rank.KING));		
+		assertTrue(flushModel.getNutsOrHoleCards().first().getRank().equals(Rank.QUEEN));
+		assertTrue(flushModel.getNutsOrHoleCards().last().getRank().equals(Rank.KING));		
 		System.out.println(boardModel + " " + flushModel);
 		
 		listDraw.clear();
@@ -332,8 +332,8 @@ public class BoardModelTest {
 		listDraw.addAll(boardModel.searchFlushDraw(2, 4));
 		flushModel = (FlushModel) listDraw.get(0);
 		assertTrue(flushModel.getSuit().equals(Suit.CLUB));
-		assertTrue(flushModel.getNuts().first().getRank().equals(Rank.QUEEN));
-		assertTrue(flushModel.getNuts().last().getRank().equals(Rank.KING));		
+		assertTrue(flushModel.getNutsOrHoleCards().first().getRank().equals(Rank.QUEEN));
+		assertTrue(flushModel.getNutsOrHoleCards().last().getRank().equals(Rank.KING));		
 		System.out.println(boardModel + " " + flushModel);
 
 		listDraw.clear();
@@ -341,8 +341,8 @@ public class BoardModelTest {
 		listDraw.addAll(boardModel.searchFlushDraw(3, 5));
 		flushModel = (FlushModel) listDraw.get(0);
 		assertTrue(flushModel.getSuit().equals(Suit.HEART));
-		assertTrue(flushModel.getNuts().first().getRank().equals(Rank.JACK));
-		assertTrue(flushModel.getNuts().last().getRank().equals(Rank.ACE));		
+		assertTrue(flushModel.getNutsOrHoleCards().first().getRank().equals(Rank.JACK));
+		assertTrue(flushModel.getNutsOrHoleCards().last().getRank().equals(Rank.ACE));		
 		System.out.println(boardModel + " " + flushModel);
 
 		listDraw.clear();		
@@ -350,8 +350,8 @@ public class BoardModelTest {
 		listDraw.addAll(boardModel.searchFlushDraw(3, 5));
 		flushModel = (FlushModel) listDraw.get(0);
 		assertTrue(flushModel.getSuit().equals(Suit.HEART));
-		assertTrue(flushModel.getNuts().first().getRank().equals(Rank.TEN));
-		assertTrue(flushModel.getNuts().last().getRank().equals(Rank.JACK));		
+		assertTrue(flushModel.getNutsOrHoleCards().first().getRank().equals(Rank.TEN));
+		assertTrue(flushModel.getNutsOrHoleCards().last().getRank().equals(Rank.JACK));		
 		System.out.println(boardModel + " " + flushModel);
 		
 		listDraw.clear();
@@ -359,8 +359,8 @@ public class BoardModelTest {
 		listDraw.addAll(boardModel.searchFlushDraw(3, 5));
 		flushModel = (FlushModel) listDraw.get(0);
 		assertTrue(flushModel.getSuit().equals(Suit.HEART));
-		assertTrue(flushModel.getNuts().first().getRank().equals(Rank.NINE));
-		assertTrue(flushModel.getNuts().last().getRank().equals(Rank.JACK));		
+		assertTrue(flushModel.getNutsOrHoleCards().first().getRank().equals(Rank.NINE));
+		assertTrue(flushModel.getNutsOrHoleCards().last().getRank().equals(Rank.JACK));		
 		System.out.println(boardModel + " " + flushModel);
 	}
 

@@ -11,11 +11,16 @@ import com.omahaBot.model.BoardModel;
 import com.omahaBot.model.CardModel;
 import com.omahaBot.model.CombinaisonModel;
 import com.omahaBot.model.HandModel;
+import com.omahaBot.model.draw.DrawModel;
 
 public class PostFlopAnalyserServiceImpl {
-	
+
+	private ArrayList<DrawModel> handDraws = new ArrayList<DrawModel>();
+
+	private ArrayList<DrawModel> boardDraws = new ArrayList<DrawModel>();
+
 	public ArrayList<CombinaisonModel> initCombinaisons(HandModel handModel, BoardModel boardModel) {
-		
+
 		ArrayList<CombinaisonModel> combinaisons = new ArrayList<CombinaisonModel>();
 
 		for (List<CardModel> permutationHand : handModel.permutations()) {
@@ -25,11 +30,11 @@ public class PostFlopAnalyserServiceImpl {
 			}
 		}
 
-		//Collections.sort(combinaisons);
-		
+		// Collections.sort(combinaisons);
+
 		return combinaisons;
 	}
-	
+
 	public PostFlopPowerType analyseHandPostFlop(HandModel handModel, BoardModel boardModel) {
 
 		System.out.println("-----------------------");
@@ -61,10 +66,10 @@ public class PostFlopAnalyserServiceImpl {
 		System.out.println("------------------------");
 		System.out.println("- analyseBoardPostFlop -");
 		System.out.println("------------------------");
-		
-//		DealStep dealStep;
-//
-//		// analyse des tirages
+
+		// DealStep dealStep;
+		//
+		// // analyse des tirages
 		BoardDrawPower boardDrawPower = null;
 
 		return boardDrawPower;
@@ -137,29 +142,97 @@ public class PostFlopAnalyserServiceImpl {
 		return false;
 
 	}
-	
-//	public <T> void foo() {
-//		
-//		ArrayList<DrawModel<T>> listDraw1 = new ArrayList<>();
-//		
-//		ArrayList<DrawModel<T>> listDraw2 = new ArrayList<>();
-//		
-//		// trier les 2 listes
-//		
-//		for (DrawModel<T> drawModel : listDraw2) {
-//			
-//			// search type in boardDraw
-//			DrawModel<T> drawModel2 = null;
-//			
-//			drawModel.getHandCategory().equals(drawModel2.getHandCategory());
-//			
-//			
-//			
-//			
-//			
-//		}
-//		
-//		
-//		
-//	}
+
+	public void compareHand(HandModel handModel, BoardModel boardModel) {
+
+		handDraws.clear();
+		boardDraws.clear();
+
+		// initialisation des combinaisons
+		ArrayList<CombinaisonModel> combinaisons = new ArrayList<CombinaisonModel>();
+
+		for (List<CardModel> permutationHand : handModel.permutations()) {
+			for (List<CardModel> permutationBoard : boardModel.permutations()) {
+				CombinaisonModel combinaison = new CombinaisonModel(permutationHand, permutationBoard);
+				combinaisons.add(combinaison);
+			}
+		}
+
+		// initialisation de handDraws
+		for (CombinaisonModel combinaisonModel : combinaisons) {
+			handDraws.addAll(combinaisonModel.initDraw());
+		}
+
+		// initialisation de boardDraws
+		boardDraws.addAll(boardModel.initDraw());
+
+		System.out.println(boardModel.toString());
+		System.out.println(handModel.toString());
+
+		System.out.println("****************************************");
+		System.out.println("handDraws : ");
+		System.out.println("----------------------------------------");
+
+		// affchage des handDraws
+		for (DrawModel drawModel : handDraws) {
+			System.out.println(drawModel);
+		}
+
+		System.out.println("****************************************");
+		System.out.println("boardDraws : ");
+		System.out.println("----------------------------------------");
+
+		// affchage des boardDraws
+		for (DrawModel drawModel : boardDraws) {
+			System.out.println(drawModel);
+		}
+
+		System.out.println("****************************************");
+		System.out.println("compare : ");
+		System.out.println("----------------------------------------");
+
+		// comparaison de handDraws & boardDraws
+		for (DrawModel drawModelHand : handDraws) {
+			for (DrawModel drawModelBoard : boardDraws) {
+
+				if (drawModelHand != null && drawModelBoard != null) {
+					if (drawModelHand.getClass().equals(drawModelBoard.getClass())) {
+						System.out.println(drawModelHand);
+
+						if (drawModelHand.isNuts(drawModelBoard)) {
+							System.out.println("NUTS !");
+						}
+						else {
+							System.out.println("CAUTION NO NUTS !");
+						}
+					}
+				}
+			}
+		}
+	}
+
+	// public <T> void foo() {
+	//
+	// ArrayList<DrawModel<T>> listDraw1 = new ArrayList<>();
+	//
+	// ArrayList<DrawModel<T>> listDraw2 = new ArrayList<>();
+	//
+	// // trier les 2 listes
+	//
+	// for (DrawModel<T> drawModel : listDraw2) {
+	//
+	// // search type in boardDraw
+	// DrawModel<T> drawModel2 = null;
+	//
+	// drawModel.getHandCategory().equals(drawModel2.getHandCategory());
+	//
+	//
+	//
+	//
+	//
+	// }
+	//
+	//
+	//
+	// }
 }

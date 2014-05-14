@@ -132,5 +132,18 @@ public class PostFlopServiceImplTest {
 		assertTrue(postFlopPowerType.equals(PostFlopPowerType.FULL_HOUSE));	
 	}
 	
+	@Test
+	public void testCompareHand() {
+
+		HandModel handModel = new HandModel("AcAdKs8d");
+		BoardModel boardModel = new BoardModel("Ah4c4h", DealStep.FLOP);
+		
+		postFlopAnalyserServiceImpl.compareHand(handModel, boardModel);
+		
+		handModel = new HandModel("AcAdQcQd");
+		boardModel = new BoardModel("Ah4c4hQs", DealStep.TURN);
+		
+		postFlopAnalyserServiceImpl.compareHand(handModel, boardModel);
+	}
 	
 }

@@ -15,16 +15,24 @@ class QuadsModel extends DrawModel {
 
 	private final Rank rank;
 
-	public QuadsModel(Rank rank, HandCategory handCategory) {
-		super(DrawType.QUADS_DRAW);
+	public QuadsModel(Rank rank, HandCategory handCategory, boolean isDraw) {
+		super(DrawType.QUADS_DRAW, isDraw);
 		this.rank = rank;
 		
-		initialize(handCategory);
+		if (isDraw) {
+			initialize(handCategory);			
+		}
 	}
 
 	@Override
 	public String toString() {
-		return "Quads of " + rank + "; nuts=[" + displayNuts() + "]";
+		String display = "";
+
+		display = "Quads of " + rank + "; ";
+		display += isDraw ? "nuts" : "holeCards";
+		display += "=[" + displayNutsOrHoleCards() + "]";
+
+		return display;
 	}
 
 	private void initialize(HandCategory handCategory) {
@@ -46,7 +54,7 @@ class QuadsModel extends DrawModel {
 		}
 
 		if (card1 != null && card2 != null) {
-			nuts.addAll(Arrays.asList(card1, card2));
+			nutsOrHoleCards.addAll(Arrays.asList(card1, card2));
 		}
 	}
 

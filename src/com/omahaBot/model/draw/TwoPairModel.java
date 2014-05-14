@@ -16,23 +16,31 @@ class TwoPairModel extends DrawModel {
 
 	private final Rank rankPair2;
 
-	public TwoPairModel(Rank rankPair1, Rank rankPair2) {
-		super(DrawType.BEST_TWO_PAIR_DRAW);
+	public TwoPairModel(Rank rankPair1, Rank rankPair2, boolean isDraw) {
+		super(DrawType.BEST_TWO_PAIR_DRAW, isDraw);
 		this.rankPair1 = rankPair1;
 		this.rankPair2 = rankPair2;
 
-		initialize();
+		if (isDraw) {
+			initialize();			
+		}
 	}
 
 	@Override
 	public String toString() {
-		return "Two pairs of " + rankPair1 + " and " + rankPair2 + "; nuts=[" + displayNuts() + "]";
+		String display = "";
+
+		display = "Two pairs of " + rankPair1 + " and " + rankPair2 + "; ";
+		display += isDraw ? "nuts" : "holeCards";
+		display += "=[" + displayNutsOrHoleCards() + "]";
+
+		return display;
 	}
 
 	private void initialize() {
 		CardModel card1 = new CardModel(rankPair1, Suit.SPADE);
 		CardModel card2 = new CardModel(rankPair2, Suit.HEART);
 
-		nuts.addAll(Arrays.asList(card1, card2));
+		nutsOrHoleCards.addAll(Arrays.asList(card1, card2));
 	}
 }

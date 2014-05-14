@@ -18,21 +18,40 @@ import com.omahaBot.model.CardModel;
 public @Data
 class FullModel extends DrawModel {
 
-	private final Rank rankThree;
-
+	private Rank rankThree;
 	private Rank rankPair;
 
-	public FullModel(Rank rankThree, Rank rankPair, HandCategory handCategory, Rank rankGroup, Rank kickerPack1, Rank kickerPack2) {
-		super(DrawType.BEST_FULL_DRAW);
+	public FullModel(Rank rankThree, Rank rankPair, HandCategory handCategory, Rank rankGroup, Rank kickerPack1,
+			Rank kickerPack2, boolean isDraw) {
+		super(DrawType.BEST_FULL_DRAW, isDraw);
 		this.rankThree = rankThree;
 		this.rankPair = rankPair;
-		
-		initialize(handCategory, rankGroup, kickerPack1, kickerPack2);
+
+		if (isDraw) {
+			initialize(handCategory, rankGroup, kickerPack1, kickerPack2);
+		}
+		else {
+
+		}
 	}
+
+	// public FullModel(Builder builder) {
+	// super(DrawType.BEST_FULL_DRAW, builder.isDraw);
+	// this.rankThree = builder.rankThree;
+	// this.rankPair = builder.rankPair;
+	// this.nuts = builder.nuts;
+	// this.holeCards = builder.holeCards;
+	// }
 
 	@Override
 	public String toString() {
-		return "Full house, " + rankThree + " full of " + rankPair + "; nuts=[" + displayNuts() + "]";
+		String display = "";
+
+		display = "Full house, " + rankThree + " full of " + rankPair + "; ";
+		display += isDraw ? "nuts" : "holeCards";
+		display += "=[" + displayNutsOrHoleCards() + "]";
+
+		return display;
 	}
 
 	private void initialize(HandCategory handCategory, Rank rankGroup, Rank kickerPack1, Rank kickerPack2) {
@@ -43,14 +62,14 @@ class FullModel extends DrawModel {
 		case ONE_PAIR:
 		case TWO_PAIR:
 			card1 = new CardModel(rankThree, Suit.SPADE);
-			
+
 			if (rankGroup.equals(kickerPack1)) {
 				card2 = new CardModel(rankPair, Suit.HEART);
 			}
 			else {
 				card2 = new CardModel(rankThree, Suit.HEART);
 			}
-			
+
 			break;
 		case THREE_OF_A_KIND:
 			if (rankGroup.equals(kickerPack1)) {
@@ -84,7 +103,7 @@ class FullModel extends DrawModel {
 				if (rankGroup.equals(kickerPack1)) {
 					// ex : QQQQ3 --> QQQ_AA
 					card1 = new CardModel("As");
-					card2 = new CardModel("Ah");					
+					card2 = new CardModel("Ah");
 				}
 				else {
 					// ex : 2222K --> 22K_KK
@@ -92,14 +111,14 @@ class FullModel extends DrawModel {
 					card2 = new CardModel(kickerPack1, Suit.HEART);
 				}
 			}
-			
-			if(rankGroup.equals(kickerPack1)) {
+
+			if (rankGroup.equals(kickerPack1)) {
 				rankPair = card1.getRank();
 			}
 			else {
 				rankPair = rankGroup;
 			}
-			
+
 			break;
 		case FULL_HOUSE:
 			if (kickerPack1.ordinal() == kickerPack2.ordinal() + 1) {
@@ -112,7 +131,7 @@ class FullModel extends DrawModel {
 					rankPair = Rank.values()[kickerPack1.ordinal() - 1];
 				} else {
 					// TTT22 --> TTT_AA
-					rankPair = Rank.ACE;					
+					rankPair = Rank.ACE;
 				}
 			}
 
@@ -125,7 +144,86 @@ class FullModel extends DrawModel {
 		}
 
 		if (card1 != null && card2 != null) {
-			nuts.addAll(Arrays.asList(card1, card2));
+			nutsOrHoleCards.addAll(Arrays.asList(card1, card2));
 		}
 	}
+
+	@Override
+	public boolean equals(Object obj) {
+//		if (this == obj)
+//			return true;
+//		if (!super.equals(obj))
+//			return false;
+//		if (getClass() != obj.getClass())
+//			return false;
+		FullModel other = (FullModel) obj;
+		if (rankPair != other.rankPair)
+			return false;
+		if (rankThree != other.rankThree)
+			return false;
+		return true;
+	}
+
+	@Override
+	public boolean isNuts(Object obj) {
+		FullModel other = (FullModel) obj;
+		
+		if (!this.equals(obj)) 
+			return false;
+		if (!nutsOrHoleCards.first().getRank().equals(other.nutsOrHoleCards.first().getRank()))
+			return false;
+		if (!nutsOrHoleCards.last().getRank().equals(other.nutsOrHoleCards.last().getRank()))
+			return false;
+		return true;
+	}	
+	
+	
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + ((rankPair == null) ? 0 : rankPair.hashCode());
+		result = prime * result + ((rankThree == null) ? 0 : rankThree.hashCode());
+		return result;
+	}
+
+
+	
+	
+
+	// /**
+	// *
+	// * @author Julien
+	// *
+	// */
+	// public static class Builder {
+	//
+	// private final Rank rankThree;
+	// private final Rank rankPair;
+	// private final boolean isDraw;
+	// private SortedSet<CardModel> nuts = new TreeSet<CardModel>();
+	// private SortedSet<CardModel> holeCards = new TreeSet<CardModel>();
+	//
+	// public Builder(Rank rankThree, Rank rankPair, boolean isDraw) {
+	// this.rankThree = rankThree;
+	// this.rankPair = rankPair;
+	// this.isDraw = isDraw;
+	// }
+	//
+	// // builder methods for setting property
+	// public Builder nuts(SortedSet<CardModel> nuts) {
+	// this.nuts = nuts;
+	// return this;
+	// }
+	//
+	// public Builder holeCards(SortedSet<CardModel> holeCards) {
+	// this.holeCards = holeCards;
+	// return this;
+	// }
+	//
+	// // return fully build object
+	// public FullModel build() {
+	// return new FullModel(this);
+	// }
+	// }
 }

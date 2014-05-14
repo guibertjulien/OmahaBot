@@ -1,13 +1,8 @@
 package com.omahaBot.utils;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.SortedSet;
-import java.util.TreeSet;
 
-import com.google.common.collect.Lists;
-import com.omahaBot.enums.Rank;
-import com.omahaBot.enums.Suit;
 import com.omahaBot.model.CardModel;
 
 public class CardUtils {
@@ -22,6 +17,32 @@ public class CardUtils {
 		
 		return display;
 	}
+	
+	public static boolean coupleIsPair(SortedSet<CardModel> cards) {
+		CardModel card1 = cards.first();
+		CardModel card2 = cards.last();
+		
+		return card1.getRank().equals(card2.getRank()); 	
+	}
+	
+	public static boolean coupleIsSuited(SortedSet<CardModel> cards) {
+		CardModel card1 = cards.first();
+		CardModel card2 = cards.last();
+		
+		return card1.getSuit().equals(card2.getSuit()); 	
+	}
+	
+	public static boolean coupleIsConnected(SortedSet<CardModel> cards) {
+		// TODO
+		return false;
+	}
+	
+	
+	
+	
+	
+	
+	
 	
 //	public static SortedSet<CardModel> initNuts (List<Rank> listNoRank) {
 //		
