@@ -9,7 +9,7 @@ import com.omahaBot.enums.DrawType;
 import com.omahaBot.model.CardModel;
 
 public @Data
-class DrawModel {
+class DrawModel implements Comparable<DrawModel> {
 
 	private int nbOut = 0;
 	private double percent = 0.0;
@@ -76,7 +76,7 @@ class DrawModel {
 			CardModel card2 = nutsOrHoleCards.last();
 			display = card1.toString().concat(card2.toString());
 		}
-		
+
 		return display;
 	}
 
@@ -88,6 +88,16 @@ class DrawModel {
 		// TODO Auto-generated method stub
 		return false;
 	}
-	
-	
+
+	@Override
+	public int compareTo(DrawModel o) {
+		// compare drawType
+		if (this.drawType.ordinal() > o.drawType.ordinal()) {
+			return -1;
+		}
+		else {
+			return 1;
+		} 
+	}
+
 }

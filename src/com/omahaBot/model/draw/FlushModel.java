@@ -59,7 +59,13 @@ class FlushModel extends DrawModel {
 					break;
 				}
 			} else if (rank.equals(card.getRank())) {
-				card = listCard.get(++i);
+				if (i == 1) {
+					Rank rankNext = Rank.values()[rank.ordinal()-1];
+					nutsOrHoleCards.add(new CardModel(rankNext, suit));
+				}
+				else {
+					card = listCard.get(++i);	
+				}
 			}
 		}
 	}

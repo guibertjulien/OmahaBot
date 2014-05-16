@@ -18,4 +18,25 @@ class OnePairModel extends DrawModel {
 	public String toString() {
 		return "One pairs of " + rank;
 	}
+
+	@Override
+	public int compareTo(DrawModel o) {
+
+		if (o instanceof OnePairModel) {
+			OnePairModel drawCompare = (OnePairModel) o;
+
+			// compare rank
+			if (this.rank.ordinal() > drawCompare.rank.ordinal()) {
+				return -1;
+			}
+			else if (this.rank.ordinal() < drawCompare.rank.ordinal()) {
+				return 1;
+			} else {
+				return 0;
+			}
+		}
+		else {
+			return super.compareTo(o);
+		}
+	}
 }

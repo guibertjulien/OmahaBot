@@ -2,7 +2,11 @@ package com.omahaBot.service.ai;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import com.omahaBot.enums.BettingDecision;
 import com.omahaBot.enums.BoardDrawPower;
@@ -149,7 +153,7 @@ public class PostFlopAnalyserServiceImpl {
 		boardDraws.clear();
 
 		// initialisation des combinaisons
-		ArrayList<CombinaisonModel> combinaisons = new ArrayList<CombinaisonModel>();
+		SortedSet<CombinaisonModel> combinaisons = new TreeSet<CombinaisonModel>();
 
 		for (List<CardModel> permutationHand : handModel.permutations()) {
 			for (List<CardModel> permutationBoard : boardModel.permutations()) {
@@ -166,24 +170,31 @@ public class PostFlopAnalyserServiceImpl {
 		// initialisation de boardDraws
 		boardDraws.addAll(boardModel.initDraw());
 
+		// Suppression des doublons
+		Set<DrawModel> handDrawsSet = new HashSet<DrawModel>(handDraws);
+		Set<DrawModel> boardDrawsSet = new HashSet<DrawModel>(boardDraws);
+		
 		System.out.println(boardModel.toString());
 		System.out.println(handModel.toString());
+		
+		SortedSet<DrawModel> handDrawsSorted = new TreeSet<DrawModel>(handDrawsSet);
+		SortedSet<DrawModel> boardDrawsSorted = new TreeSet<DrawModel>(boardDrawsSet);
 
 		System.out.println("****************************************");
-		System.out.println("handDraws : ");
+		System.out.println("handDrawsSorted : ");
 		System.out.println("----------------------------------------");
 
 		// affchage des handDraws
-		for (DrawModel drawModel : handDraws) {
+		for (DrawModel drawModel : handDrawsSorted) {
 			System.out.println(drawModel);
 		}
 
 		System.out.println("****************************************");
-		System.out.println("boardDraws : ");
+		System.out.println("boardDrawsSorted : ");
 		System.out.println("----------------------------------------");
 
 		// affchage des boardDraws
-		for (DrawModel drawModel : boardDraws) {
+		for (DrawModel drawModel : boardDrawsSorted) {
 			System.out.println(drawModel);
 		}
 
@@ -192,47 +203,22 @@ public class PostFlopAnalyserServiceImpl {
 		System.out.println("----------------------------------------");
 
 		// comparaison de handDraws & boardDraws
-		for (DrawModel drawModelHand : handDraws) {
-			for (DrawModel drawModelBoard : boardDraws) {
+		for (DrawModel drawModelHand : handDrawsSorted) {
+			for (DrawModel drawModelBoard : boardDrawsSorted) {
 
 				if (drawModelHand != null && drawModelBoard != null) {
 					if (drawModelHand.getClass().equals(drawModelBoard.getClass())) {
-						System.out.println(drawModelHand);
-
 						if (drawModelHand.isNuts(drawModelBoard)) {
-							System.out.println("NUTS !");
+							System.out.println(drawModelHand + " --> !!! NUTS !!!");
 						}
 						else {
-							System.out.println("CAUTION NO NUTS !");
+							System.out.println(drawModelHand);
 						}
 					}
 				}
 			}
 		}
-	}
 
-	// public <T> void foo() {
-	//
-	// ArrayList<DrawModel<T>> listDraw1 = new ArrayList<>();
-	//
-	// ArrayList<DrawModel<T>> listDraw2 = new ArrayList<>();
-	//
-	// // trier les 2 listes
-	//
-	// for (DrawModel<T> drawModel : listDraw2) {
-	//
-	// // search type in boardDraw
-	// DrawModel<T> drawModel2 = null;
-	//
-	// drawModel.getHandCategory().equals(drawModel2.getHandCategory());
-	//
-	//
-	//
-	//
-	//
-	// }
-	//
-	//
-	//
-	// }
+		System.out.println("=============================================================");
+	}
 }

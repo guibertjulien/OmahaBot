@@ -73,7 +73,8 @@ public class BoardModel extends CardPackModel {
 	 */
 	public FullModel searchBestFullDraw() {
 
-		HandCategory handCategory = null;
+		HandCategory handCategory = HandCategory.UNKNOWN;
+		FullModel fullModel = null;
 
 		String whithoutSuit = this.toStringByRank().replaceAll("[shdc]", ".");
 
@@ -140,11 +141,12 @@ public class BoardModel extends CardPackModel {
 			}
 		}
 
-		FullModel fullModel = new FullModel(rankThree, rankPair, handCategory, rankGroup, kickerPack1, kickerPack2, true);
+		if (!handCategory.equals(HandCategory.UNKNOWN)) {
+			fullModel = new FullModel(rankThree, rankPair, handCategory, rankGroup, kickerPack1, kickerPack2, true);
+		}
 
 		return fullModel;
 	}
-
 
 	/**
 	 * 
@@ -221,6 +223,8 @@ public class BoardModel extends CardPackModel {
 	public ArrayList<DrawModel> initDraw() {
 		ArrayList<DrawModel> listDraw = new ArrayList<>();
 
+		DrawModel drawModel = null;
+
 		if (!cards.isEmpty()) {
 
 			if (dealStep.equals(DealStep.FLOP) || dealStep.equals(DealStep.TURN)) {
@@ -230,19 +234,19 @@ public class BoardModel extends CardPackModel {
 				listDraw.addAll(searchFlushDraw(3, 5));
 			}
 
-			FullModel fullModel = searchBestFullDraw();
+			drawModel = searchBestFullDraw();
+			if (drawModel == null)
+				drawModel = searchBestSetDraw();
+			if (drawModel == null)
+				drawModel = searchBestTwoPairDraw();
 
-			if (fullModel == null) {
-				listDraw.add(searchBestSetDraw());
-				listDraw.add(searchBestTwoPairDraw());
-			} else {
-				listDraw.add(fullModel);
-			}
-			
-			listDraw.addAll(searchQuadsDraw());
+			if (drawModel != null)
+				listDraw.add(drawModel);
+
+			drawModel = searchBestFullDraw();
+			if (drawModel != null)
+				listDraw.add(drawModel);
 		}
-
-		//Collections.sort(listDraw);
 
 		return listDraw;
 	}

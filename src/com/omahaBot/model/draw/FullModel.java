@@ -30,9 +30,6 @@ class FullModel extends DrawModel {
 		if (isDraw) {
 			initialize(handCategory, rankGroup, kickerPack1, kickerPack2);
 		}
-		else {
-
-		}
 	}
 
 	// public FullModel(Builder builder) {
@@ -150,12 +147,12 @@ class FullModel extends DrawModel {
 
 	@Override
 	public boolean equals(Object obj) {
-//		if (this == obj)
-//			return true;
-//		if (!super.equals(obj))
-//			return false;
-//		if (getClass() != obj.getClass())
-//			return false;
+		// if (this == obj)
+		// return true;
+		// if (!super.equals(obj))
+		// return false;
+		// if (getClass() != obj.getClass())
+		// return false;
 		FullModel other = (FullModel) obj;
 		if (rankPair != other.rankPair)
 			return false;
@@ -167,29 +164,44 @@ class FullModel extends DrawModel {
 	@Override
 	public boolean isNuts(Object obj) {
 		FullModel other = (FullModel) obj;
-		
-		if (!this.equals(obj)) 
+
+		if (!this.equals(obj))
 			return false;
 		if (!nutsOrHoleCards.first().getRank().equals(other.nutsOrHoleCards.first().getRank()))
 			return false;
 		if (!nutsOrHoleCards.last().getRank().equals(other.nutsOrHoleCards.last().getRank()))
 			return false;
 		return true;
-	}	
-	
-	
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = super.hashCode();
-		result = prime * result + ((rankPair == null) ? 0 : rankPair.hashCode());
-		result = prime * result + ((rankThree == null) ? 0 : rankThree.hashCode());
-		return result;
 	}
 
+	@Override
+	public int compareTo(DrawModel o) {
 
-	
-	
+		if (o instanceof FullModel) {
+
+			FullModel drawCompare = (FullModel) o;
+
+			// compare rankThree next rankPair
+			if (this.rankThree.ordinal() > drawCompare.rankThree.ordinal()) {
+				return -1;
+			}
+			else if (this.rankThree.ordinal() < drawCompare.rankThree.ordinal()) {
+				return 1;
+			} else {
+				if (this.rankPair.ordinal() > drawCompare.rankPair.ordinal()) {
+					return -1;
+				}
+				else if (this.rankPair.ordinal() < drawCompare.rankPair.ordinal()) {
+					return 1;
+				} else {
+					return 0;
+				}
+			}
+		}
+		else {
+			return super.compareTo(o);
+		}
+	}
 
 	// /**
 	// *
@@ -226,4 +238,5 @@ class FullModel extends DrawModel {
 	// return new FullModel(this);
 	// }
 	// }
+
 }

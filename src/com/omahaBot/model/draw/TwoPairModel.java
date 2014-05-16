@@ -22,7 +22,7 @@ class TwoPairModel extends DrawModel {
 		this.rankPair2 = rankPair2;
 
 		if (isDraw) {
-			initialize();			
+			initialize();
 		}
 	}
 
@@ -42,5 +42,33 @@ class TwoPairModel extends DrawModel {
 		CardModel card2 = new CardModel(rankPair2, Suit.HEART);
 
 		nutsOrHoleCards.addAll(Arrays.asList(card1, card2));
+	}
+
+	@Override
+	public int compareTo(DrawModel o) {
+
+		if (o instanceof TwoPairModel) {
+			TwoPairModel drawCompare = (TwoPairModel) o;
+
+			// compare rankPair1 next rankPair2
+			if (this.rankPair1.ordinal() > drawCompare.rankPair1.ordinal()) {
+				return -1;
+			}
+			else if (this.rankPair1.ordinal() < drawCompare.rankPair1.ordinal()) {
+				return 1;
+			} else {
+				if (this.rankPair2.ordinal() > drawCompare.rankPair2.ordinal()) {
+					return -1;
+				}
+				else if (this.rankPair2.ordinal() < drawCompare.rankPair2.ordinal()) {
+					return 1;
+				} else {
+					return 0;
+				}
+			}
+		}
+		else {
+			return super.compareTo(o);
+		}
 	}
 }

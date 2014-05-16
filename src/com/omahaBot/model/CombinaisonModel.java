@@ -61,33 +61,34 @@ public class CombinaisonModel extends CardPackModel implements Comparable<Combin
 	public void setCards(SortedSet<CardModel> cards) {
 		this.cards = cards;
 	}
-	
+
 	/**
 	 * TODO : best practices ?
 	 */
 	public ArrayList<DrawModel> initDraw() {
 		ArrayList<DrawModel> listDraw = new ArrayList<>();
 
+		DrawModel drawModel = null;
+
 		if (!cards.isEmpty()) {
-//			if (hasFlushDraw()) {
-//				listDraw.addAll(searchFlushDraw(4, 5));
-//			}
+			// if (hasFlushDraw()) {
+			// listDraw.addAll(searchFlushDraw(4, 5));
+			// }
 
-			listDraw.add(searchRankDraw());
+			drawModel = searchRankDraw();
+
+			if (drawModel != null)
+				listDraw.add(searchRankDraw());
 		}
-
-		// Collections.sort(listDraw);
 
 		return listDraw;
 	}
 
-	
 	public DrawModel searchRankDraw() {
 
+		HandCategory handCategory = HandCategory.UNKNOWN;
 		DrawModel drawModel = null;
 
-		HandCategory handCategory = null;
-		
 		String whithoutSuit = this.toStringByRank().replaceAll("[shdc]", ".");
 
 		Pattern pattern = Pattern.compile("(\\w.)\\1{1,}");
@@ -95,23 +96,23 @@ public class CombinaisonModel extends CardPackModel implements Comparable<Combin
 
 		String group1 = "";
 		String group2 = "";
-		
+
 		Rank rank1 = Rank.UNKNOWN;
 		Rank rank2 = Rank.UNKNOWN;
-		
+
 		if (matcher.find()) {
 			group1 = matcher.group(0);
 			rank1 = Rank.fromShortName(String.valueOf(group1.charAt(0)));
 
 			if (group1.length() == 8) {
-				
+
 				if (CardUtils.coupleIsPair(permutationHand)) {
 					handCategory = HandCategory.ONE_PAIR;
 				}
 				else {
 					handCategory = HandCategory.THREE_OF_A_KIND;
 				}
-				
+
 				drawModel = new QuadsModel(rank1, handCategory, false);
 			} else if (group1.length() == 6) {
 				if (matcher.find()) {
@@ -131,7 +132,7 @@ public class CombinaisonModel extends CardPackModel implements Comparable<Combin
 						drawModel = new FullModel(rank2, rank1, handCategory, null, null, null, false);
 					}
 					else {
-						drawModel = new TwoPairModel(rank1, rank2, false);
+						drawModel = new TwoPairModel(rank2, rank1, false);
 					}
 				}
 				else {
@@ -143,7 +144,7 @@ public class CombinaisonModel extends CardPackModel implements Comparable<Combin
 		if (drawModel != null) {
 			drawModel.initHoleCards(permutationHand);
 		}
-		
+
 		return drawModel;
 	}
 
@@ -203,7 +204,7 @@ public class CombinaisonModel extends CardPackModel implements Comparable<Combin
 		// return 0;
 		// }
 	}
-	
+
 	@Override
 	public String toString() {
 		return "Combinaison : " + cards;

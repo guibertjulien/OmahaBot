@@ -19,7 +19,7 @@ class SetModel extends DrawModel {
 		this.rank = rank;
 
 		if (isDraw) {
-			initialize();			
+			initialize();
 		}
 	}
 
@@ -39,6 +39,40 @@ class SetModel extends DrawModel {
 		CardModel card2 = new CardModel(rank, Suit.HEART);
 
 		nutsOrHoleCards.addAll(Arrays.asList(card1, card2));
+	}
+
+	@Override
+	public boolean isNuts(Object obj) {
+		SetModel other = (SetModel) obj;
+
+		if (!this.equals(obj))
+			return false;
+		if (!nutsOrHoleCards.first().getRank().equals(other.nutsOrHoleCards.first().getRank()))
+			return false;
+		if (!nutsOrHoleCards.last().getRank().equals(other.nutsOrHoleCards.last().getRank()))
+			return false;
+		return true;
+	}
+	
+	@Override
+	public int compareTo(DrawModel o) {
+
+		if (o instanceof SetModel) {
+			SetModel drawCompare = (SetModel) o;
+
+			// compare rank
+			if (this.rank.ordinal() > drawCompare.rank.ordinal()) {
+				return -1;
+			}
+			else if (this.rank.ordinal() < drawCompare.rank.ordinal()) {
+				return 1;
+			} else {
+				return 0;
+			}
+		}
+		else {
+			return super.compareTo(o);
+		}
 	}
 
 }

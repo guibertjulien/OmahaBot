@@ -135,13 +135,26 @@ public class PostFlopServiceImplTest {
 	@Test
 	public void testCompareHand() {
 
-		HandModel handModel = new HandModel("AcAdKs8d");
-		BoardModel boardModel = new BoardModel("Ah4c4h", DealStep.FLOP);
+		HandModel handModel;
+		BoardModel boardModel;
+		
+		handModel = new HandModel("AcAdKs8d");
+		boardModel = new BoardModel("Ah4c4h", DealStep.FLOP);
 		
 		postFlopAnalyserServiceImpl.compareHand(handModel, boardModel);
 		
 		handModel = new HandModel("AcAdQcQd");
 		boardModel = new BoardModel("Ah4c4hQs", DealStep.TURN);
+		
+		postFlopAnalyserServiceImpl.compareHand(handModel, boardModel);
+		
+		handModel = new HandModel("AcAd4c4d");
+		boardModel = new BoardModel("Ah4s4hQs", DealStep.TURN);
+		
+		postFlopAnalyserServiceImpl.compareHand(handModel, boardModel);
+		
+		handModel = new HandModel("AcAd4c4d");
+		boardModel = new BoardModel("Ah6sKhQs", DealStep.TURN);
 		
 		postFlopAnalyserServiceImpl.compareHand(handModel, boardModel);
 	}

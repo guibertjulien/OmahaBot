@@ -18,9 +18,9 @@ class QuadsModel extends DrawModel {
 	public QuadsModel(Rank rank, HandCategory handCategory, boolean isDraw) {
 		super(DrawType.QUADS_DRAW, isDraw);
 		this.rank = rank;
-		
+
 		if (isDraw) {
-			initialize(handCategory);			
+			initialize(handCategory);
 		}
 	}
 
@@ -58,4 +58,37 @@ class QuadsModel extends DrawModel {
 		}
 	}
 
+	@Override
+	public boolean isNuts(Object obj) {
+		QuadsModel other = (QuadsModel) obj;
+
+		if (!this.equals(obj))
+			return false;
+		if (!nutsOrHoleCards.first().getRank().equals(other.nutsOrHoleCards.first().getRank()))
+			return false;
+		if (!nutsOrHoleCards.last().getRank().equals(other.nutsOrHoleCards.last().getRank()))
+			return false;
+		return true;
+	}
+	
+	@Override
+	public int compareTo(DrawModel o) {
+
+		if (o instanceof QuadsModel) {
+			QuadsModel drawCompare = (QuadsModel) o;
+
+			// compare rank
+			if (this.rank.ordinal() > drawCompare.rank.ordinal()) {
+				return -1;
+			}
+			else if (this.rank.ordinal() < drawCompare.rank.ordinal()) {
+				return 1;
+			} else {
+				return 0;
+			}
+		}
+		else {
+			return super.compareTo(o);
+		}
+	}
 }
