@@ -3,6 +3,7 @@ package com.omahaBot.model.draw;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.SortedSet;
 
 import lombok.Data;
 
@@ -22,19 +23,24 @@ class FlushModel extends DrawModel {
 
 	private boolean straightFlush;
 
-	public FlushModel(DrawType drawType, Suit suit, String drawString, boolean isDraw) {
-		super(drawType, isDraw);
+	public FlushModel(DrawType drawType, Suit suit, String drawString, SortedSet<CardModel> permutationHand) {
+		super(drawType, permutationHand);
 		this.suit = suit;
 
 		initialize(drawString);
+
+		if (permutationHand != null) {
+			initHoleCards(permutationHand);
+		}
 	}
 
 	@Override
 	public String toString() {
 		String display = "";
 
-		display = "Flush " + suit + " with kicker " + kicker + "; ";
-		display += isDraw ? "nuts" : "holeCards";
+		display = "TYPE : " + drawType.name();
+		display += " Flush " + suit + " with kicker " + kicker + "; ";
+		display += (permutationHand != null) ? "holeCards" : "nuts";
 		display += "=[" + displayNutsOrHoleCards() + "]";
 
 		return display;
@@ -60,13 +66,31 @@ class FlushModel extends DrawModel {
 				}
 			} else if (rank.equals(card.getRank())) {
 				if (i == 1) {
-					Rank rankNext = Rank.values()[rank.ordinal()-1];
+					Rank rankNext = Rank.values()[rank.ordinal() - 1];
 					nutsOrHoleCards.add(new CardModel(rankNext, suit));
 				}
 				else {
-					card = listCard.get(++i);	
+					card = listCard.get(++i);
 				}
 			}
 		}
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		FlushModel other = (FlushModel) obj;
+		
+		return suit.equals(other.suit);
+	}
+	
+	@Override
+	public boolean isNuts(Object obj) {
+		FlushModel other = (FlushModel) obj;
+		
+		if (!this.equals(obj))
+			return false;
+		if (!nutsOrHoleCards.last().getRank().equals(other.nutsOrHoleCards.last().getRank()))
+			return false;
+		return true;
 	}
 }

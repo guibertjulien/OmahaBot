@@ -1,6 +1,7 @@
 package com.omahaBot.model.draw;
 
 import java.util.Arrays;
+import java.util.SortedSet;
 
 import lombok.Data;
 
@@ -22,13 +23,15 @@ class FullModel extends DrawModel {
 	private Rank rankPair;
 
 	public FullModel(Rank rankThree, Rank rankPair, HandCategory handCategory, Rank rankGroup, Rank kickerPack1,
-			Rank kickerPack2, boolean isDraw) {
-		super(DrawType.BEST_FULL_DRAW, isDraw);
+			Rank kickerPack2, SortedSet<CardModel> permutationHand) {
+		super(DrawType.BEST_FULL_DRAW, permutationHand);
 		this.rankThree = rankThree;
 		this.rankPair = rankPair;
 
-		if (isDraw) {
-			initialize(handCategory, rankGroup, kickerPack1, kickerPack2);
+		initialize(handCategory, rankGroup, kickerPack1, kickerPack2);
+		
+		if (permutationHand != null) {
+			initHoleCards(permutationHand);
 		}
 	}
 
@@ -44,8 +47,9 @@ class FullModel extends DrawModel {
 	public String toString() {
 		String display = "";
 
-		display = "Full house, " + rankThree + " full of " + rankPair + "; ";
-		display += isDraw ? "nuts" : "holeCards";
+		display = "TYPE : " + drawType.name();
+		display += " Full house, " + rankThree + " full of " + rankPair + "; ";
+		display += (permutationHand != null) ? "holeCards" : "nuts";
 		display += "=[" + displayNutsOrHoleCards() + "]";
 
 		return display;
@@ -147,13 +151,8 @@ class FullModel extends DrawModel {
 
 	@Override
 	public boolean equals(Object obj) {
-		// if (this == obj)
-		// return true;
-		// if (!super.equals(obj))
-		// return false;
-		// if (getClass() != obj.getClass())
-		// return false;
 		FullModel other = (FullModel) obj;
+		
 		if (rankPair != other.rankPair)
 			return false;
 		if (rankThree != other.rankThree)

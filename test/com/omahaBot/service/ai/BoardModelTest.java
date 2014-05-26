@@ -311,7 +311,7 @@ public class BoardModelTest {
 		FlushModel flushModel;
 		
 		boardModel = new BoardModel("7s4sKs", DealStep.FLOP);
-		listDraw.addAll(boardModel.searchFlushDraw(2, 4));
+		listDraw.addAll(boardModel.searchFlushDraw(2, 4, null));
 		flushModel = (FlushModel) listDraw.get(0);
 		assertTrue(flushModel.getSuit().equals(Suit.SPADE));
 		assertTrue(flushModel.getNutsOrHoleCards().first().getRank().equals(Rank.QUEEN));
@@ -320,7 +320,7 @@ public class BoardModelTest {
 
 		listDraw.clear();
 		boardModel = new BoardModel("7c4c6hAc", DealStep.TURN);
-		listDraw.addAll(boardModel.searchFlushDraw(2, 4));
+		listDraw.addAll(boardModel.searchFlushDraw(2, 4, null));
 		flushModel = (FlushModel) listDraw.get(0);
 		assertTrue(flushModel.getSuit().equals(Suit.CLUB));
 		assertTrue(flushModel.getNutsOrHoleCards().first().getRank().equals(Rank.QUEEN));
@@ -329,7 +329,7 @@ public class BoardModelTest {
 		
 		listDraw.clear();
 		boardModel = new BoardModel("7c4c6cAc", DealStep.TURN);
-		listDraw.addAll(boardModel.searchFlushDraw(2, 4));
+		listDraw.addAll(boardModel.searchFlushDraw(2, 4, null));
 		flushModel = (FlushModel) listDraw.get(0);
 		assertTrue(flushModel.getSuit().equals(Suit.CLUB));
 		assertTrue(flushModel.getNutsOrHoleCards().first().getRank().equals(Rank.QUEEN));
@@ -338,7 +338,7 @@ public class BoardModelTest {
 
 		listDraw.clear();
 		boardModel = new BoardModel("7h4s6sQhKh", DealStep.RIVER);
-		listDraw.addAll(boardModel.searchFlushDraw(3, 5));
+		listDraw.addAll(boardModel.searchFlushDraw(3, 5, null));
 		flushModel = (FlushModel) listDraw.get(0);
 		assertTrue(flushModel.getSuit().equals(Suit.HEART));
 		assertTrue(flushModel.getNutsOrHoleCards().first().getRank().equals(Rank.JACK));
@@ -347,7 +347,7 @@ public class BoardModelTest {
 
 		listDraw.clear();		
 		boardModel = new BoardModel("Ah4s6hQhKh", DealStep.RIVER);
-		listDraw.addAll(boardModel.searchFlushDraw(3, 5));
+		listDraw.addAll(boardModel.searchFlushDraw(3, 5, null));
 		flushModel = (FlushModel) listDraw.get(0);
 		assertTrue(flushModel.getSuit().equals(Suit.HEART));
 		assertTrue(flushModel.getNutsOrHoleCards().first().getRank().equals(Rank.TEN));
@@ -356,7 +356,7 @@ public class BoardModelTest {
 		
 		listDraw.clear();
 		boardModel = new BoardModel("AhTh6hQhKh", DealStep.RIVER);
-		listDraw.addAll(boardModel.searchFlushDraw(3, 5));
+		listDraw.addAll(boardModel.searchFlushDraw(3, 5, null));
 		flushModel = (FlushModel) listDraw.get(0);
 		assertTrue(flushModel.getSuit().equals(Suit.HEART));
 		assertTrue(flushModel.getNutsOrHoleCards().first().getRank().equals(Rank.NINE));

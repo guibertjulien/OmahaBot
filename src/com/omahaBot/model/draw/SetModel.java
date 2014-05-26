@@ -1,6 +1,7 @@
 package com.omahaBot.model.draw;
 
 import java.util.Arrays;
+import java.util.SortedSet;
 
 import lombok.Data;
 
@@ -14,12 +15,14 @@ class SetModel extends DrawModel {
 
 	private final Rank rank;
 
-	public SetModel(Rank rank, boolean isDraw) {
-		super(DrawType.BEST_SET_DRAW, isDraw);
+	public SetModel(Rank rank, SortedSet<CardModel> permutationHand) {
+		super(DrawType.BEST_SET_DRAW, permutationHand);
 		this.rank = rank;
 
-		if (isDraw) {
-			initialize();
+		initialize();
+
+		if (permutationHand != null) {
+			initHoleCards(permutationHand);
 		}
 	}
 
@@ -27,8 +30,9 @@ class SetModel extends DrawModel {
 	public String toString() {
 		String display = "";
 
-		display = "Set of " + rank + "; ";
-		display += isDraw ? "nuts" : "holeCards";
+		display = "TYPE : " + drawType.name();
+		display += " Set of " + rank + "; ";
+		display += (permutationHand != null) ? "nuts" : "holeCards";
 		display += "=[" + displayNutsOrHoleCards() + "]";
 
 		return display;
@@ -53,7 +57,7 @@ class SetModel extends DrawModel {
 			return false;
 		return true;
 	}
-	
+
 	@Override
 	public int compareTo(DrawModel o) {
 

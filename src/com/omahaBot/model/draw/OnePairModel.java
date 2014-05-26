@@ -1,22 +1,34 @@
 package com.omahaBot.model.draw;
 
+import java.util.SortedSet;
+
 import lombok.Data;
 
 import com.omahaBot.enums.DrawType;
 import com.omahaBot.enums.Rank;
+import com.omahaBot.model.CardModel;
 
 public @Data
 class OnePairModel extends DrawModel {
 	private final Rank rank;
 
-	public OnePairModel(Rank rank) {
-		super(DrawType.BEST_TWO_PAIR_DRAW, false);
+	public OnePairModel(Rank rank, SortedSet<CardModel> permutationHand) {
+		super(DrawType.BEST_TWO_PAIR_DRAW, permutationHand);
 		this.rank = rank;
+
+		if (permutationHand != null) {
+			initHoleCards(permutationHand);
+		}
 	}
 
 	@Override
 	public String toString() {
-		return "One pairs of " + rank;
+		String display = "";
+
+		display = "TYPE : " + drawType.name();
+		display += " One pairs of " + rank;
+
+		return display;
 	}
 
 	@Override

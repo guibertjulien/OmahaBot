@@ -27,7 +27,7 @@ public class CombinaisonModelTest {
 		permutationBoard = new CardPackModel("AcAsKc");
 
 		combinaisonModel = new CombinaisonModel(permutationHand.getCards(), permutationBoard.getCards());
-		drawModel = combinaisonModel.searchRankDraw();
+		drawModel = combinaisonModel.searchBestRankDraw();
 		assertTrue(drawModel instanceof QuadsModel);
 		quadsModel = (QuadsModel) drawModel;
 		assertTrue(quadsModel.getRank().equals(Rank.ACE));
@@ -37,7 +37,7 @@ public class CombinaisonModelTest {
 		permutationBoard = new CardPackModel("KdKsKc");
 
 		combinaisonModel = new CombinaisonModel(permutationHand.getCards(), permutationBoard.getCards());
-		drawModel = combinaisonModel.searchRankDraw();
+		drawModel = combinaisonModel.searchBestRankDraw();
 		assertTrue(drawModel instanceof QuadsModel);
 		quadsModel = (QuadsModel) drawModel;
 		assertTrue(quadsModel.getRank().equals(Rank.KING));
@@ -56,7 +56,7 @@ public class CombinaisonModelTest {
 		permutationBoard = new CardPackModel("KdKsKc");
 
 		combinaisonModel = new CombinaisonModel(permutationHand.getCards(), permutationBoard.getCards());
-		drawModel = combinaisonModel.searchRankDraw();
+		drawModel = combinaisonModel.searchBestRankDraw();
 		assertTrue(drawModel instanceof FullModel);
 		fullModel = (FullModel) drawModel;
 		assertTrue(fullModel.getRankThree().equals(Rank.KING));
@@ -67,7 +67,7 @@ public class CombinaisonModelTest {
 		permutationBoard = new CardPackModel("AdAsAc");
 
 		combinaisonModel = new CombinaisonModel(permutationHand.getCards(), permutationBoard.getCards());
-		drawModel = combinaisonModel.searchRankDraw();
+		drawModel = combinaisonModel.searchBestRankDraw();
 		assertTrue(drawModel instanceof FullModel);
 		fullModel = (FullModel) drawModel;
 		assertTrue(fullModel.getRankThree().equals(Rank.ACE));
@@ -78,7 +78,7 @@ public class CombinaisonModelTest {
 		permutationBoard = new CardPackModel("AdKcKs");
 
 		combinaisonModel = new CombinaisonModel(permutationHand.getCards(), permutationBoard.getCards());
-		drawModel = combinaisonModel.searchRankDraw();
+		drawModel = combinaisonModel.searchBestRankDraw();
 		assertTrue(drawModel instanceof FullModel);
 		fullModel = (FullModel) drawModel;
 		assertTrue(fullModel.getRankThree().equals(Rank.KING));
@@ -89,7 +89,7 @@ public class CombinaisonModelTest {
 		permutationBoard = new CardPackModel("AdKcAc");
 
 		combinaisonModel = new CombinaisonModel(permutationHand.getCards(), permutationBoard.getCards());
-		drawModel = combinaisonModel.searchRankDraw();
+		drawModel = combinaisonModel.searchBestRankDraw();
 		assertTrue(drawModel instanceof FullModel);
 		fullModel = (FullModel) drawModel;
 		assertTrue(fullModel.getRankThree().equals(Rank.ACE));
@@ -109,7 +109,7 @@ public class CombinaisonModelTest {
 		permutationBoard = new CardPackModel("KdKsKc");
 
 		combinaisonModel = new CombinaisonModel(permutationHand.getCards(), permutationBoard.getCards());
-		drawModel = combinaisonModel.searchRankDraw();
+		drawModel = combinaisonModel.searchBestRankDraw();
 		assertTrue(drawModel instanceof SetModel);
 		setModel = (SetModel) drawModel;
 		assertTrue(setModel.getRank().equals(Rank.KING));
@@ -119,7 +119,7 @@ public class CombinaisonModelTest {
 		permutationBoard = new CardPackModel("AdAsAc");
 
 		combinaisonModel = new CombinaisonModel(permutationHand.getCards(), permutationBoard.getCards());
-		drawModel = combinaisonModel.searchRankDraw();
+		drawModel = combinaisonModel.searchBestRankDraw();
 		assertTrue(drawModel instanceof SetModel);
 		setModel = (SetModel) drawModel;
 		assertTrue(setModel.getRank().equals(Rank.ACE));
@@ -129,7 +129,7 @@ public class CombinaisonModelTest {
 		permutationBoard = new CardPackModel("AdKcKs");
 
 		combinaisonModel = new CombinaisonModel(permutationHand.getCards(), permutationBoard.getCards());
-		drawModel = combinaisonModel.searchRankDraw();
+		drawModel = combinaisonModel.searchBestRankDraw();
 		assertTrue(drawModel instanceof SetModel);
 		setModel = (SetModel) drawModel;
 		assertTrue(setModel.getRank().equals(Rank.KING));
@@ -139,7 +139,7 @@ public class CombinaisonModelTest {
 		permutationBoard = new CardPackModel("AdKcAc");
 
 		combinaisonModel = new CombinaisonModel(permutationHand.getCards(), permutationBoard.getCards());
-		drawModel = combinaisonModel.searchRankDraw();
+		drawModel = combinaisonModel.searchBestRankDraw();
 		assertTrue(drawModel instanceof SetModel);
 		setModel = (SetModel) drawModel;
 		assertTrue(setModel.getRank().equals(Rank.ACE));
@@ -158,7 +158,7 @@ public class CombinaisonModelTest {
 		permutationBoard = new CardPackModel("As2dKc");
 
 		combinaisonModel = new CombinaisonModel(permutationHand.getCards(), permutationBoard.getCards());
-		drawModel = combinaisonModel.searchRankDraw();
+		drawModel = combinaisonModel.searchBestRankDraw();
 		assertTrue(drawModel instanceof TwoPairModel);
 		twoPairModel = (TwoPairModel) drawModel;
 		assertTrue(twoPairModel.getRankPair1().equals(Rank.TWO));

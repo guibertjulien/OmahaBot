@@ -3,7 +3,10 @@ package com.omahaBot.model;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.SortedSet;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+import com.omahaBot.enums.Suit;
 import com.omahaBot.utils.PermutationsOfN;
 
 /**
@@ -56,5 +59,10 @@ public class HandModel extends CardPackModel {
 		PermutationsOfN<CardModel> permutationsOrdered = new PermutationsOfN<CardModel>();
 
 		return permutationsOrdered.processSubsets(listCards, 2);
+	}
+
+	public boolean hasFlushDraw() {
+		String whithoutRank = this.toStringBySuit().replaceAll("[^shdc]", "");
+		return !Suit.ALL_SUIT.equals(whithoutRank);
 	}
 }

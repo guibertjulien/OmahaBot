@@ -14,21 +14,21 @@ class DrawModel implements Comparable<DrawModel> {
 	private int nbOut = 0;
 	private double percent = 0.0;
 	protected SortedSet<CardModel> nutsOrHoleCards = new TreeSet<CardModel>();
-	private final DrawType drawType;
-	protected final boolean isDraw;
+	protected final DrawType drawType;
+	protected final SortedSet<CardModel> permutationHand;
 
-	public DrawModel(DrawType drawType, boolean isDraw) {
+	public DrawModel(DrawType drawType, SortedSet<CardModel> permutationHand) {
 		super();
 		this.drawType = drawType;
-		this.isDraw = isDraw;
+		this.permutationHand = permutationHand;
 	}
 
 	public String displayNutsOrHoleCards() {
-		if (isDraw) {
-			return displayNuts();
-		}
-		else {
+		if (permutationHand != null) {
 			return displayHoleCards();
+		}
+		else {			
+			return displayNuts();
 		}
 	}
 
@@ -93,10 +93,10 @@ class DrawModel implements Comparable<DrawModel> {
 	public int compareTo(DrawModel o) {
 		// compare drawType
 		if (this.drawType.ordinal() > o.drawType.ordinal()) {
-			return -1;
+			return 1;
 		}
 		else {
-			return 1;
+			return -1;
 		} 
 	}
 

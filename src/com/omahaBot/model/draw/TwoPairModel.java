@@ -1,6 +1,7 @@
 package com.omahaBot.model.draw;
 
 import java.util.Arrays;
+import java.util.SortedSet;
 
 import lombok.Data;
 
@@ -16,13 +17,15 @@ class TwoPairModel extends DrawModel {
 
 	private final Rank rankPair2;
 
-	public TwoPairModel(Rank rankPair1, Rank rankPair2, boolean isDraw) {
-		super(DrawType.BEST_TWO_PAIR_DRAW, isDraw);
+	public TwoPairModel(Rank rankPair1, Rank rankPair2, SortedSet<CardModel> permutationHand) {
+		super(DrawType.BEST_TWO_PAIR_DRAW, permutationHand);
 		this.rankPair1 = rankPair1;
 		this.rankPair2 = rankPair2;
 
-		if (isDraw) {
-			initialize();
+		initialize();
+
+		if (permutationHand != null) {
+			initHoleCards(permutationHand);
 		}
 	}
 
@@ -30,8 +33,9 @@ class TwoPairModel extends DrawModel {
 	public String toString() {
 		String display = "";
 
-		display = "Two pairs of " + rankPair1 + " and " + rankPair2 + "; ";
-		display += isDraw ? "nuts" : "holeCards";
+		display = "TYPE : " + drawType.name();
+		display += " Two pairs of " + rankPair1 + " and " + rankPair2 + "; ";
+		display += (permutationHand != null) ? "nuts" : "holeCards";
 		display += "=[" + displayNutsOrHoleCards() + "]";
 
 		return display;

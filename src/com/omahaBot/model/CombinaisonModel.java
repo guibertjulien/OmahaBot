@@ -7,8 +7,9 @@ import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import lombok.Data;
+
 import com.omahaBot.enums.HandCategory;
-import com.omahaBot.enums.PostFlopPowerType;
 import com.omahaBot.enums.Rank;
 import com.omahaBot.model.draw.DrawModel;
 import com.omahaBot.model.draw.FullModel;
@@ -24,15 +25,16 @@ import com.omahaBot.utils.CardUtils;
  * @author Julien
  * 
  */
+@Data
 public class CombinaisonModel extends CardPackModel implements Comparable<CombinaisonModel> {
 
 	private Rank kicker;
 
-	private PostFlopPowerType postFlopPowerType;
-
 	private final SortedSet<CardModel> permutationHand;
 
 	private final SortedSet<CardModel> permutationBoard;
+
+	private boolean hasFlushDraw;
 
 	public CombinaisonModel(SortedSet<CardModel> permutationHand, SortedSet<CardModel> permutationBoard) {
 		this.permutationHand = permutationHand;
@@ -45,9 +47,10 @@ public class CombinaisonModel extends CardPackModel implements Comparable<Combin
 		// initHandPowerType();
 	}
 
-	public CombinaisonModel(List<CardModel> permutationHand, List<CardModel> permutationBoard) {
+	public CombinaisonModel(List<CardModel> permutationHand, List<CardModel> permutationBoard, boolean hasFlushDraw) {
 		this.permutationHand = new TreeSet<CardModel>(permutationHand);
 		this.permutationBoard = new TreeSet<CardModel>(permutationBoard);
+		this.hasFlushDraw = hasFlushDraw;
 
 		cards = new TreeSet<CardModel>();
 		cards.addAll(permutationHand);
@@ -71,20 +74,20 @@ public class CombinaisonModel extends CardPackModel implements Comparable<Combin
 		DrawModel drawModel = null;
 
 		if (!cards.isEmpty()) {
-			// if (hasFlushDraw()) {
-			// listDraw.addAll(searchFlushDraw(4, 5));
-			// }
+			if (hasFlushDraw) {
+				listDraw.addAll(searchFlushDraw(4, 5, permutationHand));
+			}
 
-			drawModel = searchRankDraw();
+			drawModel = searchBestRankDraw();
 
 			if (drawModel != null)
-				listDraw.add(searchRankDraw());
+				listDraw.add(drawModel);
 		}
 
 		return listDraw;
 	}
 
-	public DrawModel searchRankDraw() {
+	public DrawModel searchBestRankDraw() {
 
 		HandCategory handCategory = HandCategory.UNKNOWN;
 		DrawModel drawModel = null;
@@ -113,15 +116,15 @@ public class CombinaisonModel extends CardPackModel implements Comparable<Combin
 					handCategory = HandCategory.THREE_OF_A_KIND;
 				}
 
-				drawModel = new QuadsModel(rank1, handCategory, false);
+				drawModel = new QuadsModel(rank1, handCategory, permutationHand);
 			} else if (group1.length() == 6) {
 				if (matcher.find()) {
 					group2 = matcher.group(0);
 					rank2 = Rank.fromShortName(String.valueOf(group2.charAt(0)));
-					drawModel = new FullModel(rank1, rank2, handCategory, null, null, null, false);
+					drawModel = new FullModel(rank1, rank2, handCategory, null, null, null, permutationHand);
 				}
 				else {
-					drawModel = new SetModel(rank1, false);
+					drawModel = new SetModel(rank1, permutationHand);
 				}
 			} else if (group1.length() == 4) {
 				if (matcher.find()) {
@@ -129,64 +132,19 @@ public class CombinaisonModel extends CardPackModel implements Comparable<Combin
 					rank2 = Rank.fromShortName(String.valueOf(group2.charAt(0)));
 
 					if (group2.length() == 6) {
-						drawModel = new FullModel(rank2, rank1, handCategory, null, null, null, false);
+						drawModel = new FullModel(rank2, rank1, handCategory, null, null, null, permutationHand);
 					}
 					else {
-						drawModel = new TwoPairModel(rank2, rank1, false);
+						drawModel = new TwoPairModel(rank2, rank1, permutationHand);
 					}
 				}
 				else {
-					drawModel = new OnePairModel(rank1);
+					drawModel = new OnePairModel(rank1, permutationHand);
 				}
 			}
 		}
 
-		if (drawModel != null) {
-			drawModel.initHoleCards(permutationHand);
-		}
-
 		return drawModel;
-	}
-
-	/**
-	 * TODO : best practices ?
-	 */
-	private void initHandPowerType() {
-		if (isStraightFlush()) {
-			postFlopPowerType = PostFlopPowerType.STRAIGHT_FLUSH;
-		} else if (isFourOfAKind()) {
-			postFlopPowerType = PostFlopPowerType.FOUR_OF_A_KIND;
-		} else if (isFull()) {
-			postFlopPowerType = PostFlopPowerType.FULL_HOUSE;
-		} else if (isFlush()) {
-			postFlopPowerType = PostFlopPowerType.FLUSH;
-		} else if (isStraight()) {
-			postFlopPowerType = PostFlopPowerType.STRAIGHT;
-		} else if (isThreeOfAKind()) {
-			postFlopPowerType = PostFlopPowerType.THREE_OF_A_KIND;
-		} else if (isTwoPair()) {
-			postFlopPowerType = PostFlopPowerType.TWO_PAIR;
-		} else if (isOnePair()) {
-			postFlopPowerType = PostFlopPowerType.ONE_PAIR;
-		} else {
-			postFlopPowerType = PostFlopPowerType.HIGH_CARD;
-		}
-	}
-
-	public Rank getKicker() {
-		return kicker;
-	}
-
-	public void setKicker(Rank kicker) {
-		this.kicker = kicker;
-	}
-
-	public PostFlopPowerType getHandPowerType() {
-		return postFlopPowerType;
-	}
-
-	public void setHandPowerType(PostFlopPowerType postFlopPowerType) {
-		this.postFlopPowerType = postFlopPowerType;
 	}
 
 	@Override

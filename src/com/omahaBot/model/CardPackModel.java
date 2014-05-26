@@ -283,7 +283,7 @@ public class CardPackModel {
 		}
 	}
 
-	public ArrayList<FlushModel> searchFlushDraw(int min, int max) {
+	public ArrayList<FlushModel> searchFlushDraw(int min, int max, SortedSet<CardModel> permutationHand) {
 
 		ArrayList<FlushModel> listDraw = new ArrayList<>();
 
@@ -300,7 +300,7 @@ public class CardPackModel {
 			drawType = (group.length() == 4) ? DrawType.FLUSH_DRAW : DrawType.FLUSH;
 			Suit suit = Suit.fromShortName(group.substring(1, 2));
 
-			FlushModel flushModel = new FlushModel(drawType, suit, drawString, false);
+			FlushModel flushModel = new FlushModel(drawType, suit, drawString, permutationHand);
 
 			listDraw.add(flushModel);
 		}

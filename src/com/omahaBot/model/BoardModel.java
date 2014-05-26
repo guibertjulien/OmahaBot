@@ -142,7 +142,7 @@ public class BoardModel extends CardPackModel {
 		}
 
 		if (!handCategory.equals(HandCategory.UNKNOWN)) {
-			fullModel = new FullModel(rankThree, rankPair, handCategory, rankGroup, kickerPack1, kickerPack2, true);
+			fullModel = new FullModel(rankThree, rankPair, handCategory, rankGroup, kickerPack1, kickerPack2, null);
 		}
 
 		return fullModel;
@@ -152,9 +152,8 @@ public class BoardModel extends CardPackModel {
 	 * 
 	 * @return
 	 */
-	public ArrayList<QuadsModel> searchQuadsDraw() {
-
-		ArrayList<QuadsModel> listDraw = new ArrayList<>();
+	public ArrayList<DrawModel> searchQuadsDraw() {
+		ArrayList<DrawModel> listDraw = new ArrayList<>();
 
 		HandCategory handCategory = null;
 
@@ -177,7 +176,7 @@ public class BoardModel extends CardPackModel {
 			}
 
 			rankGroup = Rank.fromShortName(String.valueOf(group.charAt(0)));
-			QuadsModel quadsModel = new QuadsModel(rankGroup, handCategory, true);
+			QuadsModel quadsModel = new QuadsModel(rankGroup, handCategory, null);
 
 			listDraw.add(quadsModel);
 		}
@@ -197,7 +196,7 @@ public class BoardModel extends CardPackModel {
 		CardModel topPair1 = listCards.get(0);
 		CardModel topPair2 = listCards.get(1);
 
-		TwoPairModel twoPairModel = new TwoPairModel(topPair1.getRank(), topPair2.getRank(), true);
+		TwoPairModel twoPairModel = new TwoPairModel(topPair1.getRank(), topPair2.getRank(), null);
 
 		return twoPairModel;
 	}
@@ -212,7 +211,7 @@ public class BoardModel extends CardPackModel {
 
 		CardModel topSet = listCards.get(0);
 
-		SetModel setModel = new SetModel(topSet.getRank(), true);
+		SetModel setModel = new SetModel(topSet.getRank(), null);
 
 		return setModel;
 	}
@@ -228,24 +227,25 @@ public class BoardModel extends CardPackModel {
 		if (!cards.isEmpty()) {
 
 			if (dealStep.equals(DealStep.FLOP) || dealStep.equals(DealStep.TURN)) {
-				listDraw.addAll(searchFlushDraw(2, 4));
+				listDraw.addAll(searchFlushDraw(2, 4, null));
 			}
 			else if (dealStep.equals(DealStep.RIVER)) {
-				listDraw.addAll(searchFlushDraw(3, 5));
+				listDraw.addAll(searchFlushDraw(3, 5, null));
 			}
 
+			listDraw.addAll(searchQuadsDraw());
+
 			drawModel = searchBestFullDraw();
-			if (drawModel == null)
+			if (drawModel == null) {
 				drawModel = searchBestSetDraw();
-			if (drawModel == null)
+			}
+			if (drawModel == null) {
 				drawModel = searchBestTwoPairDraw();
+			}
 
-			if (drawModel != null)
+			if (drawModel != null) {
 				listDraw.add(drawModel);
-
-			drawModel = searchBestFullDraw();
-			if (drawModel != null)
-				listDraw.add(drawModel);
+			}
 		}
 
 		return listDraw;

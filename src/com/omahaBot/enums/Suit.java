@@ -14,6 +14,8 @@ public enum Suit {
 	CLUB("c", PixelConsts.SUIT_CLUB), // green
 	UNKNOW("?", null);
 
+	public static String ALL_SUIT = "shdc";
+	
 	private static final Map<String, Suit> map = new
 			HashMap<String, Suit>();
 

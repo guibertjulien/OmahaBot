@@ -9,27 +9,34 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 import com.omahaBot.enums.BettingDecision;
-import com.omahaBot.enums.BoardDrawPower;
+import com.omahaBot.enums.BoardType;
+import com.omahaBot.enums.DrawType;
 import com.omahaBot.enums.PostFlopPowerType;
 import com.omahaBot.model.BoardModel;
 import com.omahaBot.model.CardModel;
 import com.omahaBot.model.CombinaisonModel;
 import com.omahaBot.model.HandModel;
 import com.omahaBot.model.draw.DrawModel;
+import com.omahaBot.service.bot.Context;
 
 public class PostFlopAnalyserServiceImpl {
 
 	private ArrayList<DrawModel> handDraws = new ArrayList<DrawModel>();
 
 	private ArrayList<DrawModel> boardDraws = new ArrayList<DrawModel>();
+	
+	private int nbBetTurn = 1;
+	
+//	private SortedSet<DrawModel> handDrawsSorted = new TreeSet<DrawModel>();
+//	private SortedSet<DrawModel> boardDrawsSorted = new TreeSet<DrawModel>();
 
 	public ArrayList<CombinaisonModel> initCombinaisons(HandModel handModel, BoardModel boardModel) {
 
 		ArrayList<CombinaisonModel> combinaisons = new ArrayList<CombinaisonModel>();
-
+		
 		for (List<CardModel> permutationHand : handModel.permutations()) {
 			for (List<CardModel> permutationBoard : boardModel.permutations()) {
-				CombinaisonModel combinaison = new CombinaisonModel(permutationHand, permutationBoard);
+				CombinaisonModel combinaison = new CombinaisonModel(permutationHand, permutationBoard, handModel.hasFlushDraw());
 				combinaisons.add(combinaison);
 			}
 		}
@@ -39,33 +46,33 @@ public class PostFlopAnalyserServiceImpl {
 		return combinaisons;
 	}
 
-	public PostFlopPowerType analyseHandPostFlop(HandModel handModel, BoardModel boardModel) {
+//	public PostFlopPowerType analyseHandPostFlop(HandModel handModel, BoardModel boardModel) {
+//
+//		System.out.println("-----------------------");
+//		System.out.println("- analyseHandPostFlop -");
+//		System.out.println("-----------------------");
+//
+//		ArrayList<CombinaisonModel> combinaisons = new ArrayList<CombinaisonModel>();
+//
+//		for (List<CardModel> permutationHand : handModel.permutations()) {
+//			for (List<CardModel> permutationBoard : boardModel.permutations()) {
+//				CombinaisonModel combinaison = new CombinaisonModel(permutationHand, permutationBoard, handModel.hasFlushDraw());
+//				combinaisons.add(combinaison);
+//				System.out.println(combinaison);
+//			}
+//		}
+//
+//		Collections.sort(combinaisons);
+//
+//		CombinaisonModel combinaisonBest = combinaisons.get(0);
+//		PostFlopPowerType postFlopPowerType = combinaisonBest.getHandPowerType();
+//
+//		System.out.println(postFlopPowerType.toString());
+//
+//		return postFlopPowerType;
+//	}
 
-		System.out.println("-----------------------");
-		System.out.println("- analyseHandPostFlop -");
-		System.out.println("-----------------------");
-
-		ArrayList<CombinaisonModel> combinaisons = new ArrayList<CombinaisonModel>();
-
-		for (List<CardModel> permutationHand : handModel.permutations()) {
-			for (List<CardModel> permutationBoard : boardModel.permutations()) {
-				CombinaisonModel combinaison = new CombinaisonModel(permutationHand, permutationBoard);
-				combinaisons.add(combinaison);
-				System.out.println(combinaison);
-			}
-		}
-
-		Collections.sort(combinaisons);
-
-		CombinaisonModel combinaisonBest = combinaisons.get(0);
-		PostFlopPowerType postFlopPowerType = combinaisonBest.getHandPowerType();
-
-		System.out.println(postFlopPowerType.toString());
-
-		return postFlopPowerType;
-	}
-
-	private BoardDrawPower analyseBoard(BoardModel boardModel) {
+	private BoardType analyseBoard(BoardModel boardModel) {
 
 		System.out.println("------------------------");
 		System.out.println("- analyseBoardPostFlop -");
@@ -74,7 +81,7 @@ public class PostFlopAnalyserServiceImpl {
 		// DealStep dealStep;
 		//
 		// // analyse des tirages
-		BoardDrawPower boardDrawPower = null;
+		BoardType boardDrawPower = null;
 
 		return boardDrawPower;
 	}
@@ -83,55 +90,99 @@ public class PostFlopAnalyserServiceImpl {
 	 * TODO :
 	 * 
 	 * SLOW_PLAY
+	 * continuation bet
 	 * 
 	 * @param handModel
 	 * @param boardModel
 	 * @return
 	 */
-	public BettingDecision decide(HandModel handModel, BoardModel boardModel, boolean firstTurnBet) {
-		BettingDecision bettingDecision;
+	public BettingDecision decide(HandModel handModel, BoardModel boardModel, Context context) {
+		BettingDecision bettingDecision = BettingDecision.ALLIN;
 
-		if (canBluff()) {
-			bettingDecision = BettingDecision.BET_RAISE;
-		}
-		else {
-			PostFlopPowerType postFlopPowerTypeHand = analyseHandPostFlop(handModel, boardModel);
-			BoardDrawPower boardDrawPower = analyseBoard(boardModel);
-
-			// tests si tirage > hand : wheel
-
-			// TODO kicker / bluff / dealStep
-			switch (postFlopPowerTypeHand) {
-			case STRAIGHT_FLUSH:
-			case FOUR_OF_A_KIND:
-			case FULL_HOUSE:
-			case FLUSH:
-				if (firstTurnBet) {
-					bettingDecision = BettingDecision.randomBetween(BettingDecision.ALLIN, BettingDecision.BET_RAISE);
-				}
-				else {
-					bettingDecision = BettingDecision.randomBetween(BettingDecision.ALLIN, BettingDecision.BET_RAISE,
-							BettingDecision.CHECK_CALL);
-				}
-				break;
-			case STRAIGHT:
-			case THREE_OF_A_KIND:
-			case TWO_PAIR:
-				if (firstTurnBet) {
-					bettingDecision = BettingDecision.randomBetween(BettingDecision.BET_RAISE,
-							BettingDecision.CHECK_CALL);
-				}
-				else {
-					bettingDecision = BettingDecision.CHECK_CALL;
-				}
-				break;
-			default:
-				bettingDecision = BettingDecision.CHECK_FOLD;
-				break;
-			}
-		}
-
-		System.out.println(bettingDecision);
+//
+//		
+//		
+//		
+//		
+//		
+//		
+//		
+//		
+//		
+//		
+//		
+//		
+//		
+//		
+//		
+//		
+//		
+//		
+//		
+//		
+//		
+//		
+//		
+//		
+//		// nuts ?
+//		// position in action / ...
+//		// continuation bet
+//		// 
+//		
+//		if (canBluff()) {
+//			bettingDecision = BettingDecision.BET_RAISE;
+//		}
+//		
+//		
+//		
+//		
+//		
+//		
+//		
+//		
+//		
+//		
+//		
+//		
+//		
+//		else {
+//			PostFlopPowerType postFlopPowerTypeHand = analyseHandPostFlop(handModel, boardModel);
+//			BoardType boardDrawPower = analyseBoard(boardModel);
+//
+//			// tests si tirage > hand : wheel
+//
+//			// TODO kicker / bluff / dealStep
+//			switch (postFlopPowerTypeHand) {
+//			case STRAIGHT_FLUSH:
+//			case FOUR_OF_A_KIND:
+//			case FULL_HOUSE:
+//			case FLUSH:
+//				if (firstTurnBet) {
+//					bettingDecision = BettingDecision.randomBetween(BettingDecision.ALLIN, BettingDecision.BET_RAISE);
+//				}
+//				else {
+//					bettingDecision = BettingDecision.randomBetween(BettingDecision.ALLIN, BettingDecision.BET_RAISE,
+//							BettingDecision.CHECK_CALL);
+//				}
+//				break;
+//			case STRAIGHT:
+//			case THREE_OF_A_KIND:
+//			case TWO_PAIR:
+//				if (firstTurnBet) {
+//					bettingDecision = BettingDecision.randomBetween(BettingDecision.BET_RAISE,
+//							BettingDecision.CHECK_CALL);
+//				}
+//				else {
+//					bettingDecision = BettingDecision.CHECK_CALL;
+//				}
+//				break;
+//			default:
+//				bettingDecision = BettingDecision.CHECK_FOLD;
+//				break;
+//			}
+//		}
+//
+//		System.out.println(bettingDecision);
 
 		return bettingDecision;
 	}
@@ -143,6 +194,8 @@ public class PostFlopAnalyserServiceImpl {
 	 */
 	public boolean canBluff() {
 
+		// bluff capacity
+		
 		return false;
 
 	}
@@ -157,7 +210,7 @@ public class PostFlopAnalyserServiceImpl {
 
 		for (List<CardModel> permutationHand : handModel.permutations()) {
 			for (List<CardModel> permutationBoard : boardModel.permutations()) {
-				CombinaisonModel combinaison = new CombinaisonModel(permutationHand, permutationBoard);
+				CombinaisonModel combinaison = new CombinaisonModel(permutationHand, permutationBoard, handModel.hasFlushDraw());
 				combinaisons.add(combinaison);
 			}
 		}
@@ -203,22 +256,63 @@ public class PostFlopAnalyserServiceImpl {
 		System.out.println("----------------------------------------");
 
 		// comparaison de handDraws & boardDraws
-		for (DrawModel drawModelHand : handDrawsSorted) {
-			for (DrawModel drawModelBoard : boardDrawsSorted) {
-
-				if (drawModelHand != null && drawModelBoard != null) {
-					if (drawModelHand.getClass().equals(drawModelBoard.getClass())) {
-						if (drawModelHand.isNuts(drawModelBoard)) {
-							System.out.println(drawModelHand + " --> !!! NUTS !!!");
-						}
-						else {
-							System.out.println(drawModelHand);
-						}
-					}
+		
+		boolean nuts = false;
+		int handLevel = 0;
+		
+		DrawModel bestPermutation = handDrawsSorted.first();
+		
+		for (DrawModel drawModelBoard : boardDrawsSorted) {
+			
+			if (bestPermutation != null && drawModelBoard != null) {
+				if (bestPermutation.getClass().equals(drawModelBoard.getClass())) {
+					nuts = bestPermutation.isNuts(drawModelBoard);
+					break;
 				}
 			}
+			
+			handLevel++;
 		}
-
+		
+		/**
+		 * analyser les draws au FLOP & TURN
+		 * outs %
+		 */
+		
+		decide(nuts, handLevel, bestPermutation);
+		
 		System.out.println("=============================================================");
+		System.out.println("=============================================================");
+	}
+
+	private void decide(boolean nuts, int handLevel, DrawModel bestPermutation) {
+		
+		
+		// combien de joueurs
+		// actions précédentes
+		// stack
+		//
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		if (handLevel == 0) {// nuts
+			System.out.println(bestPermutation + " --> you have NUTS !");
+		}
+		else {
+			if (nuts) {
+				System.out.println(bestPermutation + " --> you have NUTS for draw level " + handLevel);
+			} else {
+				System.out.println(bestPermutation + " --> you have no NUTS for draw level " + handLevel);
+			}
+		}
 	}
 }

@@ -1,6 +1,7 @@
 package com.omahaBot.model.draw;
 
 import java.util.Arrays;
+import java.util.SortedSet;
 
 import lombok.Data;
 
@@ -15,12 +16,14 @@ class QuadsModel extends DrawModel {
 
 	private final Rank rank;
 
-	public QuadsModel(Rank rank, HandCategory handCategory, boolean isDraw) {
-		super(DrawType.QUADS_DRAW, isDraw);
+	public QuadsModel(Rank rank, HandCategory handCategory, SortedSet<CardModel> permutationHand) {
+		super(DrawType.QUADS_DRAW, permutationHand);
 		this.rank = rank;
 
-		if (isDraw) {
-			initialize(handCategory);
+		initialize(handCategory);
+
+		if (permutationHand != null) {
+			initHoleCards(permutationHand);
 		}
 	}
 
@@ -28,8 +31,9 @@ class QuadsModel extends DrawModel {
 	public String toString() {
 		String display = "";
 
-		display = "Quads of " + rank + "; ";
-		display += isDraw ? "nuts" : "holeCards";
+		display = "TYPE : " + drawType.name();
+		display += " Quads of " + rank + "; ";
+		display += (permutationHand != null) ? "nuts" : "holeCards";
 		display += "=[" + displayNutsOrHoleCards() + "]";
 
 		return display;
@@ -70,7 +74,7 @@ class QuadsModel extends DrawModel {
 			return false;
 		return true;
 	}
-	
+
 	@Override
 	public int compareTo(DrawModel o) {
 
