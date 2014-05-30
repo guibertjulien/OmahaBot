@@ -5,7 +5,6 @@ import java.util.SortedSet;
 
 import lombok.Data;
 
-import com.omahaBot.enums.DrawType;
 import com.omahaBot.enums.HandCategory;
 import com.omahaBot.enums.Rank;
 import com.omahaBot.enums.Suit;
@@ -22,44 +21,35 @@ class FullModel extends DrawModel {
 	private Rank rankThree;
 	private Rank rankPair;
 
-	public FullModel(Rank rankThree, Rank rankPair, HandCategory handCategory, Rank rankGroup, Rank kickerPack1,
+	public FullModel(Rank rankThree, Rank rankPair, HandCategory boardCategory, Rank rankGroup, Rank kickerPack1,
 			Rank kickerPack2, SortedSet<CardModel> permutationHand) {
-		super(DrawType.BEST_FULL_DRAW, permutationHand);
+		super(HandCategory.FULL_HOUSE, permutationHand);
 		this.rankThree = rankThree;
 		this.rankPair = rankPair;
 
-		initialize(handCategory, rankGroup, kickerPack1, kickerPack2);
+		initialize(boardCategory, rankGroup, kickerPack1, kickerPack2);
 		
 		if (permutationHand != null) {
 			initHoleCards(permutationHand);
 		}
 	}
 
-	// public FullModel(Builder builder) {
-	// super(DrawType.BEST_FULL_DRAW, builder.isDraw);
-	// this.rankThree = builder.rankThree;
-	// this.rankPair = builder.rankPair;
-	// this.nuts = builder.nuts;
-	// this.holeCards = builder.holeCards;
-	// }
-
 	@Override
 	public String toString() {
 		String display = "";
 
-		display = "TYPE : " + drawType.name();
-		display += " Full house, " + rankThree + " full of " + rankPair + "; ";
+		display += handCategory + " " + rankThree + " full of " + rankPair + "; ";
 		display += (permutationHand != null) ? "holeCards" : "nuts";
 		display += "=[" + displayNutsOrHoleCards() + "]";
 
 		return display;
 	}
 
-	private void initialize(HandCategory handCategory, Rank rankGroup, Rank kickerPack1, Rank kickerPack2) {
+	private void initialize(HandCategory boardCategory, Rank rankGroup, Rank kickerPack1, Rank kickerPack2) {
 		CardModel card1 = null;
 		CardModel card2 = null;
 
-		switch (handCategory) {
+		switch (boardCategory) {
 		case ONE_PAIR:
 		case TWO_PAIR:
 			card1 = new CardModel(rankThree, Suit.SPADE);
@@ -201,41 +191,4 @@ class FullModel extends DrawModel {
 			return super.compareTo(o);
 		}
 	}
-
-	// /**
-	// *
-	// * @author Julien
-	// *
-	// */
-	// public static class Builder {
-	//
-	// private final Rank rankThree;
-	// private final Rank rankPair;
-	// private final boolean isDraw;
-	// private SortedSet<CardModel> nuts = new TreeSet<CardModel>();
-	// private SortedSet<CardModel> holeCards = new TreeSet<CardModel>();
-	//
-	// public Builder(Rank rankThree, Rank rankPair, boolean isDraw) {
-	// this.rankThree = rankThree;
-	// this.rankPair = rankPair;
-	// this.isDraw = isDraw;
-	// }
-	//
-	// // builder methods for setting property
-	// public Builder nuts(SortedSet<CardModel> nuts) {
-	// this.nuts = nuts;
-	// return this;
-	// }
-	//
-	// public Builder holeCards(SortedSet<CardModel> holeCards) {
-	// this.holeCards = holeCards;
-	// return this;
-	// }
-	//
-	// // return fully build object
-	// public FullModel build() {
-	// return new FullModel(this);
-	// }
-	// }
-
 }

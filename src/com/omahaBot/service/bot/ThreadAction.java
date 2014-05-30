@@ -19,9 +19,9 @@ import com.omahaBot.enums.PreFlopPower;
 import com.omahaBot.model.ActionModel;
 import com.omahaBot.model.BoardModel;
 import com.omahaBot.model.CardModel;
-import com.omahaBot.model.CombinaisonModel;
 import com.omahaBot.model.HandModel;
 import com.omahaBot.model.PlayerModel;
+import com.omahaBot.model.draw.DrawModel;
 import com.omahaBot.ui.form.MainForm;
 
 public class ThreadAction extends MyThread {
@@ -58,7 +58,7 @@ public class ThreadAction extends MyThread {
 
 	private HandModel myHand;
 
-	private ArrayList<CombinaisonModel> combinaisonModels = new ArrayList<>();
+	private ArrayList<DrawModel> handDraws = new ArrayList<DrawModel>();
 
 	private PreFlopPower preFlopPower;
 
@@ -119,7 +119,7 @@ public class ThreadAction extends MyThread {
 				oldPot = currentPot;
 
 				if (Consts.register && positionPlayerTurnPlay == Consts.MY_TABLEPOSITION) {
-					combinaisonModels.clear();
+					handDraws.clear();
 
 					if (myHand == null) {
 						initMyHand();
@@ -132,7 +132,8 @@ public class ThreadAction extends MyThread {
 					case FLOP:
 					case TURN:
 					case RIVER:
-						combinaisonModels.addAll(postFlopAnalyserServiceImpl.initCombinaisons(myHand, board));
+						analyserService.analyseHand(myHand, board, dealStep);
+						handDraws.addAll(analyserService.getHandDrawsSorted());
 						break;
 					default:
 						break;
@@ -157,7 +158,7 @@ public class ThreadAction extends MyThread {
 						case TURN:
 						case RIVER:
 							mainForm.initAnalyseWidget(board);
-							mainForm.initAnalyseWidget(myHand, board, combinaisonModels);
+							mainForm.initAnalyseWidget(myHand, board, handDraws);
 							break;
 						default:
 							break;
@@ -186,9 +187,13 @@ public class ThreadAction extends MyThread {
 			bettingDecision = preFlopAnalyserServiceImpl.decide(myHand, firstTurnBet);
 			break;
 		case FLOP:
+			bettingDecision = analyserService.decideFlop();
+			break;
 		case TURN:
+			// TODO
+			break;
 		case RIVER:
-			bettingDecision = postFlopAnalyserServiceImpl.decide(myHand, board, firstTurnBet);
+			// TODO
 			break;
 		default:
 			break;

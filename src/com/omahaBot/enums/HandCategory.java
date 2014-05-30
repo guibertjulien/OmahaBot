@@ -6,6 +6,7 @@ public enum HandCategory {
 	TWO_PAIR,
 	THREE_OF_A_KIND,
 	STRAIGHT,
+	FLUSH_DRAW,
 	FLUSH,
 	FULL_HOUSE,
 	FOUR_OF_A_KIND,

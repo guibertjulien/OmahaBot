@@ -12,7 +12,7 @@ public final class Consts {
 	
 	public static final int MY_TABLEPOSITION = 4;
 	
-	public static final boolean register = false;
+	public static final boolean register = true;
 	
 	/* peut varier */
 	public static final int TABLE_X = 391;// 393, bordure noire

@@ -73,7 +73,7 @@ public class BoardModel extends CardPackModel {
 	 */
 	public FullModel searchBestFullDraw() {
 
-		HandCategory handCategory = HandCategory.UNKNOWN;
+		HandCategory boardCategory = HandCategory.UNKNOWN;
 		FullModel fullModel = null;
 
 		String whithoutSuit = this.toStringByRank().replaceAll("[shdc]", ".");
@@ -101,7 +101,7 @@ public class BoardModel extends CardPackModel {
 
 			// FULL_HOUSE
 			if (group1.length() == 6 || group2.length() == 6) {
-				handCategory = HandCategory.FULL_HOUSE;
+				boardCategory = HandCategory.FULL_HOUSE;
 
 				if (group1.length() == 6) {
 					rankThree = rankGroup1;
@@ -112,7 +112,7 @@ public class BoardModel extends CardPackModel {
 			}
 			// TWO_PAIR
 			else {
-				handCategory = HandCategory.TWO_PAIR;
+				boardCategory = HandCategory.TWO_PAIR;
 				rankGroup = Rank.fromShortName(String.valueOf(group2.charAt(0)));
 
 				rankThree = (kickerPack1.ordinal() > rankGroup2.ordinal()) ? kickerPack1 : rankGroup2;
@@ -123,17 +123,17 @@ public class BoardModel extends CardPackModel {
 
 			if (group1.length() == 8) {
 				// FOUR_OF_A_KIND
-				handCategory = HandCategory.FOUR_OF_A_KIND;
+				boardCategory = HandCategory.FOUR_OF_A_KIND;
 				rankGroup = Rank.fromShortName(String.valueOf(group1.charAt(0)));
 				rankThree = (kickerPack1.ordinal() > rankGroup.ordinal()) ? kickerPack1 : rankGroup;
 				// THREE_OF_A_KIND
 			} else if (group1.length() == 6) {
-				handCategory = HandCategory.THREE_OF_A_KIND;
+				boardCategory = HandCategory.THREE_OF_A_KIND;
 				rankGroup = Rank.fromShortName(String.valueOf(group1.charAt(0)));
 				rankThree = (kickerPack1.ordinal() > rankGroup.ordinal()) ? kickerPack1 : rankGroup;
 				// ONE_PAIR
 			} else if (group1.length() == 4) {
-				handCategory = HandCategory.ONE_PAIR;
+				boardCategory = HandCategory.ONE_PAIR;
 				rankGroup = Rank.fromShortName(String.valueOf(group1.charAt(0)));
 
 				rankThree = kickerPack1;
@@ -141,8 +141,8 @@ public class BoardModel extends CardPackModel {
 			}
 		}
 
-		if (!handCategory.equals(HandCategory.UNKNOWN)) {
-			fullModel = new FullModel(rankThree, rankPair, handCategory, rankGroup, kickerPack1, kickerPack2, null);
+		if (!boardCategory.equals(HandCategory.UNKNOWN)) {
+			fullModel = new FullModel(rankThree, rankPair, boardCategory, rankGroup, kickerPack1, kickerPack2, null);
 		}
 
 		return fullModel;

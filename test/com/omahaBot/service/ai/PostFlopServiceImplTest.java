@@ -1,21 +1,15 @@
 package com.omahaBot.service.ai;
 
-import org.junit.Before;
-import org.junit.Test;
-
-import com.omahaBot.enums.DealStep;
-import com.omahaBot.model.BoardModel;
-import com.omahaBot.model.HandModel;
 
 public class PostFlopServiceImplTest {
 
-	private PostFlopAnalyserServiceImpl postFlopAnalyserServiceImpl;
-	
-	@Before
-	public void before() {
-		postFlopAnalyserServiceImpl = new PostFlopAnalyserServiceImpl();
-	}
-	
+//	private PostFlopAnalyserServiceImpl postFlopAnalyserServiceImpl;
+//	
+//	@Before
+//	public void before() {
+//		postFlopAnalyserServiceImpl = new PostFlopAnalyserServiceImpl();
+//	}
+//	
 //	@Test
 //	public void testIfOnePair() {
 //		HandModel handModel = new HandModel("AsKh3c3d");
@@ -129,31 +123,31 @@ public class PostFlopServiceImplTest {
 //		assertTrue(postFlopPowerType.equals(PostFlopPowerType.FULL_HOUSE));	
 //	}
 	
-	@Test
-	public void testCompareHand() {
-
-		HandModel handModel;
-		BoardModel boardModel;
-		
-		handModel = new HandModel("Ac2dKh8h");
-		boardModel = new BoardModel("Ah4c4h", DealStep.FLOP);
-		
-		postFlopAnalyserServiceImpl.compareHand(handModel, boardModel);
-		
-		handModel = new HandModel("AcAdQcQd");
-		boardModel = new BoardModel("Ah4c4hQs", DealStep.TURN);
-		
-		postFlopAnalyserServiceImpl.compareHand(handModel, boardModel);
-		
-		handModel = new HandModel("AcAd4c4d");
-		boardModel = new BoardModel("Ah4s4hQs", DealStep.TURN);
-		
-		postFlopAnalyserServiceImpl.compareHand(handModel, boardModel);
-		
-		handModel = new HandModel("AcAd4c4d");
-		boardModel = new BoardModel("Ah6sKhQs", DealStep.TURN);
-		
-		postFlopAnalyserServiceImpl.compareHand(handModel, boardModel);
-	}
+//	@Test
+//	public void testCompareHand() {
+//
+//		HandModel handModel;
+//		BoardModel boardModel;
+//		
+//		handModel = new HandModel("Ac2dKh8h");
+//		boardModel = new BoardModel("Ah4c4h", DealStep.FLOP);
+//		
+//		postFlopAnalyserServiceImpl.compareHand(handModel, boardModel);
+//		
+//		handModel = new HandModel("AcAdQcQd");
+//		boardModel = new BoardModel("Ah4c4hQs", DealStep.TURN);
+//		
+//		postFlopAnalyserServiceImpl.compareHand(handModel, boardModel);
+//		
+//		handModel = new HandModel("AcAd4c4d");
+//		boardModel = new BoardModel("Ah4s4hQs", DealStep.TURN);
+//		
+//		postFlopAnalyserServiceImpl.compareHand(handModel, boardModel);
+//		
+//		handModel = new HandModel("AcAd4c4d");
+//		boardModel = new BoardModel("Ah6sKhQs", DealStep.TURN);
+//		
+//		postFlopAnalyserServiceImpl.compareHand(handModel, boardModel);
+//	}
 	
 }

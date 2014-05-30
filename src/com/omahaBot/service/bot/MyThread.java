@@ -2,7 +2,7 @@ package com.omahaBot.service.bot;
 
 import java.awt.Robot;
 
-import com.omahaBot.service.ai.PostFlopAnalyserServiceImpl;
+import com.omahaBot.service.ai.AnalyserServiceImpl;
 import com.omahaBot.service.ai.PreFlopAnalyserServiceImpl;
 import com.omahaBot.service.ocr.OcrServiceImpl;
 import com.omahaBot.ui.form.MainForm;
@@ -17,7 +17,7 @@ public abstract class MyThread extends Thread implements IThread{
 	protected PreFlopAnalyserServiceImpl preFlopAnalyserServiceImpl = new PreFlopAnalyserServiceImpl();
 
 	// TODO singleton ?
-	protected PostFlopAnalyserServiceImpl postFlopAnalyserServiceImpl = new PostFlopAnalyserServiceImpl();
+	protected AnalyserServiceImpl analyserService = new AnalyserServiceImpl();
 	
 	protected Robot robot;
 

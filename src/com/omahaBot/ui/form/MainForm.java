@@ -28,11 +28,11 @@ import org.eclipse.wb.swt.SWTResourceManager;
 import com.omahaBot.enums.PreFlopPower;
 import com.omahaBot.model.ActionModel;
 import com.omahaBot.model.BoardModel;
-import com.omahaBot.model.CombinaisonModel;
 import com.omahaBot.model.DealModel;
 import com.omahaBot.model.DealStepModel;
 import com.omahaBot.model.HandModel;
 import com.omahaBot.model.PlayerModel;
+import com.omahaBot.model.draw.DrawModel;
 import com.omahaBot.service.bot.ThreadDeal;
 import com.omahaBot.service.ocr.OcrServiceImpl;
 import com.omahaBot.utils.CustomOutputStream;
@@ -229,12 +229,12 @@ public class MainForm {
 		analyseWidget = new AnalyseWidget(tabFolder, SWT.NONE);
 		tbtm3.setControl(analyseWidget);
 
-//		// keeps reference of standard output stream
-//		standardOut = System.out;
-//
-//		// re-assigns standard output stream and error output stream
-//		System.setOut(printStream);
-//		System.setErr(printStream);
+		// keeps reference of standard output stream
+		standardOut = System.out;
+
+		// re-assigns standard output stream and error output stream
+		System.setOut(printStream);
+		System.setErr(printStream);
 	}
 
 	public void initDealWidget(DealModel dealModel) {
@@ -267,8 +267,8 @@ public class MainForm {
 		analyseWidget.displayBoardDraw(boardModel);
 	}
 	
-	public void initAnalyseWidget(HandModel myHand, BoardModel board, ArrayList<CombinaisonModel> combinaisons) {
-		analyseWidget.displayCombinaisonDraw(myHand, board, combinaisons);
+	public void initAnalyseWidget(HandModel myHand, BoardModel board, ArrayList<DrawModel> handDraws) {
+		analyseWidget.displayHandDraws(myHand, board, handDraws);
 	}
 
 	public void initAnalyseWidget(HandModel myHand, PreFlopPower preFlopPower) {

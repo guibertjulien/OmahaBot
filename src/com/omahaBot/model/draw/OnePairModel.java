@@ -4,7 +4,7 @@ import java.util.SortedSet;
 
 import lombok.Data;
 
-import com.omahaBot.enums.DrawType;
+import com.omahaBot.enums.HandCategory;
 import com.omahaBot.enums.Rank;
 import com.omahaBot.model.CardModel;
 
@@ -13,7 +13,7 @@ class OnePairModel extends DrawModel {
 	private final Rank rank;
 
 	public OnePairModel(Rank rank, SortedSet<CardModel> permutationHand) {
-		super(DrawType.BEST_TWO_PAIR_DRAW, permutationHand);
+		super(HandCategory.ONE_PAIR, permutationHand);
 		this.rank = rank;
 
 		if (permutationHand != null) {
@@ -25,8 +25,7 @@ class OnePairModel extends DrawModel {
 	public String toString() {
 		String display = "";
 
-		display = "TYPE : " + drawType.name();
-		display += " One pairs of " + rank;
+		display = handCategory + " of " + rank;
 
 		return display;
 	}
@@ -50,5 +49,11 @@ class OnePairModel extends DrawModel {
 		else {
 			return super.compareTo(o);
 		}
+	}
+
+	@Override
+	public boolean isNuts(Object obj) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 }

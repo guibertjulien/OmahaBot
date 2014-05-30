@@ -89,7 +89,7 @@ public class CombinaisonModel extends CardPackModel implements Comparable<Combin
 
 	public DrawModel searchBestRankDraw() {
 
-		HandCategory handCategory = HandCategory.UNKNOWN;
+		HandCategory boardCategory = HandCategory.UNKNOWN;
 		DrawModel drawModel = null;
 
 		String whithoutSuit = this.toStringByRank().replaceAll("[shdc]", ".");
@@ -110,18 +110,18 @@ public class CombinaisonModel extends CardPackModel implements Comparable<Combin
 			if (group1.length() == 8) {
 
 				if (CardUtils.coupleIsPair(permutationHand)) {
-					handCategory = HandCategory.ONE_PAIR;
+					boardCategory = HandCategory.ONE_PAIR;
 				}
 				else {
-					handCategory = HandCategory.THREE_OF_A_KIND;
+					boardCategory = HandCategory.THREE_OF_A_KIND;
 				}
 
-				drawModel = new QuadsModel(rank1, handCategory, permutationHand);
+				drawModel = new QuadsModel(rank1, boardCategory, permutationHand);
 			} else if (group1.length() == 6) {
 				if (matcher.find()) {
 					group2 = matcher.group(0);
 					rank2 = Rank.fromShortName(String.valueOf(group2.charAt(0)));
-					drawModel = new FullModel(rank1, rank2, handCategory, null, null, null, permutationHand);
+					drawModel = new FullModel(rank1, rank2, boardCategory, null, null, null, permutationHand);
 				}
 				else {
 					drawModel = new SetModel(rank1, permutationHand);
@@ -132,7 +132,7 @@ public class CombinaisonModel extends CardPackModel implements Comparable<Combin
 					rank2 = Rank.fromShortName(String.valueOf(group2.charAt(0)));
 
 					if (group2.length() == 6) {
-						drawModel = new FullModel(rank2, rank1, handCategory, null, null, null, permutationHand);
+						drawModel = new FullModel(rank2, rank1, boardCategory, null, null, null, permutationHand);
 					}
 					else {
 						drawModel = new TwoPairModel(rank2, rank1, permutationHand);

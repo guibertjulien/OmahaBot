@@ -13,12 +13,13 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
+import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.wb.swt.SWTResourceManager;
 
 import com.omahaBot.enums.PreFlopPower;
 import com.omahaBot.model.BoardModel;
-import com.omahaBot.model.CombinaisonModel;
 import com.omahaBot.model.HandModel;
+import com.omahaBot.model.draw.DrawModel;
 
 public class AnalyseWidget extends Composite {
 	private Table table_boardDraw;
@@ -195,7 +196,7 @@ public class AnalyseWidget extends Composite {
 		}
 	}
 
-	public void displayCombinaisonDraw(HandModel myHand, BoardModel board, ArrayList<CombinaisonModel> combinaisons) {
+	public void displayHandDraws(HandModel myHand, BoardModel board, ArrayList<DrawModel> handDraws) {
 		table_hand.removeAll();
 		
 		if (myHand == null) {
@@ -204,15 +205,12 @@ public class AnalyseWidget extends Composite {
 		else {
 			lbl_handDrawValue.setText("[" + myHand.toStringByRank() + "][" + board.toStringByRank() + "]");
 
-			for (CombinaisonModel combinaisonModel : combinaisons) {
-
-//				for (DrawModel drawModel : combinaisonModel.initDraw()) {
-//					if (drawModel != null) {
-//						TableItem item1 = new TableItem(table_hand, SWT.NONE);
-//						item1.setText(new String[] { drawModel.getType().name(), combinaisonModel.toString(), "", "" });
-//					}
-//				}
-			}
+				for (DrawModel drawModel : handDraws) {
+					if (drawModel != null) {
+						TableItem item1 = new TableItem(table_hand, SWT.NONE);
+						item1.setText(new String[] { drawModel.toString(), "SUPPR", "", "" });
+					}
+				}
 		}
 	}
 

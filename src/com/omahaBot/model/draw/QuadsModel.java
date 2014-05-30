@@ -5,7 +5,6 @@ import java.util.SortedSet;
 
 import lombok.Data;
 
-import com.omahaBot.enums.DrawType;
 import com.omahaBot.enums.HandCategory;
 import com.omahaBot.enums.Rank;
 import com.omahaBot.enums.Suit;
@@ -17,7 +16,7 @@ class QuadsModel extends DrawModel {
 	private final Rank rank;
 
 	public QuadsModel(Rank rank, HandCategory handCategory, SortedSet<CardModel> permutationHand) {
-		super(DrawType.QUADS_DRAW, permutationHand);
+		super(HandCategory.FOUR_OF_A_KIND, permutationHand);
 		this.rank = rank;
 
 		initialize(handCategory);
@@ -31,9 +30,8 @@ class QuadsModel extends DrawModel {
 	public String toString() {
 		String display = "";
 
-		display = "TYPE : " + drawType.name();
-		display += " Quads of " + rank + "; ";
-		display += (permutationHand != null) ? "nuts" : "holeCards";
+		display += handCategory + " " + rank + "; ";
+		display += (permutationHand != null) ? "holeCards" : "nuts";
 		display += "=[" + displayNutsOrHoleCards() + "]";
 
 		return display;

@@ -8,7 +8,7 @@ import java.util.SortedSet;
 import lombok.Data;
 
 import com.google.common.collect.Lists;
-import com.omahaBot.enums.DrawType;
+import com.omahaBot.enums.HandCategory;
 import com.omahaBot.enums.Rank;
 import com.omahaBot.enums.Suit;
 import com.omahaBot.model.CardModel;
@@ -23,23 +23,22 @@ class FlushModel extends DrawModel {
 
 	private boolean straightFlush;
 
-	public FlushModel(DrawType drawType, Suit suit, String drawString, SortedSet<CardModel> permutationHand) {
-		super(drawType, permutationHand);
+	public FlushModel(HandCategory handCategory, Suit suit, String drawString, SortedSet<CardModel> permutationHand) {
+		super(handCategory, permutationHand);
 		this.suit = suit;
-
+		
 		initialize(drawString);
 
 		if (permutationHand != null) {
 			initHoleCards(permutationHand);
-		}
+		}	
 	}
 
 	@Override
 	public String toString() {
 		String display = "";
 
-		display = "TYPE : " + drawType.name();
-		display += " Flush " + suit + " with kicker " + kicker + "; ";
+		display += handCategory + " of " + suit + " with kicker " + kicker + "; ";
 		display += (permutationHand != null) ? "holeCards" : "nuts";
 		display += "=[" + displayNutsOrHoleCards() + "]";
 

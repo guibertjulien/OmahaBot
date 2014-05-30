@@ -7,7 +7,7 @@ import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.omahaBot.enums.DrawType;
+import com.omahaBot.enums.HandCategory;
 import com.omahaBot.enums.Rank;
 import com.omahaBot.enums.Suit;
 import com.omahaBot.model.comparator.SuitComparator;
@@ -292,15 +292,20 @@ public class CardPackModel {
 		Pattern pattern = Pattern.compile("(.\\w)\\1{" + (min - 1) + "," + (max - 1) + "}");
 		Matcher matcher = pattern.matcher(whithoutRank);
 
-		DrawType drawType = DrawType.UNKNOWN;
+		HandCategory handCategory = HandCategory.FLUSH;
 
 		while (matcher.find()) {
 			String group = matcher.group(0);
 			String drawString = this.toStringBySuit().substring(matcher.start(), matcher.end());
-			drawType = (group.length() == 4) ? DrawType.FLUSH_DRAW : DrawType.FLUSH;
+
+			if ((permutationHand != null && group.length() == 8) 
+					|| (permutationHand == null && group.length() == 4)) {
+				handCategory = HandCategory.FLUSH_DRAW;
+			}
+
 			Suit suit = Suit.fromShortName(group.substring(1, 2));
 
-			FlushModel flushModel = new FlushModel(drawType, suit, drawString, permutationHand);
+			FlushModel flushModel = new FlushModel(handCategory, suit, drawString, permutationHand);
 
 			listDraw.add(flushModel);
 		}

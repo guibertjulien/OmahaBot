@@ -5,21 +5,23 @@ import java.util.TreeSet;
 
 import lombok.Data;
 
-import com.omahaBot.enums.DrawType;
+import com.omahaBot.enums.HandCategory;
 import com.omahaBot.model.CardModel;
 
-public @Data
-class DrawModel implements Comparable<DrawModel> {
+public @Data abstract class DrawModel implements Comparable<DrawModel>, DrawAnalyserService {
 
 	private int nbOut = 0;
 	private double percent = 0.0;
 	protected SortedSet<CardModel> nutsOrHoleCards = new TreeSet<CardModel>();
-	protected final DrawType drawType;
+	protected final HandCategory handCategory;
 	protected final SortedSet<CardModel> permutationHand;
 
-	public DrawModel(DrawType drawType, SortedSet<CardModel> permutationHand) {
+	// TODO à revoir
+	public HandCategory boardCategory;
+
+	public DrawModel(HandCategory handCategory, SortedSet<CardModel> permutationHand) {
 		super();
-		this.drawType = drawType;
+		this.handCategory = handCategory;
 		this.permutationHand = permutationHand;
 	}
 
@@ -27,7 +29,7 @@ class DrawModel implements Comparable<DrawModel> {
 		if (permutationHand != null) {
 			return displayHoleCards();
 		}
-		else {			
+		else {
 			return displayNuts();
 		}
 	}
@@ -44,15 +46,15 @@ class DrawModel implements Comparable<DrawModel> {
 			CardModel card1 = nutsOrHoleCards.first();
 			CardModel card2 = nutsOrHoleCards.last();
 
-			switch (drawType) {
+			switch (handCategory) {
 			case FLUSH:
 			case FLUSH_DRAW:
 				display = card1.toString().concat(card2.toString());
 				break;
-			case BEST_TWO_PAIR_DRAW:
-			case BEST_SET_DRAW:
-			case BEST_FULL_DRAW:
-			case QUADS_DRAW:
+			case FOUR_OF_A_KIND:
+			case FULL_HOUSE:
+			case THREE_OF_A_KIND:
+			case TWO_PAIR:
 				display = card1.getRank().getShortName().concat(card2.getRank().getShortName());
 				break;
 
@@ -81,23 +83,38 @@ class DrawModel implements Comparable<DrawModel> {
 	}
 
 	public void initHoleCards(SortedSet<CardModel> permutationHand) {
+		nutsOrHoleCards.clear();
 		nutsOrHoleCards.addAll(permutationHand);
-	}
-
-	public boolean isNuts(Object obj) {
-		// TODO Auto-generated method stub
-		return false;
 	}
 
 	@Override
 	public int compareTo(DrawModel o) {
 		// compare drawType
-		if (this.drawType.ordinal() > o.drawType.ordinal()) {
+		if (this.handCategory.ordinal() < o.handCategory.ordinal()) {
 			return 1;
 		}
 		else {
 			return -1;
-		} 
+		}
 	}
 
+	public int compareHoleCards(DrawModel o) {
+		if (this.nutsOrHoleCards.last().getRank().ordinal() > o.nutsOrHoleCards.last().getRank().ordinal()) {
+			return -1;
+		}
+		else if (this.nutsOrHoleCards.last().getRank().ordinal() < o.nutsOrHoleCards.last().getRank().ordinal()) {
+			return 1;
+		}
+		else {
+			if (this.nutsOrHoleCards.first().getRank().ordinal() > o.nutsOrHoleCards.first().getRank().ordinal()) {
+				return -1;
+			}
+			else if (this.nutsOrHoleCards.first().getRank().ordinal() < o.nutsOrHoleCards.first().getRank().ordinal()) {
+				return 1;
+			}
+			else {
+				return 0;
+			}
+		}
+	}
 }
