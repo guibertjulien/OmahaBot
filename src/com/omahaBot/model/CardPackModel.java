@@ -330,4 +330,14 @@ public class CardPackModel {
 			kickerPack2 = listCards.get(i).getRank();
 		}
 	}
+	
+	protected boolean hasOneRankCard(Rank rank) {
+		
+		String stringToSearch = this.toRankString();
+		char letter = rank.getShortName().charAt(0);
+		
+	    long count = stringToSearch.chars().filter(e -> e == letter).count();
+		
+		return (count == 1);
+	}
 }

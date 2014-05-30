@@ -10,42 +10,77 @@ import com.omahaBot.model.HandModel;
 public class AnalyserServiceTest {
 
 	private AnalyserServiceImpl analyserService;
-	
+
 	@Before
 	public void before() {
 		analyserService = new AnalyserServiceImpl();
 	}
-	
+
 	@Test
 	public void analyseHandPostFlop() {
 
 		HandModel handModel;
 		BoardModel boardModel;
-		DealStep dealStep = DealStep.FLOP;
-		
+		DealStep dealStep;
+
+		dealStep = DealStep.FLOP;
 		handModel = new HandModel("Ac2dKh8h");
 		boardModel = new BoardModel("Ah4c4h", dealStep);
-		
-		analyserService.analyseHand(handModel, boardModel, dealStep);;
-				
+
 		System.out.println(handModel);
 		System.out.println(boardModel);
 
-		analyserService.display();
+		analyserService.analyseHand(handModel, boardModel, dealStep);
+		analyserService.decideFlop();
+
+		System.out.println("#######################################################");
+
+		dealStep = DealStep.TURN;
+		handModel = new HandModel("AcAdQcQd");
+		boardModel = new BoardModel("Ah4c4hQs", dealStep);
+
+		System.out.println(handModel);
+		System.out.println(boardModel);
+
+		analyserService.analyseHand(handModel, boardModel, dealStep);
+		analyserService.decideFlop();
+
+		System.out.println("#######################################################");
+
+		dealStep = DealStep.TURN;
+		handModel = new HandModel("AcAd4c4d");
+		boardModel = new BoardModel("Ah4s4hQs", dealStep);
+
+		System.out.println(handModel);
+		System.out.println(boardModel);
+
+		analyserService.analyseHand(handModel, boardModel, dealStep);
+		analyserService.decideFlop();
+
+		System.out.println("#######################################################");
+
+		dealStep = DealStep.TURN;
+		handModel = new HandModel("AcAd4c4d");
+		boardModel = new BoardModel("Ah6sKhQs", dealStep);
+
+		System.out.println(handModel);
+		System.out.println(boardModel);
+
+		analyserService.analyseHand(handModel, boardModel, dealStep);
+		analyserService.decideFlop();
+
+		System.out.println("#######################################################");
 		
-//		handModel = new HandModel("AcAdQcQd");
-//		boardModel = new BoardModel("Ah4c4hQs", DealStep.TURN);
-//		
-//		postFlopAnalyserServiceImpl.compareHand(handModel, boardModel);
-//		
-//		handModel = new HandModel("AcAd4c4d");
-//		boardModel = new BoardModel("Ah4s4hQs", DealStep.TURN);
-//		
-//		postFlopAnalyserServiceImpl.compareHand(handModel, boardModel);
-//		
-//		handModel = new HandModel("AcAd4c4d");
-//		boardModel = new BoardModel("Ah6sKhQs", DealStep.TURN);
-//		
-//		postFlopAnalyserServiceImpl.compareHand(handModel, boardModel);
+		dealStep = DealStep.TURN;
+		handModel = new HandModel("AcAdQc4d");
+		boardModel = new BoardModel("Ah4c4hQs", dealStep);
+
+		System.out.println(handModel);
+		System.out.println(boardModel);
+
+		analyserService.analyseHand(handModel, boardModel, dealStep);
+		analyserService.decideFlop();
+
+		System.out.println("#######################################################");
 	}
 }

@@ -3,9 +3,11 @@ package com.omahaBot.model;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
+import java.util.function.Predicate;
 
 import com.omahaBot.enums.HandCategory;
 import com.omahaBot.enums.Suit;
@@ -14,7 +16,7 @@ import com.omahaBot.utils.PermutationsOfN;
 
 /**
  * http://fr.pokerlistings.com/potlimit-omaha-mains-de-depart
- * 
+ * TODO http://www.leveluplunch.com/java/examples/sort-a-collection/
  * @author Julien
  * 
  */
@@ -37,7 +39,7 @@ public class HandModel extends CardPackModel {
 
 	@Override
 	public String toString() {
-		return "HandModel [Cards=" + cards + "]";
+		return "Hand : " + cards;
 	}
 
 	public boolean isTwoPairSuited()
@@ -68,17 +70,17 @@ public class HandModel extends CardPackModel {
 		String whithoutRank = this.toStringBySuit().replaceAll("[^shdc]", "");
 		return !Suit.ALL_SUIT.equals(whithoutRank);
 	}
-	
+
 	/**
 	 * 
 	 * @return
 	 */
 	public TreeSet<DrawModel> initCombinaisonDraws(BoardModel boardModel) {
-		
+
 		ArrayList<DrawModel> handDraws = new ArrayList<DrawModel>();
 		Set<DrawModel> handDrawsSet;
 		SortedSet<DrawModel> handDrawsSorted;
-		
+
 		SortedSet<CombinaisonModel> combinaisons = new TreeSet<CombinaisonModel>();
 
 		for (List<CardModel> permutationHand : this.permutations()) {
@@ -94,25 +96,49 @@ public class HandModel extends CardPackModel {
 			handDraws.addAll(combinaisonModel.initDraw());
 		}
 
-		// suppression des draws intutiles
-		cleanDraws(handDraws);
-		
 		// tri
 		handDrawsSorted = new TreeSet<DrawModel>(handDraws);
+
+		// suppression des draws inutiles
+		cleanDraws(handDrawsSorted);
 		
 		// Suppression des doublons
 		handDrawsSet = new HashSet<DrawModel>(handDrawsSorted);
-
+		
 		return new TreeSet<DrawModel>(handDrawsSet);
 	}
+
+	private void cleanDraws(SortedSet<DrawModel> handDrawsSorted) {
+		cleanRankDraws(handDrawsSorted);
+		cleanConnectorDraws(handDrawsSorted);
+	}
 	
-	private void cleanDraws(ArrayList<DrawModel> handDraws) {
-		
-		// si TWO_PAIR draw
-		if (handDraws.stream().filter(d -> d.getHandCategory().equals(HandCategory.TWO_PAIR)).findFirst().isPresent()) {
-			// suppression des ONE_PAIR draw
-			handDraws.removeIf(d -> d.getHandCategory().equals(HandCategory.ONE_PAIR));
-		}
-		
+	/**
+	 *
+	 * @param handDrawsSorted
+	 */
+	private void cleanRankDraws(SortedSet<DrawModel> handDrawsSorted) {
+
+		Predicate<? super DrawModel> filter_rankDraws = (d -> d.getHandCategory().equals(HandCategory.ONE_PAIR)
+				|| d.getHandCategory().equals(HandCategory.TWO_PAIR)
+				|| d.getHandCategory().equals(HandCategory.THREE_OF_A_KIND)
+				|| d.getHandCategory().equals(HandCategory.FULL_HOUSE)
+				|| d.getHandCategory().equals(HandCategory.FOUR_OF_A_KIND));
+
+		Optional<DrawModel> bestRankDraw = handDrawsSorted
+				.stream()
+				.filter(filter_rankDraws)
+				.findFirst();
+
+		handDrawsSorted.removeIf(filter_rankDraws);
+		handDrawsSorted.add(bestRankDraw.get());
+	}
+
+	/**
+	 *
+	 * @param handDrawsSorted
+	 */
+	private void cleanConnectorDraws(SortedSet<DrawModel> handDrawsSorted) {
+		// TODO
 	}
 }

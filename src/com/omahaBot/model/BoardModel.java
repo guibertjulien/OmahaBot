@@ -149,13 +149,14 @@ public class BoardModel extends CardPackModel {
 	}
 
 	/**
-	 * 
+	 * - check if hand not contain only same rank card
+	 * @param handModel 
 	 * @return
 	 */
-	public ArrayList<DrawModel> searchQuadsDraw() {
+	public ArrayList<DrawModel> searchQuadsDraw(HandModel handModel) {
 		ArrayList<DrawModel> listDraw = new ArrayList<>();
 
-		HandCategory handCategory = null;
+		HandCategory boardCategory = null;
 
 		String whithoutSuit = this.toStringByRank().replaceAll("[shdc]", ".");
 
@@ -169,16 +170,18 @@ public class BoardModel extends CardPackModel {
 
 			if (group.length() == 4) {
 				// ONE_PAIR
-				handCategory = HandCategory.ONE_PAIR;
+				boardCategory = HandCategory.ONE_PAIR;
 			} else if (group.length() == 6) {
 				// THREE_OF_A_KIND
-				handCategory = HandCategory.THREE_OF_A_KIND;
+				boardCategory = HandCategory.THREE_OF_A_KIND;
 			}
 
 			rankGroup = Rank.fromShortName(String.valueOf(group.charAt(0)));
-			QuadsModel quadsModel = new QuadsModel(rankGroup, handCategory, null);
-
-			listDraw.add(quadsModel);
+			
+			if (handModel != null && !handModel.hasOneRankCard(rankGroup)) {
+				QuadsModel quadsModel = new QuadsModel(rankGroup, boardCategory, null);
+				listDraw.add(quadsModel);
+			}
 		}
 
 		return listDraw;
@@ -219,9 +222,9 @@ public class BoardModel extends CardPackModel {
 	/**
 	 * TODO : best practices ?
 	 */
-	public ArrayList<DrawModel> initDraw() {
+	public ArrayList<DrawModel> initDraws(HandModel handModel) {
 		ArrayList<DrawModel> listDraw = new ArrayList<>();
-
+		
 		DrawModel drawModel = null;
 
 		if (!cards.isEmpty()) {
@@ -233,7 +236,7 @@ public class BoardModel extends CardPackModel {
 				listDraw.addAll(searchFlushDraw(3, 5, null));
 			}
 
-			listDraw.addAll(searchQuadsDraw());
+			listDraw.addAll(searchQuadsDraw(handModel));
 
 			drawModel = searchBestFullDraw();
 			if (drawModel == null) {

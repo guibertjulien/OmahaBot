@@ -25,6 +25,7 @@ import com.omahaBot.model.draw.DrawModel;
  *  BLUFF CAPACITY
  *  OUT
  *  STACK
+ *  2 DRAW CARRES
  * @author Julien
  *
  */
@@ -41,8 +42,8 @@ public class AnalyserServiceImpl {
 	private SortedSet<DrawModel> handDrawsSorted;
 	private SortedSet<DrawModel> boardDrawsSorted;
 
-	private int handLevel = 0;
-	private boolean nutsForLevel = false;
+	private int handLevel;
+	private boolean nutsForLevel;
 
 	public AnalyserServiceImpl() {
 	}
@@ -90,15 +91,19 @@ public class AnalyserServiceImpl {
 
 	public void analyseHandPostFlop(HandModel handModel, BoardModel boardModel) {
 		handDrawsSorted = handModel.initCombinaisonDraws(boardModel);
-		boardDrawsSorted = new TreeSet<DrawModel>(boardModel.initDraw());
+		boardDrawsSorted = new TreeSet<DrawModel>(boardModel.initDraws(handModel));
 
 		// comparaison de handDraws & boardDraws
 		DrawModel bestPermutation = handDrawsSorted.first();
-
+		
+		handLevel = 0;
+		nutsForLevel = false;
+		
 		for (DrawModel drawModelBoard : boardDrawsSorted) {
 
 			if (bestPermutation != null && drawModelBoard != null) {
-				if (bestPermutation.getClass().equals(drawModelBoard.getClass())) {
+				// same handCategory
+				if (bestPermutation.getHandCategory().equals(drawModelBoard.getHandCategory())) {
 					nutsForLevel = bestPermutation.isNuts(drawModelBoard);
 					break;
 				}
@@ -106,6 +111,21 @@ public class AnalyserServiceImpl {
 
 			handLevel++;
 		}
+		
+		System.out.println("\n=> HAND DRAWS : ");
+		for (DrawModel drawModel : handDrawsSorted) {
+			System.out.println(drawModel);
+		}
+		
+		System.out.println("\n=> BOARD DRAWS : ");
+		int level=0;
+		for (DrawModel drawModel : boardDrawsSorted) {
+			System.out.println("Level " + level + " : " + drawModel);
+			level++;
+		}		
+		
+		System.out.println("\n=> ANALYSE : ");
+		System.out.println("Level " + handLevel + " / Nuts : " + isNutsForLevel());
 	}
 
 	public BettingDecision decideFlop() {
@@ -161,16 +181,10 @@ public class AnalyserServiceImpl {
 			bettingDecision = BettingDecision.CHECK_FOLD;
 			break;
 		}
-
+		
+		System.out.println("\n=> DECISION : ");
+		System.out.println(bettingDecision);
+		
 		return bettingDecision;
-	}
-
-	public void display() {
-		System.out.println("\n=> DRAW : ");
-		for (DrawModel drawModel : handDrawsSorted) {
-			System.out.println(drawModel);
-		}
-		System.out.println("\n=> ANALYSE : ");
-		System.out.println("LEVEL for best hand : " + handLevel + " / NUTS : " + isNutsForLevel());
 	}
 }

@@ -15,11 +15,11 @@ class QuadsModel extends DrawModel {
 
 	private final Rank rank;
 
-	public QuadsModel(Rank rank, HandCategory handCategory, SortedSet<CardModel> permutationHand) {
+	public QuadsModel(Rank rank, HandCategory boardCategory, SortedSet<CardModel> permutationHand) {
 		super(HandCategory.FOUR_OF_A_KIND, permutationHand);
 		this.rank = rank;
 
-		initialize(handCategory);
+		initialize(boardCategory);
 
 		if (permutationHand != null) {
 			initHoleCards(permutationHand);
@@ -37,11 +37,11 @@ class QuadsModel extends DrawModel {
 		return display;
 	}
 
-	private void initialize(HandCategory handCategory) {
+	private void initialize(HandCategory boardCategory) {
 		CardModel card1 = null;
 		CardModel card2 = null;
 
-		switch (handCategory) {
+		switch (boardCategory) {
 		case ONE_PAIR:
 			card1 = new CardModel(rank, Suit.SPADE);
 			card2 = new CardModel(rank, Suit.HEART);
