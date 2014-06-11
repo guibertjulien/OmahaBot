@@ -10,13 +10,16 @@ import java.util.TreeSet;
 import java.util.function.Predicate;
 
 import com.omahaBot.enums.HandCategory;
+import com.omahaBot.enums.StraightDrawType;
 import com.omahaBot.enums.Suit;
 import com.omahaBot.model.draw.DrawModel;
+import com.omahaBot.service.draw.StraightDrawService;
 import com.omahaBot.utils.PermutationsOfN;
 
 /**
  * http://fr.pokerlistings.com/potlimit-omaha-mains-de-depart
- * TODO http://www.leveluplunch.com/java/examples/sort-a-collection/
+ * http://www.leveluplunch.com/java/examples/sort-a-collection/
+ * 
  * @author Julien
  * 
  */
@@ -44,7 +47,7 @@ public class HandModel extends CardPackModel {
 
 	public boolean isTwoPairSuited()
 	{
-		return isTwoPair() && isTwoSuit();
+		return isTwoPair() && isDoubleSuited();
 	}
 
 	public boolean isTwoPairConnected()
@@ -84,7 +87,7 @@ public class HandModel extends CardPackModel {
 		SortedSet<CombinaisonModel> combinaisons = new TreeSet<CombinaisonModel>();
 
 		for (List<CardModel> permutationHand : this.permutations()) {
-			for (List<CardModel> permutationBoard : boardModel.permutations()) {
+			for (List<CardModel> permutationBoard : boardModel.permutations(3)) {
 				CombinaisonModel combinaison = new CombinaisonModel(permutationHand, permutationBoard,
 						this.hasFlushDraw());
 				combinaisons.add(combinaison);
@@ -101,10 +104,10 @@ public class HandModel extends CardPackModel {
 
 		// suppression des draws inutiles
 		cleanDraws(handDrawsSorted);
-		
+
 		// Suppression des doublons
 		handDrawsSet = new HashSet<DrawModel>(handDrawsSorted);
-		
+
 		return new TreeSet<DrawModel>(handDrawsSet);
 	}
 
@@ -112,7 +115,7 @@ public class HandModel extends CardPackModel {
 		cleanRankDraws(handDrawsSorted);
 		cleanConnectorDraws(handDrawsSorted);
 	}
-	
+
 	/**
 	 *
 	 * @param handDrawsSorted
@@ -132,6 +135,33 @@ public class HandModel extends CardPackModel {
 
 		handDrawsSorted.removeIf(filter_rankDraws);
 		handDrawsSorted.add(bestRankDraw.get());
+	}
+
+	/**
+	 * for dealStep = FLOP or TURN
+	 * @param boardModel
+	 * @return
+	 */
+	public StraightDrawType searchStraightDrawType(BoardModel boardModel) {
+
+		StraightDrawType straightDrawType = StraightDrawType.NO_DRAW;
+		StraightDrawType straightDrawTypeMax = StraightDrawType.NO_DRAW;
+
+		// permutations de 2 cartes du board + hand => 6 cartes
+		for (List<CardModel> permutationBoard : boardModel.permutations(2)) {
+
+			SortedSet<CardModel> combinaisonCards = new TreeSet<CardModel>(permutationBoard);
+			combinaisonCards.addAll(this.cards);
+
+			StraightDrawService straightDrawService = new StraightDrawService(combinaisonCards, boardModel);
+			straightDrawType = straightDrawService.straightDrawType();
+
+			if (straightDrawType.ordinal() > straightDrawTypeMax.ordinal()) {
+				straightDrawTypeMax = straightDrawType;
+			}
+		}
+
+		return straightDrawTypeMax;
 	}
 
 	/**

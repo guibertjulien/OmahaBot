@@ -76,7 +76,14 @@ public @Data class TwoPairModel extends DrawModel {
 
 	@Override
 	public boolean isNuts(Object obj) {
-		// TODO Auto-generated method stub
-		return false;
+		TwoPairModel other = (TwoPairModel) obj;
+
+		if (!this.equals(obj))
+			return false;
+		if (!nutsOrHoleCards.first().getRank().equals(other.nutsOrHoleCards.first().getRank()))
+			return false;
+		if (!nutsOrHoleCards.last().getRank().equals(other.nutsOrHoleCards.last().getRank()))
+			return false;
+		return true;
 	}
 }

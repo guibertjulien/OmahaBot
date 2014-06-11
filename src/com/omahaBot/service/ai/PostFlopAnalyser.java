@@ -13,30 +13,23 @@ import com.omahaBot.enums.DealStep;
 import com.omahaBot.enums.HandCategory;
 import com.omahaBot.model.BoardModel;
 import com.omahaBot.model.HandModel;
-import com.omahaBot.model.TournamentModel;
 import com.omahaBot.model.draw.DrawModel;
 
 /**
- * TODO
- *  continuation BET
- *  SLOW_PLAY
- *  DEAD_CARD
- *  POSITION
- *  BLUFF CAPACITY
- *  OUT
- *  STACK
- *  2 DRAW CARRES
+ * TODO continuation BET SLOW_PLAY DEAD_CARD POSITION BLUFF CAPACITY OUT STACK 2
+ * DRAW CARRES
+ * 
  * @author Julien
  *
  */
 @Data
-public class AnalyserServiceImpl {
+public class PostFlopAnalyser {
 
-	private TournamentModel tournamentModel;
-
-	private int nbBetTurn = 1;
-
-	private double pot = 0.0;
+	// private TournamentModel tournamentModel;
+	//
+	// private int nbBetTurn = 1;
+	//
+	// private double pot = 0.0;
 
 	// draws triés
 	private SortedSet<DrawModel> handDrawsSorted;
@@ -45,60 +38,35 @@ public class AnalyserServiceImpl {
 	private int handLevel;
 	private boolean nutsForLevel;
 
-	public AnalyserServiceImpl() {
-	}
-
-	public void analyseHand(HandModel myHand, BoardModel board, DealStep dealStep) {
-
-		switch (dealStep) {
-		case PRE_FLOP:
-			analyseHandPreFlop();
-			break;
-		case FLOP:
-		case TURN:
-		case RIVER:
-			analyseHandPostFlop(myHand, board);
-			break;
-		default:
-			break;
-		}
+	public PostFlopAnalyser() {
 	}
 
 	public void analysePlayers() {
-
+		// TODO
 	}
 
 	public void analyseTournament() {
-
+		// TODO
 	}
-	
+
 	public void analyseLastAction() {
-
+		// TODO
 	}
-	
+
 	public void analyseMyPosition() {
-
+		// TODO
 	}
 
-	public BettingDecision decide() {
-		BettingDecision bettingDecision = BettingDecision.FOLD_ALWAYS;
-		return bettingDecision;
-	}
-
-	private void analyseHandPreFlop() {
-
-	}
-
-	public void analyseHandPostFlop(HandModel handModel, BoardModel boardModel) {
+	public void analyseHand(HandModel handModel, BoardModel boardModel) {
 		handDrawsSorted = handModel.initCombinaisonDraws(boardModel);
 		boardDrawsSorted = new TreeSet<DrawModel>(boardModel.initDraws(handModel));
 
 		// comparaison de handDraws & boardDraws
 		DrawModel bestPermutation = handDrawsSorted.first();
-		
+
 		handLevel = 0;
 		nutsForLevel = false;
-		
+
 		for (DrawModel drawModelBoard : boardDrawsSorted) {
 
 			if (bestPermutation != null && drawModelBoard != null) {
@@ -111,37 +79,59 @@ public class AnalyserServiceImpl {
 
 			handLevel++;
 		}
-		
+
 		System.out.println("\n=> HAND DRAWS : ");
 		for (DrawModel drawModel : handDrawsSorted) {
 			System.out.println(drawModel);
 		}
-		
+
 		System.out.println("\n=> BOARD DRAWS : ");
-		int level=0;
+		int level = 0;
 		for (DrawModel drawModel : boardDrawsSorted) {
 			System.out.println("Level " + level + " : " + drawModel);
 			level++;
-		}		
-		
+		}
+
 		System.out.println("\n=> ANALYSE : ");
 		System.out.println("Level " + handLevel + " / Nuts : " + isNutsForLevel());
 	}
 
+	public BettingDecision decide(DealStep dealStep, HandModel myHand) {
+
+		BettingDecision bettingDecision = BettingDecision.FOLD_ALWAYS;
+
+		switch (dealStep) {
+		case FLOP:
+			bettingDecision = decideFlop();
+			break;
+		case TURN:
+			bettingDecision = decideRiver();
+			break;
+		case RIVER:
+			bettingDecision = decideTurn();
+			break;
+		default:
+			break;
+		}
+
+		return bettingDecision;
+	}
+	
 	public BettingDecision decideFlop() {
 		BettingDecision bettingDecision = BettingDecision.CHECK_FOLD;
 
 		DrawModel bestPermutation = handDrawsSorted.first();
 		ArrayList<DrawModel> boardDraws = new ArrayList<DrawModel>(boardDrawsSorted);
 
-		List<DrawModel> boardflushDraws = boardDraws.stream().filter(d -> d.getHandCategory().equals(HandCategory.FLUSH))
+		List<DrawModel> boardflushDraws = boardDraws.stream()
+				.filter(d -> d.getHandCategory().equals(HandCategory.FLUSH))
 				.collect(Collectors.toList());
-		
+
 		if (boardflushDraws.isEmpty()) {
 			boardflushDraws = boardDraws.stream().filter(d -> d.getHandCategory().equals(HandCategory.FLUSH_DRAW))
 					.collect(Collectors.toList());
 		}
-
+		
 		switch (bestPermutation.getHandCategory()) {
 		case FOUR_OF_A_KIND:
 		case FULL_HOUSE:
@@ -153,6 +143,7 @@ public class AnalyserServiceImpl {
 			}
 			break;
 		case FLUSH:
+		case FLUSH_DRAW:
 			if (handLevel == 0) {
 				BettingDecision.randomBetween(BettingDecision.BET_RAISE, BettingDecision.CHECK_CALL);
 			}
@@ -181,10 +172,27 @@ public class AnalyserServiceImpl {
 			bettingDecision = BettingDecision.CHECK_FOLD;
 			break;
 		}
-		
-		System.out.println("\n=> DECISION : ");
-		System.out.println(bettingDecision);
-		
+	
+		return bettingDecision;
+	}
+
+	public BettingDecision decideTurn() {
+		return decideFlop();
+	}
+
+	public BettingDecision decideRiver() {
+		BettingDecision bettingDecision = BettingDecision.CHECK_FOLD; 
+
+		if (handLevel == 0) {
+			BettingDecision.randomBetween(BettingDecision.ALLIN, BettingDecision.BET_RAISE);
+		} else if (handLevel == 1) {
+			BettingDecision.randomBetween(BettingDecision.ALLIN, BettingDecision.BET_RAISE, BettingDecision.CHECK_CALL);
+		} else if (handLevel == 2) {
+			BettingDecision.randomBetween(BettingDecision.CHECK_CALL, BettingDecision.CHECK_FOLD);
+		} else {
+			bettingDecision = BettingDecision.CHECK_FOLD;
+		}
+
 		return bettingDecision;
 	}
 }

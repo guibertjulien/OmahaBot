@@ -25,12 +25,12 @@ import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.wb.swt.SWTResourceManager;
 
-import com.omahaBot.enums.PreFlopPower;
 import com.omahaBot.model.ActionModel;
 import com.omahaBot.model.BoardModel;
 import com.omahaBot.model.DealModel;
 import com.omahaBot.model.DealStepModel;
 import com.omahaBot.model.HandModel;
+import com.omahaBot.model.HandPreFlopPower;
 import com.omahaBot.model.PlayerModel;
 import com.omahaBot.model.draw.DrawModel;
 import com.omahaBot.service.bot.ThreadDeal;
@@ -271,7 +271,7 @@ public class MainForm {
 		analyseWidget.displayHandDraws(myHand, board, handDraws);
 	}
 
-	public void initAnalyseWidget(HandModel myHand, PreFlopPower preFlopPower) {
-		analyseWidget.displayPreFlopAnalyse(myHand, preFlopPower);
+	public void initAnalyseWidget(HandModel myHand, HandPreFlopPower handPreFlopPower) {
+		analyseWidget.displayPreFlopAnalyse(myHand, handPreFlopPower);
 	}
 }

@@ -11,11 +11,13 @@ import lombok.Data;
 
 import com.omahaBot.enums.HandCategory;
 import com.omahaBot.enums.Rank;
+import com.omahaBot.enums.StraightDrawType;
 import com.omahaBot.model.draw.DrawModel;
 import com.omahaBot.model.draw.FullModel;
 import com.omahaBot.model.draw.OnePairModel;
 import com.omahaBot.model.draw.QuadsModel;
 import com.omahaBot.model.draw.SetModel;
+import com.omahaBot.model.draw.StraightModel;
 import com.omahaBot.model.draw.TwoPairModel;
 import com.omahaBot.utils.CardUtils;
 
@@ -77,7 +79,7 @@ public class CombinaisonModel extends CardPackModel implements Comparable<Combin
 			if (hasFlushDraw) {
 				listDraw.addAll(searchFlushDraw(4, 5, permutationHand));
 			}
-
+			
 			drawModel = searchBestRankDraw();
 
 			if (drawModel != null)
@@ -105,7 +107,7 @@ public class CombinaisonModel extends CardPackModel implements Comparable<Combin
 
 		if (matcher.find()) {
 			group1 = matcher.group(0);
-			rank1 = Rank.fromShortName(String.valueOf(group1.charAt(0)));
+			rank1 = Rank.fromShortName(group1.charAt(0));
 
 			if (group1.length() == 8) {
 

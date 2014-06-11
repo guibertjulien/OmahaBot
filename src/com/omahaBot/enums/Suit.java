@@ -51,8 +51,18 @@ public enum Suit {
 		this.pixelColor = pixelColor;
 	}
 
+	@Deprecated
 	public static Suit fromShortName(String shortName) {
 		final Suit value = map.get(shortName);
+		if (value != null) {
+			return value;
+		}
+
+		throw new IllegalArgumentException();
+	}
+
+	public static Suit fromShortName(char shortName) {
+		final Suit value = map.get(String.valueOf(shortName));
 		if (value != null) {
 			return value;
 		}

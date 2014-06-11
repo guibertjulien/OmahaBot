@@ -12,6 +12,7 @@ import com.omahaBot.enums.Rank;
 import com.omahaBot.enums.Suit;
 import com.omahaBot.model.comparator.SuitComparator;
 import com.omahaBot.model.draw.FlushModel;
+import com.omahaBot.model.draw.StraightModel;
 
 public class CardPackModel {
 
@@ -127,7 +128,7 @@ public class CardPackModel {
 		return isNbSuit(1);
 	}
 
-	public boolean isTwoSuit() {
+	public boolean isDoubleSuited() {
 		return isNbSuit(2);
 	}
 
@@ -283,8 +284,43 @@ public class CardPackModel {
 		}
 	}
 
-	public ArrayList<FlushModel> searchFlushDraw(int min, int max, SortedSet<CardModel> permutationHand) {
+	public ArrayList<StraightModel> searchStraightDraw(int diffRankMin, int diffRankMax, HandCategory handCategory,
+			SortedSet<CardModel> permutationHand) {
+		ArrayList<StraightModel> listDraw = new ArrayList<>();
 
+		String rankString = this.toRankString();
+
+		int diffRank = 0;
+
+		int nbDrawMax = rankString.length() - 2;
+
+		int i = 0;
+
+		while (i < nbDrawMax) {
+			Rank rank1 = Rank.fromShortName(rankString.charAt(i + 0));
+			Rank rank2 = Rank.fromShortName(rankString.charAt(i + 1));
+			Rank rank3 = Rank.fromShortName(rankString.charAt(i + 2));
+
+			diffRank = (rank3.ordinal() - rank2.ordinal()) + (rank2.ordinal() - rank1.ordinal());
+
+			String drawString = rankString.substring(0 + i, 3 + i);
+
+			if (diffRank >= diffRankMin && diffRank <= diffRankMax) {
+				StraightModel straightModel = new StraightModel(handCategory, drawString, permutationHand);
+				listDraw.add(straightModel);
+
+				System.out.println(straightModel);
+			}
+
+			i++;
+		}
+
+		// TODO AS LOW sort
+
+		return listDraw;
+	}
+
+	public ArrayList<FlushModel> searchFlushDraw(int min, int max, SortedSet<CardModel> permutationHand) {
 		ArrayList<FlushModel> listDraw = new ArrayList<>();
 
 		String whithoutRank = this.toStringBySuit().replaceAll("[^shdc]", ".");
@@ -298,12 +334,12 @@ public class CardPackModel {
 			String group = matcher.group(0);
 			String drawString = this.toStringBySuit().substring(matcher.start(), matcher.end());
 
-			if ((permutationHand != null && group.length() == 8) 
+			if ((permutationHand != null && group.length() == 8)
 					|| (permutationHand == null && group.length() == 4)) {
 				handCategory = HandCategory.FLUSH_DRAW;
 			}
 
-			Suit suit = Suit.fromShortName(group.substring(1, 2));
+			Suit suit = Suit.fromShortName(group.charAt(1));
 
 			FlushModel flushModel = new FlushModel(handCategory, suit, drawString, permutationHand);
 
@@ -330,14 +366,39 @@ public class CardPackModel {
 			kickerPack2 = listCards.get(i).getRank();
 		}
 	}
-	
-	protected boolean hasOneRankCard(Rank rank) {
-		
+
+	/**
+	 * Only One
+	 * 
+	 * @param rank
+	 * @return
+	 */
+	public boolean hasOnlyOneRankCard(Rank rank) {
+		return (nbRankCard(rank) == 1);
+	}
+
+	/**
+	 * At least One
+	 * 
+	 * @param rank
+	 * @return
+	 */
+	public boolean hasRankCard(Rank rank) {
+		return (nbRankCard(rank) > 0);
+	}
+
+	/**
+	 * 
+	 * @param rank
+	 * @return
+	 */
+	private long nbRankCard(Rank rank) {
+
 		String stringToSearch = this.toRankString();
 		char letter = rank.getShortName().charAt(0);
-		
-	    long count = stringToSearch.chars().filter(e -> e == letter).count();
-		
-		return (count == 1);
+
+		long count = stringToSearch.chars().filter(e -> e == letter).count();
+
+		return count;
 	}
 }

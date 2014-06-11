@@ -11,12 +11,14 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.omahaBot.enums.DealStep;
+import com.omahaBot.enums.HandCategory;
 import com.omahaBot.enums.Rank;
 import com.omahaBot.enums.Suit;
 import com.omahaBot.model.BoardModel;
 import com.omahaBot.model.draw.DrawModel;
 import com.omahaBot.model.draw.FlushModel;
 import com.omahaBot.model.draw.FullModel;
+import com.omahaBot.model.draw.StraightModel;
 
 public class BoardModelTest {
 
@@ -364,6 +366,73 @@ public class BoardModelTest {
 		System.out.println(boardModel + " " + flushModel);
 	}
 
+	@Test
+	public void testFindStraight() {
+		BoardModel boardModel;
+		ArrayList<DrawModel> listDraw = new ArrayList<>();
+		StraightModel straightModel;
+		
+//		listDraw.clear();
+//		boardModel = new BoardModel("7s4sKs", DealStep.FLOP);
+//		listDraw.addAll(boardModel.searchStraightDraw(null));
+//		assertTrue(listDraw.isEmpty());
+//		
+//		listDraw.clear();
+//		boardModel = new BoardModel("KsQsJs", DealStep.FLOP);
+//		listDraw.addAll(boardModel.searchStraightDraw(null));
+//		assertTrue(!listDraw.isEmpty());
+//		
+//		listDraw.clear();
+//		boardModel = new BoardModel("KsQsTs", DealStep.FLOP);
+//		listDraw.addAll(boardModel.searchStraightDraw(null));
+//		assertTrue(!listDraw.isEmpty());
+//		
+//		listDraw.clear();
+//		boardModel = new BoardModel("KsQs9s", DealStep.FLOP);
+//		listDraw.addAll(boardModel.searchStraightDraw(null));
+//		assertTrue(!listDraw.isEmpty());
+//		
+//		listDraw.clear();
+//		boardModel = new BoardModel("KsKdKh", DealStep.FLOP);
+//		listDraw.addAll(boardModel.searchStraightDraw(null));
+//		assertTrue(listDraw.isEmpty());
+//		
+//		listDraw.clear();
+//		boardModel = new BoardModel("KsKdQs", DealStep.FLOP);
+//		listDraw.addAll(boardModel.searchStraightDraw(null));
+//		assertTrue(listDraw.isEmpty());
+//		
+//		listDraw.clear();
+//		boardModel = new BoardModel("2s3d5s7d", DealStep.TURN);
+//		listDraw.addAll(boardModel.searchStraightDraw(null));
+//		assertTrue(!listDraw.isEmpty());
+//		
+//		listDraw.clear();
+//		boardModel = new BoardModel("2s3d5s7d8h", DealStep.RIVER);
+//		listDraw.addAll(boardModel.searchStraightDraw(null));
+//		assertTrue(!listDraw.isEmpty());
+//		
+//		listDraw.clear();
+//		boardModel = new BoardModel("QsKhAc", DealStep.FLOP);
+//		listDraw.addAll(boardModel.searchStraightDraw(null));
+//		assertTrue(!listDraw.isEmpty());
+//		
+//		listDraw.clear();
+//		boardModel = new BoardModel("2s3hAc", DealStep.FLOP);
+//		listDraw.addAll(boardModel.searchStraightDraw(null));
+//		assertTrue(!listDraw.isEmpty());
+		
+		listDraw.clear();
+		boardModel = new BoardModel("2s5h8c", DealStep.FLOP);
+		listDraw.addAll(boardModel.searchStraightDraw(4,6,HandCategory.STRAIGHT_DRAW, null));
+		assertTrue(!listDraw.isEmpty());
+		
+		listDraw.clear();
+		boardModel = new BoardModel("2s5h9c", DealStep.FLOP);
+		listDraw.addAll(boardModel.searchStraightDraw(4,6,HandCategory.STRAIGHT_DRAW, null));
+		assertTrue(listDraw.isEmpty());
+	}
+	
 	@After
 	public void tearDown() {
 

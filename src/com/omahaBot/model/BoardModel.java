@@ -60,11 +60,11 @@ public class BoardModel extends CardPackModel {
 		return "Board : " + cards;
 	}
 
-	public List<List<CardModel>> permutations() {
+	public List<List<CardModel>> permutations(int nbCard) {
 		ArrayList<CardModel> listCards = new ArrayList<>(cards);
 		PermutationsOfN<CardModel> permutationsOrdered = new PermutationsOfN<CardModel>();
 
-		return permutationsOrdered.processSubsets(listCards, 3);
+		return permutationsOrdered.processSubsets(listCards, nbCard);
 	}
 
 	/**
@@ -96,8 +96,8 @@ public class BoardModel extends CardPackModel {
 		}
 
 		if (group1.length() > 0 && group2.length() > 0) {
-			Rank rankGroup1 = Rank.fromShortName(String.valueOf(group1.charAt(0)));
-			Rank rankGroup2 = Rank.fromShortName(String.valueOf(group2.charAt(0)));
+			Rank rankGroup1 = Rank.fromShortName(group1.charAt(0));
+			Rank rankGroup2 = Rank.fromShortName(group2.charAt(0));
 
 			// FULL_HOUSE
 			if (group1.length() == 6 || group2.length() == 6) {
@@ -176,9 +176,9 @@ public class BoardModel extends CardPackModel {
 				boardCategory = HandCategory.THREE_OF_A_KIND;
 			}
 
-			rankGroup = Rank.fromShortName(String.valueOf(group.charAt(0)));
+			rankGroup = Rank.fromShortName(group.charAt(0));
 			
-			if (handModel != null && !handModel.hasOneRankCard(rankGroup)) {
+			if (handModel != null && !handModel.hasOnlyOneRankCard(rankGroup)) {
 				QuadsModel quadsModel = new QuadsModel(rankGroup, boardCategory, null);
 				listDraw.add(quadsModel);
 			}
@@ -223,35 +223,52 @@ public class BoardModel extends CardPackModel {
 	 * TODO : best practices ?
 	 */
 	public ArrayList<DrawModel> initDraws(HandModel handModel) {
-		ArrayList<DrawModel> listDraw = new ArrayList<>();
+		ArrayList<DrawModel> draws = new ArrayList<>();
 		
 		DrawModel drawModel = null;
 
 		if (!cards.isEmpty()) {
 
 			if (dealStep.equals(DealStep.FLOP) || dealStep.equals(DealStep.TURN)) {
-				listDraw.addAll(searchFlushDraw(2, 4, null));
+				draws.addAll(searchFlushDraw(2, 4, null));
 			}
 			else if (dealStep.equals(DealStep.RIVER)) {
-				listDraw.addAll(searchFlushDraw(3, 5, null));
+				draws.addAll(searchFlushDraw(3, 5, null));
 			}
 
-			listDraw.addAll(searchQuadsDraw(handModel));
-
+			if (dealStep.equals(DealStep.FLOP) || dealStep.equals(DealStep.TURN)) {
+				ArrayList<DrawModel> straightDraws = new ArrayList<>();
+				straightDraws.addAll(searchStraightDraw(2, 4, HandCategory.STRAIGHT, null));
+				
+				if (straightDraws.isEmpty()) {
+					straightDraws.addAll(searchStraightDraw(4, 6, HandCategory.STRAIGHT_DRAW, null));
+				}
+				
+				draws.addAll(straightDraws);
+			}
+			else if (dealStep.equals(DealStep.RIVER)) {
+				draws.addAll(searchStraightDraw(2, 4, HandCategory.STRAIGHT, null));
+			}	
+			
+			draws.addAll(searchQuadsDraw(handModel));
+			
 			drawModel = searchBestFullDraw();
-			if (drawModel == null) {
-				drawModel = searchBestSetDraw();
-			}
-			if (drawModel == null) {
-				drawModel = searchBestTwoPairDraw();
-			}
-
 			if (drawModel != null) {
-				listDraw.add(drawModel);
+				draws.add(drawModel);
+			}
+			
+			drawModel = searchBestSetDraw();
+			if (drawModel != null) {
+				draws.add(drawModel);
+			}
+			
+			drawModel = searchBestTwoPairDraw();
+			if (drawModel != null) {
+				draws.add(drawModel);
 			}
 		}
 
-		return listDraw;
+		return draws;
 	}
 
 	// public boolean isFourOfAKindDraw() {

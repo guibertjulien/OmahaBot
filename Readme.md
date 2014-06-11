@@ -1,3 +1,5 @@
 Wiki : https://sites.google.com/site/omahabot/
 
-- Revoir méthode init
+- Revoir mï¿½thode init
+
+http://www.omahaplanet.com/

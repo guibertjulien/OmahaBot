@@ -16,9 +16,9 @@ import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.wb.swt.SWTResourceManager;
 
-import com.omahaBot.enums.PreFlopPower;
 import com.omahaBot.model.BoardModel;
 import com.omahaBot.model.HandModel;
+import com.omahaBot.model.HandPreFlopPower;
 import com.omahaBot.model.draw.DrawModel;
 
 public class AnalyseWidget extends Composite {
@@ -27,8 +27,9 @@ public class AnalyseWidget extends Composite {
 	private Label lbl_boardDrawValue;
 	private Label lbl_handDrawValue;
 	private Label lbl_handValue;
-	private Label lbl_rankPowerValue;
-	private Label lbl_suitPowerValue;
+	private Label lbl_pairLevelValue;
+	private Label lbl_suitLevelValue;
+	private Label lbl_connectorLevelValue;
 
 	/**
 	 * Create the composite.
@@ -55,23 +56,29 @@ public class AnalyseWidget extends Composite {
 		lbl_handValue.setLayoutData(gd_lbl_handValue);
 		lbl_handValue.setText("{}");
 
-		Label lbl_rankPower = new Label(grpPreflopAnalyse, SWT.NONE);
-		lbl_rankPower.setText("RankPower :");
+		Label lbl_pairLevel = new Label(grpPreflopAnalyse, SWT.NONE);
+		lbl_pairLevel.setText("PairLevel :");
 
-		lbl_rankPowerValue = new Label(grpPreflopAnalyse, SWT.NONE);
+		lbl_pairLevelValue = new Label(grpPreflopAnalyse, SWT.NONE);
 		GridData gd_lbl_rankPowerValue = new GridData(SWT.LEFT, SWT.CENTER, true, false, 1, 1);
 		gd_lbl_rankPowerValue.widthHint = 150;
-		lbl_rankPowerValue.setLayoutData(gd_lbl_rankPowerValue);
-		lbl_rankPowerValue.setText("{}");
+		lbl_pairLevelValue.setLayoutData(gd_lbl_rankPowerValue);
+		lbl_pairLevelValue.setText("{}");
 
-		Label lbl_suitPower = new Label(grpPreflopAnalyse, SWT.NONE);
-		lbl_suitPower.setText("SuitPower :");
+		Label lbl_suitLevel = new Label(grpPreflopAnalyse, SWT.NONE);
+		lbl_suitLevel.setText("SuitLevel :");
 
-		lbl_suitPowerValue = new Label(grpPreflopAnalyse, SWT.NONE);
+		lbl_suitLevelValue = new Label(grpPreflopAnalyse, SWT.NONE);
 		GridData gd_lbl_suitPowerValue = new GridData(SWT.LEFT, SWT.CENTER, true, false, 1, 1);
 		gd_lbl_suitPowerValue.widthHint = 150;
-		lbl_suitPowerValue.setLayoutData(gd_lbl_suitPowerValue);
-		lbl_suitPowerValue.setText("{}");
+		lbl_suitLevelValue.setLayoutData(gd_lbl_suitPowerValue);
+		lbl_suitLevelValue.setText("{}");
+		
+		Label lbl_connectorLevel = new Label(grpPreflopAnalyse, SWT.NONE);
+		lbl_connectorLevel.setText("ConnectorLevel :");
+		
+		lbl_connectorLevelValue = new Label(grpPreflopAnalyse, SWT.NONE);
+		lbl_connectorLevelValue.setText("{}");
 
 		Composite composite = new Composite(this, SWT.NONE);
 		composite.setLayout(new GridLayout(2, false));
@@ -214,17 +221,19 @@ public class AnalyseWidget extends Composite {
 		}
 	}
 
-	public void displayPreFlopAnalyse(HandModel myHand, PreFlopPower preFlopPower) {
+	public void displayPreFlopAnalyse(HandModel myHand, HandPreFlopPower handPreFlopPower) {
 		init();
 		
 		if (myHand == null) {
 			lbl_handValue.setText("");
-			lbl_rankPowerValue.setText("");
-			lbl_suitPowerValue.setText("");
+			lbl_pairLevelValue.setText("");
+			lbl_suitLevelValue.setText("");
+			lbl_connectorLevelValue.setText("");
 		} else {
 			lbl_handValue.setText(myHand.toStringByRank());
-			lbl_rankPowerValue.setText(preFlopPower.getPreFlopRank().toString());
-			lbl_suitPowerValue.setText(preFlopPower.getPreFlopSuit().toString());
+			lbl_pairLevelValue.setText(handPreFlopPower.getPreFlopPairLevel().toString());
+			lbl_suitLevelValue.setText(handPreFlopPower.getPreFlopSuitLevel().toString());
+			lbl_connectorLevelValue.setText(handPreFlopPower.getPreFlopConnectorLevel().toString());
 		}
 	}
 

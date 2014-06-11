@@ -15,7 +15,6 @@ import com.omahaBot.enums.BettingDecision;
 import com.omahaBot.enums.DealStep;
 import com.omahaBot.enums.PlayerAction;
 import com.omahaBot.enums.PlayerBlock;
-import com.omahaBot.enums.PreFlopPower;
 import com.omahaBot.model.ActionModel;
 import com.omahaBot.model.BoardModel;
 import com.omahaBot.model.CardModel;
@@ -59,8 +58,6 @@ public class ThreadAction extends MyThread {
 	private HandModel myHand;
 
 	private ArrayList<DrawModel> handDraws = new ArrayList<DrawModel>();
-
-	private PreFlopPower preFlopPower;
 
 	private boolean firstTurnBet = true;
 
@@ -124,22 +121,22 @@ public class ThreadAction extends MyThread {
 					if (myHand == null) {
 						initMyHand();
 					}
-
+					
 					switch (dealStep) {
 					case PRE_FLOP:
-						preFlopPower = preFlopAnalyserServiceImpl.analyseHand(myHand);
+						preFlopAnalyser.analyseHand(myHand);
 						break;
 					case FLOP:
 					case TURN:
 					case RIVER:
-						analyserService.analyseHand(myHand, board, dealStep);
-						handDraws.addAll(analyserService.getHandDrawsSorted());
+						postFlopAnalyser.analyseHand(myHand, board);
+						handDraws.addAll(postFlopAnalyser.getHandDrawsSorted());
 						break;
 					default:
 						break;
 					}
 
-					// play();
+					play();
 				}
 
 				positionPlayerTurnPlayOld = positionPlayerTurnPlay;
@@ -152,7 +149,7 @@ public class ThreadAction extends MyThread {
 
 						switch (dealStep) {
 						case PRE_FLOP:
-							mainForm.initAnalyseWidget(myHand, preFlopPower);
+							mainForm.initAnalyseWidget(myHand, preFlopAnalyser.getHandPreFlopPower());
 							break;
 						case FLOP:
 						case TURN:
@@ -180,25 +177,23 @@ public class ThreadAction extends MyThread {
 
 	private void play() {
 
-		BettingDecision bettingDecision = BettingDecision.CHECK_FOLD;
-
+		BettingDecision bettingDecision = BettingDecision.FOLD_ALWAYS;
+		
 		switch (dealStep) {
 		case PRE_FLOP:
-			bettingDecision = preFlopAnalyserServiceImpl.decide(myHand, firstTurnBet);
+			bettingDecision = preFlopAnalyser.decide(myHand, firstTurnBet);
 			break;
 		case FLOP:
-			bettingDecision = analyserService.decideFlop();
-			break;
 		case TURN:
-			// TODO
-			break;
 		case RIVER:
-			// TODO
+			bettingDecision = postFlopAnalyser.decide(dealStep, myHand);
 			break;
 		default:
 			break;
 		}
-
+		
+		System.out.println("Moi: Je " + bettingDecision + " " + dealStep);
+		
 		firstTurnBet = false;
 
 		try {

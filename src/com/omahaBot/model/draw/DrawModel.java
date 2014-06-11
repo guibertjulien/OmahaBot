@@ -47,12 +47,14 @@ public @Data abstract class DrawModel implements Comparable<DrawModel>, DrawAnal
 			CardModel card2 = nutsOrHoleCards.last();
 
 			switch (handCategory) {
+			case STRAIGHT_FLUSH:
 			case FLUSH:
 			case FLUSH_DRAW:
 				display = card1.toString().concat(card2.toString());
 				break;
 			case FOUR_OF_A_KIND:
 			case FULL_HOUSE:
+			case STRAIGHT:	
 			case THREE_OF_A_KIND:
 			case TWO_PAIR:
 				display = card1.getRank().getShortName().concat(card2.getRank().getShortName());

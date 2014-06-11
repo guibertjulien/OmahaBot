@@ -58,7 +58,7 @@ class FullModel extends DrawModel {
 				card2 = new CardModel(rankPair, Suit.HEART);
 			}
 			else {
-				card2 = new CardModel(rankThree, Suit.HEART);
+				card2 = new CardModel(rankThree, Suit.HEART); 
 			}
 
 			break;

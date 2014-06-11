@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.SortedSet;
 
 import com.omahaBot.model.CardModel;
+import com.omahaBot.model.HandModel;
 
 public class CardUtils {
 
@@ -36,13 +37,6 @@ public class CardUtils {
 		// TODO
 		return false;
 	}
-	
-	
-	
-	
-	
-	
-	
 	
 //	public static SortedSet<CardModel> initNuts (List<Rank> listNoRank) {
 //		

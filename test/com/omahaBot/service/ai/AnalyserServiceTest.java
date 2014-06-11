@@ -9,11 +9,11 @@ import com.omahaBot.model.HandModel;
 
 public class AnalyserServiceTest {
 
-	private AnalyserServiceImpl analyserService;
+	private PostFlopAnalyser analyserService;
 
 	@Before
 	public void before() {
-		analyserService = new AnalyserServiceImpl();
+		analyserService = new PostFlopAnalyser();
 	}
 
 	@Test
@@ -30,7 +30,7 @@ public class AnalyserServiceTest {
 		System.out.println(handModel);
 		System.out.println(boardModel);
 
-		analyserService.analyseHand(handModel, boardModel, dealStep);
+		analyserService.analyseHand(handModel, boardModel);
 		analyserService.decideFlop();
 
 		System.out.println("#######################################################");
@@ -42,7 +42,7 @@ public class AnalyserServiceTest {
 		System.out.println(handModel);
 		System.out.println(boardModel);
 
-		analyserService.analyseHand(handModel, boardModel, dealStep);
+		analyserService.analyseHand(handModel, boardModel);
 		analyserService.decideFlop();
 
 		System.out.println("#######################################################");
@@ -54,7 +54,7 @@ public class AnalyserServiceTest {
 		System.out.println(handModel);
 		System.out.println(boardModel);
 
-		analyserService.analyseHand(handModel, boardModel, dealStep);
+		analyserService.analyseHand(handModel, boardModel);
 		analyserService.decideFlop();
 
 		System.out.println("#######################################################");
@@ -66,7 +66,7 @@ public class AnalyserServiceTest {
 		System.out.println(handModel);
 		System.out.println(boardModel);
 
-		analyserService.analyseHand(handModel, boardModel, dealStep);
+		analyserService.analyseHand(handModel, boardModel);
 		analyserService.decideFlop();
 
 		System.out.println("#######################################################");
@@ -78,7 +78,19 @@ public class AnalyserServiceTest {
 		System.out.println(handModel);
 		System.out.println(boardModel);
 
-		analyserService.analyseHand(handModel, boardModel, dealStep);
+		analyserService.analyseHand(handModel, boardModel);
+		analyserService.decideFlop();
+
+		System.out.println("#######################################################");
+		
+		dealStep = DealStep.TURN;
+		handModel = new HandModel("AcKdQc4d");
+		boardModel = new BoardModel("Ah4c3hQs", dealStep);
+
+		System.out.println(handModel);
+		System.out.println(boardModel);
+
+		analyserService.analyseHand(handModel, boardModel);
 		analyserService.decideFlop();
 
 		System.out.println("#######################################################");

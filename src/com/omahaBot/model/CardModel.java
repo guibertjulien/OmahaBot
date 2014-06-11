@@ -17,8 +17,8 @@ public class CardModel implements Comparable<CardModel> {
 
 	public CardModel(String cardString) {
 		super();
-		this.rank = Rank.fromShortName(cardString.substring(0, 1));
-		this.suit = Suit.fromShortName(cardString.substring(1));
+		this.rank = Rank.fromShortName(cardString.charAt(0));
+		this.suit = Suit.fromShortName(cardString.charAt(1));
 	}
 
 	public Rank getRank() {
@@ -49,18 +49,18 @@ public class CardModel implements Comparable<CardModel> {
 			return 1;
 		}
 		else if (this.rank.ordinal() < o.rank.ordinal()) {
-			return -1;	
+			return -1;
 		} else {
 			// compare suit
 			if (this.suit.ordinal() > o.suit.ordinal()) {
 				return 1;
 			}
 			else if (this.suit.ordinal() < o.suit.ordinal()) {
-				return -1;	
+				return -1;
 			}
 			else {
 				// TODO exception
-				return 0;	
+				return 0;
 			}
 		}
 	}
@@ -71,7 +71,7 @@ public class CardModel implements Comparable<CardModel> {
 			return true;
 		}
 		else {
-			return (this.rank.ordinal() - o.rank.ordinal() == -1);
+			return (this.ordinal() - o.ordinal() == -1);
 		}
 	}
 
@@ -99,6 +99,9 @@ public class CardModel implements Comparable<CardModel> {
 			return false;
 		return true;
 	}
-	
-	
+
+	public int ordinal() {
+		return rank.ordinal();
+
+	}
 }
