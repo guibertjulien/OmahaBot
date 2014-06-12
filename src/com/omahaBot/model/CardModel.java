@@ -66,8 +66,8 @@ public class CardModel implements Comparable<CardModel> {
 	}
 
 	public boolean isConnected(CardModel o) {
-		// cas particulier 2A
-		if (this.getRank().equals(Rank.TWO) && this.getRank().equals(Rank.ACE)) {
+		// cas particulier A2
+		if (this.getRank().equals(Rank.ACE) && o.getRank().equals(Rank.TWO)) {
 			return true;
 		}
 		else {

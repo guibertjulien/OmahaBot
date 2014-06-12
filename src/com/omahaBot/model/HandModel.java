@@ -1,6 +1,7 @@
 package com.omahaBot.model;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -10,8 +11,10 @@ import java.util.TreeSet;
 import java.util.function.Predicate;
 
 import com.omahaBot.enums.HandCategory;
+import com.omahaBot.enums.Rank;
 import com.omahaBot.enums.StraightDrawType;
 import com.omahaBot.enums.Suit;
+import com.omahaBot.model.comparator.RankAsLowComparator;
 import com.omahaBot.model.draw.DrawModel;
 import com.omahaBot.service.draw.StraightDrawService;
 import com.omahaBot.utils.PermutationsOfN;
@@ -154,8 +157,27 @@ public class HandModel extends CardPackModel {
 			combinaisonCards.addAll(this.cards);
 
 			StraightDrawService straightDrawService = new StraightDrawService(combinaisonCards, boardModel);
+			
 			straightDrawType = straightDrawService.straightDrawType();
 
+			/* START gestion du ACE LOW */
+			CardPackModel cardPackModel = new CardPackModel(combinaisonCards);
+			
+			if (cardPackModel.hasRankCard(Rank.ACE)) {
+				ArrayList<CardModel> combinaisonCardsSortedByAceLow = new ArrayList<>(cardPackModel.getCards());
+				RankAsLowComparator rankAsLowComparator = new RankAsLowComparator();
+				Collections.sort(combinaisonCardsSortedByAceLow, rankAsLowComparator);
+
+				StraightDrawService straightDrawServiceLow = new StraightDrawService(combinaisonCardsSortedByAceLow, boardModel);
+				StraightDrawType straightDrawTypeLow = straightDrawServiceLow.straightDrawType();
+				
+				if (straightDrawTypeLow.ordinal() > straightDrawType.ordinal()) {
+					straightDrawType = straightDrawTypeLow;
+				}
+			}
+			/* END gestion du ACE LOW */
+			
+			
 			if (straightDrawType.ordinal() > straightDrawTypeMax.ordinal()) {
 				straightDrawTypeMax = straightDrawType;
 			}

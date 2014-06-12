@@ -106,54 +106,54 @@ public class HandModelTest {
 		BoardModel boardModel;
 		StraightDrawType straightDrawType;
 		
-//		// test if Gut-Shot
-//		handModel = new HandModel("AsJs9s2s");
-//		boardModel = new BoardModel("4s5s8s", DealStep.FLOP);
+		// test if Gut-Shot
+		handModel = new HandModel("AsJs9s2s");
+		boardModel = new BoardModel("4s5s8s", DealStep.FLOP);
+		straightDrawType = handModel.searchStraightDrawType(boardModel);
+		System.out.println(straightDrawType);
+		assertTrue(straightDrawType.equals(StraightDrawType.GUT_SHOT));
+		
+//		// test if Open-Ended
+//		handModel = new HandModel("QsQh5d4c");
+//		boardModel = new BoardModel("Ks6s7s", DealStep.FLOP);
 //		straightDrawType = handModel.searchStraightDrawType(boardModel);
 //		System.out.println(straightDrawType);
-//		assertTrue(straightDrawType.equals(StraightDrawType.GUT_SHOT));
-		
-		// test if Open-Ended
-		handModel = new HandModel("QsQh5d4c");
-		boardModel = new BoardModel("Ks6s7s", DealStep.FLOP);
-		straightDrawType = handModel.searchStraightDrawType(boardModel);
-		System.out.println(straightDrawType);
-		assertTrue(straightDrawType.equals(StraightDrawType.OPEN_ENDED));
-		
-		// test if Open-Ended
-		handModel = new HandModel("KsJsTs5s");
-		boardModel = new BoardModel("AsQs7s", DealStep.FLOP);
-		straightDrawType = handModel.searchStraightDrawType(boardModel);
-		System.out.println(straightDrawType);
-		assertTrue(straightDrawType.equals(StraightDrawType.INSIDE_BROADWAY));
-		
-		// test if 12 outs Straight Draw
-		handModel = new HandModel("QsJs9s7s");
-		boardModel = new BoardModel("Ts8s2s", DealStep.FLOP);
-		straightDrawType = handModel.searchStraightDrawType(boardModel);
-		System.out.println(straightDrawType);
-		assertTrue(straightDrawType.equals(StraightDrawType.CARD12_DRAW));
-		
-		// test if 13 Card Wrap
-		handModel = new HandModel("9s8s6s5s");
-		boardModel = new BoardModel("Ks7s4s", DealStep.FLOP);
-		straightDrawType = handModel.searchStraightDrawType(boardModel);
-		System.out.println(straightDrawType);
-		assertTrue(straightDrawType.equals(StraightDrawType.CARD13_WRAP));
-		
-		// test if 17 Card Wrap
-		handModel = new HandModel("Ts9s6s2s");
-		boardModel = new BoardModel("As8s7s", DealStep.FLOP);
-		straightDrawType = handModel.searchStraightDrawType(boardModel);
-		System.out.println(straightDrawType);
-		assertTrue(straightDrawType.equals(StraightDrawType.CARD17_WRAP));
-		
-		// test if 20 Card Wrap
-		handModel = new HandModel("Ts9s6s5s");
-		boardModel = new BoardModel("8s7s2s", DealStep.FLOP);
-		straightDrawType = handModel.searchStraightDrawType(boardModel);
-		System.out.println(straightDrawType);
-		assertTrue(straightDrawType.equals(StraightDrawType.CARD20_WRAP));
+//		assertTrue(straightDrawType.equals(StraightDrawType.OPEN_ENDED));
+//		
+//		// test if Open-Ended
+//		handModel = new HandModel("KsJsTs5s");
+//		boardModel = new BoardModel("AsQs7s", DealStep.FLOP);
+//		straightDrawType = handModel.searchStraightDrawType(boardModel);
+//		System.out.println(straightDrawType);
+//		assertTrue(straightDrawType.equals(StraightDrawType.INSIDE_BROADWAY));
+//		
+//		// test if 12 outs Straight Draw
+//		handModel = new HandModel("QsJs9s7s");
+//		boardModel = new BoardModel("Ts8s2s", DealStep.FLOP);
+//		straightDrawType = handModel.searchStraightDrawType(boardModel);
+//		System.out.println(straightDrawType);
+//		assertTrue(straightDrawType.equals(StraightDrawType.CARD12_DRAW));
+//		
+//		// test if 13 Card Wrap
+//		handModel = new HandModel("9s8s6s5s");
+//		boardModel = new BoardModel("Ks7s4s", DealStep.FLOP);
+//		straightDrawType = handModel.searchStraightDrawType(boardModel);
+//		System.out.println(straightDrawType);
+//		assertTrue(straightDrawType.equals(StraightDrawType.CARD13_WRAP));
+//		
+//		// test if 17 Card Wrap
+//		handModel = new HandModel("Ts9s6s2s");
+//		boardModel = new BoardModel("As8s7s", DealStep.FLOP);
+//		straightDrawType = handModel.searchStraightDrawType(boardModel);
+//		System.out.println(straightDrawType);
+//		assertTrue(straightDrawType.equals(StraightDrawType.CARD17_WRAP));
+//		
+//		// test if 20 Card Wrap
+//		handModel = new HandModel("Ts9s6s5s");
+//		boardModel = new BoardModel("8s7s2s", DealStep.FLOP);
+//		straightDrawType = handModel.searchStraightDrawType(boardModel);
+//		System.out.println(straightDrawType);
+//		assertTrue(straightDrawType.equals(StraightDrawType.CARD20_WRAP));
 		
 		
 	}

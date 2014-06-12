@@ -35,31 +35,46 @@ public class StraightDrawService {
 		initConnectors();
 	}
 	
+	public StraightDrawService(ArrayList<CardModel> combinaisonCardsSortedByAceLow, BoardModel boardModel) {
+		
+		this.combinaisonCards = new ArrayList<CardModel>(combinaisonCardsSortedByAceLow);
+		this.boardModel = boardModel;
+
+		this.card1 = this.combinaisonCards.get(0);
+		this.card2 = this.combinaisonCards.get(1);
+		this.card3 = this.combinaisonCards.get(2);
+		this.card4 = this.combinaisonCards.get(3);
+		this.card5 = this.combinaisonCards.get(4);
+		this.card6 = this.combinaisonCards.get(5);
+		
+		initConnectors();
+	}
+
 	public StraightDrawType straightDrawType() {
 		
 		StraightDrawType straightDrawType = StraightDrawType.NO_DRAW;
 		
-		if (!isValidConnectors()) {
-			return StraightDrawType.NO_DRAW;
-		} else if (is20CardWrap())  {
-			return StraightDrawType.CARD20_WRAP;
+		if (isValidConnectors()) {
+			if (is20CardWrap()) {
+				return StraightDrawType.CARD20_WRAP;
+			}
+			else if (is17CardWrap()) {
+				return StraightDrawType.CARD17_WRAP;
+			}
+			else if (is13CardWrap()) {
+				return StraightDrawType.CARD13_WRAP;
+			}
+			else if (is12OutStraight()) {
+				return StraightDrawType.CARD12_DRAW;
+			}
+			else if (isInsideBroadway()) {
+				return StraightDrawType.INSIDE_BROADWAY;
+			}
+			else if (isOpenEnded()) {
+				return StraightDrawType.OPEN_ENDED;
+			}
 		}
-		else if (is17CardWrap())  {
-			return StraightDrawType.CARD17_WRAP;
-		}
-		else if (is13CardWrap())  {
-			return StraightDrawType.CARD13_WRAP;
-		}
-		else if (is12OutStraight())  {
-			return StraightDrawType.CARD12_DRAW;
-		}
-		else if (isInsideBroadway())  {
-			return StraightDrawType.INSIDE_BROADWAY;
-		}
-		else if (isOpenEnded())  {
-			return StraightDrawType.OPEN_ENDED;
-		}
-		else if (isGutshot())  {
+		else if (isGutshot()) {
 			return StraightDrawType.GUT_SHOT;
 		}
 		
