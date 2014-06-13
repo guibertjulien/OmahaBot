@@ -372,55 +372,55 @@ public class BoardModelTest {
 		ArrayList<DrawModel> listDraw = new ArrayList<>();
 		StraightModel straightModel;
 		
-//		listDraw.clear();
-//		boardModel = new BoardModel("7s4sKs", DealStep.FLOP);
-//		listDraw.addAll(boardModel.searchStraightDraw(null));
-//		assertTrue(listDraw.isEmpty());
-//		
-//		listDraw.clear();
-//		boardModel = new BoardModel("KsQsJs", DealStep.FLOP);
-//		listDraw.addAll(boardModel.searchStraightDraw(null));
-//		assertTrue(!listDraw.isEmpty());
-//		
-//		listDraw.clear();
-//		boardModel = new BoardModel("KsQsTs", DealStep.FLOP);
-//		listDraw.addAll(boardModel.searchStraightDraw(null));
-//		assertTrue(!listDraw.isEmpty());
-//		
-//		listDraw.clear();
-//		boardModel = new BoardModel("KsQs9s", DealStep.FLOP);
-//		listDraw.addAll(boardModel.searchStraightDraw(null));
-//		assertTrue(!listDraw.isEmpty());
-//		
-//		listDraw.clear();
-//		boardModel = new BoardModel("KsKdKh", DealStep.FLOP);
-//		listDraw.addAll(boardModel.searchStraightDraw(null));
-//		assertTrue(listDraw.isEmpty());
-//		
-//		listDraw.clear();
-//		boardModel = new BoardModel("KsKdQs", DealStep.FLOP);
-//		listDraw.addAll(boardModel.searchStraightDraw(null));
-//		assertTrue(listDraw.isEmpty());
-//		
-//		listDraw.clear();
-//		boardModel = new BoardModel("2s3d5s7d", DealStep.TURN);
-//		listDraw.addAll(boardModel.searchStraightDraw(null));
-//		assertTrue(!listDraw.isEmpty());
-//		
-//		listDraw.clear();
-//		boardModel = new BoardModel("2s3d5s7d8h", DealStep.RIVER);
-//		listDraw.addAll(boardModel.searchStraightDraw(null));
-//		assertTrue(!listDraw.isEmpty());
-//		
-//		listDraw.clear();
-//		boardModel = new BoardModel("QsKhAc", DealStep.FLOP);
-//		listDraw.addAll(boardModel.searchStraightDraw(null));
-//		assertTrue(!listDraw.isEmpty());
-//		
-//		listDraw.clear();
-//		boardModel = new BoardModel("2s3hAc", DealStep.FLOP);
-//		listDraw.addAll(boardModel.searchStraightDraw(null));
-//		assertTrue(!listDraw.isEmpty());
+		listDraw.clear();
+		boardModel = new BoardModel("7s4sKs", DealStep.FLOP);
+		listDraw.addAll(boardModel.searchStraightDraw(2,4,HandCategory.STRAIGHT, null));
+		assertTrue(listDraw.isEmpty());
+		
+		listDraw.clear();
+		boardModel = new BoardModel("KsQsJs", DealStep.FLOP);
+		listDraw.addAll(boardModel.searchStraightDraw(2,4,HandCategory.STRAIGHT, null));
+		assertTrue(!listDraw.isEmpty());
+		
+		listDraw.clear();
+		boardModel = new BoardModel("KsQsTs", DealStep.FLOP);
+		listDraw.addAll(boardModel.searchStraightDraw(2,4,HandCategory.STRAIGHT, null));
+		assertTrue(!listDraw.isEmpty());
+		
+		listDraw.clear();
+		boardModel = new BoardModel("KsQs9s", DealStep.FLOP);
+		listDraw.addAll(boardModel.searchStraightDraw(2,4,HandCategory.STRAIGHT, null));
+		assertTrue(!listDraw.isEmpty());
+		
+		listDraw.clear();
+		boardModel = new BoardModel("KsKdKh", DealStep.FLOP);
+		listDraw.addAll(boardModel.searchStraightDraw(2,4,HandCategory.STRAIGHT, null));
+		assertTrue(listDraw.isEmpty());
+		
+		listDraw.clear();
+		boardModel = new BoardModel("KsKdQs", DealStep.FLOP);
+		listDraw.addAll(boardModel.searchStraightDraw(2,4,HandCategory.STRAIGHT, null));
+		assertTrue(listDraw.isEmpty());
+		
+		listDraw.clear();
+		boardModel = new BoardModel("2s3d5s7d", DealStep.TURN);
+		listDraw.addAll(boardModel.searchStraightDraw(2,4,HandCategory.STRAIGHT, null));
+		assertTrue(!listDraw.isEmpty());
+		
+		listDraw.clear();
+		boardModel = new BoardModel("2s3d5s7d8h", DealStep.RIVER);
+		listDraw.addAll(boardModel.searchStraightDraw(2,4,HandCategory.STRAIGHT, null));
+		assertTrue(!listDraw.isEmpty());
+		
+		listDraw.clear();
+		boardModel = new BoardModel("QsKhAc", DealStep.FLOP);
+		listDraw.addAll(boardModel.searchStraightDraw(2,4,HandCategory.STRAIGHT, null));
+		assertTrue(!listDraw.isEmpty());
+		
+		listDraw.clear();
+		boardModel = new BoardModel("2s3hAc", DealStep.FLOP);
+		listDraw.addAll(boardModel.searchStraightDraw(2,4,HandCategory.STRAIGHT, null));
+		assertTrue(!listDraw.isEmpty());
 		
 		listDraw.clear();
 		boardModel = new BoardModel("2s5h8c", DealStep.FLOP);

@@ -11,6 +11,7 @@ import lombok.Data;
 import com.omahaBot.enums.BettingDecision;
 import com.omahaBot.enums.DealStep;
 import com.omahaBot.enums.HandCategory;
+import com.omahaBot.enums.StraightDrawType;
 import com.omahaBot.model.BoardModel;
 import com.omahaBot.model.HandModel;
 import com.omahaBot.model.draw.DrawModel;
@@ -79,7 +80,13 @@ public class PostFlopAnalyser {
 
 			handLevel++;
 		}
-
+		
+		// TODO test si STRAIGHT
+		
+		// STRAIGHT DRAWS
+		StraightDrawType straightDrawType = handModel.searchStraightDrawType(boardModel);
+		System.out.println("\n=> STRAIGHT HAND DRAWS : " + straightDrawType);
+		
 		System.out.println("\n=> HAND DRAWS : ");
 		for (DrawModel drawModel : handDrawsSorted) {
 			System.out.println(drawModel);

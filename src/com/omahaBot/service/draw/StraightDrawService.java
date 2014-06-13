@@ -86,19 +86,17 @@ public class StraightDrawService {
 	 * @return
 	 */
 	private boolean isGutshot() {
-		boolean isDraw1 = card1.ordinal() + 1 == card2.ordinal()
-				&& card2.ordinal() + 2 == card3.ordinal()
-				&& card3.ordinal() + 1 == card4.ordinal();
+		
+		int ordinalFirst = (card1.getRank().equals(Rank.ACE)) ? -1 : card1.ordinal(); 		
+		int diffDraw1 = (card4.ordinal() - card3.ordinal()) + (card3.ordinal() - card2.ordinal()) + (card2.ordinal() - ordinalFirst);
 
-		boolean isDraw2 = card2.ordinal() + 1 == card3.ordinal()
-				&& card3.ordinal() + 2 == card4.ordinal()
-				&& card4.ordinal() + 1 == card5.ordinal();
-
-		boolean isDraw3 = card3.ordinal() + 1 == card4.ordinal()
-				&& card4.ordinal() + 2 == card5.ordinal()
-				&& card5.ordinal() + 1 == card6.ordinal();
-
-		return isDraw1 || isDraw2 || isDraw3;
+		ordinalFirst = (card2.getRank().equals(Rank.ACE)) ? -1 : card2.ordinal(); 
+		int diffDraw2 = (card5.ordinal() - card4.ordinal()) + (card4.ordinal() - card3.ordinal()) + (card3.ordinal() - ordinalFirst);
+		
+		ordinalFirst = (card3.getRank().equals(Rank.ACE)) ? -1 : card3.ordinal(); 
+		int diffDraw3 = (card6.ordinal() - card5.ordinal()) + (card5.ordinal() - card4.ordinal()) + (card4.ordinal() - ordinalFirst);
+		
+		return diffDraw1 == 4 || diffDraw2 == 4 || diffDraw3 == 4;
 	}
 
 	/**
