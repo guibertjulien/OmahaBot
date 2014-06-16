@@ -14,7 +14,7 @@ import com.omahaBot.enums.HandCategory;
 import com.omahaBot.enums.Rank;
 import com.omahaBot.enums.StraightDrawType;
 import com.omahaBot.enums.Suit;
-import com.omahaBot.model.comparator.RankAsLowComparator;
+import com.omahaBot.model.comparator.RankAceLowComparator;
 import com.omahaBot.model.draw.DrawModel;
 import com.omahaBot.service.draw.StraightDrawService;
 import com.omahaBot.utils.PermutationsOfN;
@@ -45,7 +45,7 @@ public class HandModel extends CardPackModel {
 
 	@Override
 	public String toString() {
-		return "Hand : " + cards;
+		return "Hand : " + setCards;
 	}
 
 	public boolean isTwoPairSuited()
@@ -66,7 +66,7 @@ public class HandModel extends CardPackModel {
 	}
 
 	public List<List<CardModel>> permutations() {
-		ArrayList<CardModel> listCards = new ArrayList<>(cards);
+		ArrayList<CardModel> listCards = new ArrayList<>(setCards);
 		PermutationsOfN<CardModel> permutationsOrdered = new PermutationsOfN<CardModel>();
 
 		return permutationsOrdered.processSubsets(listCards, 2);
@@ -116,7 +116,7 @@ public class HandModel extends CardPackModel {
 
 	private void cleanDraws(SortedSet<DrawModel> handDrawsSorted) {
 		cleanRankDraws(handDrawsSorted);
-		cleanConnectorDraws(handDrawsSorted);
+		cleanStraightDraws(handDrawsSorted);
 	}
 
 	/**
@@ -141,6 +141,25 @@ public class HandModel extends CardPackModel {
 	}
 
 	/**
+	 *
+	 * @param handDrawsSorted
+	 */
+	private void cleanStraightDraws(SortedSet<DrawModel> handDrawsSorted) {
+
+		Predicate<? super DrawModel> filter_rankDraws = (d -> d.getHandCategory().equals(HandCategory.STRAIGHT_DRAW)
+				|| d.getHandCategory().equals(HandCategory.STRAIGHT_ACE_LOW)
+				|| d.getHandCategory().equals(HandCategory.STRAIGHT));
+
+		Optional<DrawModel> bestRankDraw = handDrawsSorted
+				.stream()
+				.filter(filter_rankDraws)
+				.findFirst();
+
+		handDrawsSorted.removeIf(filter_rankDraws);
+		handDrawsSorted.add(bestRankDraw.get());
+	}
+	
+	/**
 	 * for dealStep = FLOP or TURN
 	 * @param boardModel
 	 * @return
@@ -154,7 +173,7 @@ public class HandModel extends CardPackModel {
 		for (List<CardModel> permutationBoard : boardModel.permutations(2)) {
 
 			SortedSet<CardModel> combinaisonCards = new TreeSet<CardModel>(permutationBoard);
-			combinaisonCards.addAll(this.cards);
+			combinaisonCards.addAll(setCards);
 
 			StraightDrawService straightDrawService = new StraightDrawService(combinaisonCards, boardModel);
 			
@@ -164,11 +183,11 @@ public class HandModel extends CardPackModel {
 			CardPackModel cardPackModel = new CardPackModel(combinaisonCards);
 			
 			if (cardPackModel.hasRankCard(Rank.ACE)) {
-				ArrayList<CardModel> combinaisonCardsSortedByAceLow = new ArrayList<>(cardPackModel.getCards());
-				RankAsLowComparator rankAsLowComparator = new RankAsLowComparator();
-				Collections.sort(combinaisonCardsSortedByAceLow, rankAsLowComparator);
+				ArrayList<CardModel> combinaisonCardsByAceLow = new ArrayList<>(cardPackModel.getCards());
+				RankAceLowComparator rankAceLowComparator = new RankAceLowComparator();
+				Collections.sort(combinaisonCardsByAceLow, rankAceLowComparator);
 
-				StraightDrawService straightDrawServiceLow = new StraightDrawService(combinaisonCardsSortedByAceLow, boardModel);
+				StraightDrawService straightDrawServiceLow = new StraightDrawService(combinaisonCardsByAceLow, boardModel);
 				StraightDrawType straightDrawTypeLow = straightDrawServiceLow.straightDrawType();
 				
 				if (straightDrawTypeLow.ordinal() > straightDrawType.ordinal()) {
@@ -184,13 +203,5 @@ public class HandModel extends CardPackModel {
 		}
 
 		return straightDrawTypeMax;
-	}
-
-	/**
-	 *
-	 * @param handDrawsSorted
-	 */
-	private void cleanConnectorDraws(SortedSet<DrawModel> handDrawsSorted) {
-		// TODO
 	}
 }

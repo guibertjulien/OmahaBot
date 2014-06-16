@@ -10,28 +10,28 @@ import java.util.regex.Pattern;
 import com.omahaBot.enums.HandCategory;
 import com.omahaBot.enums.Rank;
 import com.omahaBot.enums.Suit;
+import com.omahaBot.model.comparator.RankAceLowComparator;
 import com.omahaBot.model.comparator.SuitComparator;
 import com.omahaBot.model.draw.FlushModel;
-import com.omahaBot.model.draw.StraightModel;
 
 public class CardPackModel {
 
-	protected SortedSet<CardModel> cards;
+	protected SortedSet<CardModel> setCards;
 
 	protected Rank kickerPack1 = Rank.UNKNOWN;
 	protected Rank kickerPack2 = Rank.UNKNOWN;
 
-	public CardPackModel(SortedSet<CardModel> cards) {
-		this.cards = cards;
+	public CardPackModel(SortedSet<CardModel> setCards) {
+		this.setCards = setCards;
 	}
 
 	public CardPackModel(String cardPackString) {
 		super();
 
-		cards = new TreeSet<CardModel>();
+		setCards = new TreeSet<CardModel>();
 
 		while (cardPackString.length() > 0) {
-			cards.add(new CardModel(cardPackString.substring(0, 2)));
+			setCards.add(new CardModel(cardPackString.substring(0, 2)));
 			cardPackString = cardPackString.substring(2);
 		}
 	}
@@ -47,7 +47,7 @@ public class CardPackModel {
 	public String toRankString() {
 		String handRank = "";
 
-		for (CardModel cardModel : this.cards) {
+		for (CardModel cardModel : this.setCards) {
 			handRank += cardModel.getRank().getShortName();
 		}
 
@@ -60,7 +60,7 @@ public class CardPackModel {
 	 * @return
 	 */
 	public String toSuitString() {
-		ArrayList<CardModel> listCards = new ArrayList<>(cards);
+		ArrayList<CardModel> listCards = new ArrayList<>(setCards);
 		SuitComparator suitComparator = new SuitComparator();
 
 		Collections.sort(listCards, suitComparator);
@@ -75,7 +75,7 @@ public class CardPackModel {
 	}
 
 	public String toStringByRank() {
-		ArrayList<CardModel> listCards = new ArrayList<>(cards);
+		ArrayList<CardModel> listCards = new ArrayList<>(setCards);
 
 		String result = "";
 
@@ -87,7 +87,7 @@ public class CardPackModel {
 	}
 
 	public String toStringBySuit() {
-		ArrayList<CardModel> listCards = new ArrayList<>(cards);
+		ArrayList<CardModel> listCards = new ArrayList<>(setCards);
 		SuitComparator suitComparator = new SuitComparator();
 		Collections.sort(listCards, suitComparator);
 
@@ -101,11 +101,11 @@ public class CardPackModel {
 	}
 
 	public SortedSet<CardModel> getCards() {
-		return cards;
+		return setCards;
 	}
 
 	public void setCards(SortedSet<CardModel> cards) {
-		this.cards = cards;
+		this.setCards = cards;
 	}
 
 	public boolean isOnePair() {
@@ -144,16 +144,32 @@ public class CardPackModel {
 		return isNbSameCardRank(4);
 	}
 
-	public boolean isStraight() {
-		return isNbConnected(5);
+	/**
+	 * with ACE HIGH
+	 * @return
+	 */
+	public boolean isStraightHigh() {
+		ArrayList<CardModel> cards = new ArrayList<>(setCards);
+		return isNbConnected(cards, 5);
+	}
+
+	/**
+	 * with ACE LOW
+	 * @return
+	 */
+	public boolean isStraightLow() {
+		ArrayList<CardModel> cards = new ArrayList<>(setCards);
+		RankAceLowComparator rankAsLowComparator = new RankAceLowComparator();
+		Collections.sort(cards, rankAsLowComparator);
+		return isNbConnected(cards, 5);
 	}
 
 	public boolean isStraightFlush() {
-		return isStraight() && isFlush();
+		return (isStraightHigh() || isStraightLow()) && isFlush();
 	}
 
 	private boolean isNbPair(int nbPairShould) {
-		ArrayList<CardModel> listCards = new ArrayList<>(cards);
+		ArrayList<CardModel> listCards = new ArrayList<>(setCards);
 
 		int nbPair = 0;
 		CardModel cardPrec = null;
@@ -174,7 +190,7 @@ public class CardPackModel {
 	}
 
 	private boolean isNbSuit(int nbSuitSould) {
-		ArrayList<CardModel> listCards = new ArrayList<>(cards);
+		ArrayList<CardModel> listCards = new ArrayList<>(setCards);
 		SuitComparator suitComparator = new SuitComparator();
 		Collections.sort(listCards, suitComparator);
 
@@ -196,20 +212,16 @@ public class CardPackModel {
 		return (nbSuit == nbSuitSould);
 	}
 
-	public boolean isNbConnected(int nbConnectedShould) {
-		ArrayList<CardModel> listCards = new ArrayList<>(cards);
-
-		if (listCards.size() > nbConnectedShould - 1) {
+	public boolean isNbConnected(ArrayList<CardModel> cards, int nbConnectedShould) {
+		if (cards.size() > nbConnectedShould - 1) {
 
 			int nbConnected = 1;
 			CardModel cardPrec = null;
 
-			for (int i = 0; i < listCards.size() && nbConnected < nbConnectedShould; i++) {
-				CardModel card = listCards.get(i);
+			for (int i = 0; i < cards.size() && nbConnected < nbConnectedShould; i++) {
+				CardModel card = cards.get(i);
 				if (i > 0) {
-					if ((cardPrec.getRank().ordinal() == card.getRank().ordinal() - 1)
-							|| ((cardPrec.getRank().ordinal() == nbConnectedShould - 2) && card.getRank().equals(
-									Rank.ACE))) {
+					if (cardPrec.isConnected(card)) {
 						nbConnected++;
 					}
 					else {
@@ -227,7 +239,7 @@ public class CardPackModel {
 	}
 
 	public boolean isNbSameCardRank(int nbSameShould) {
-		ArrayList<CardModel> listCards = new ArrayList<>(cards);
+		ArrayList<CardModel> listCards = new ArrayList<>(setCards);
 
 		if (listCards.size() > nbSameShould - 1) {
 
@@ -255,7 +267,7 @@ public class CardPackModel {
 	}
 
 	public boolean isNbSameCardSuit(int nbSameShould) {
-		ArrayList<CardModel> listCards = new ArrayList<>(cards);
+		ArrayList<CardModel> listCards = new ArrayList<>(setCards);
 		SuitComparator suitComparator = new SuitComparator();
 		Collections.sort(listCards, suitComparator);
 
@@ -282,42 +294,6 @@ public class CardPackModel {
 		else {
 			return false;
 		}
-	}
-
-	public ArrayList<StraightModel> searchStraightDraw(int diffRankMin, int diffRankMax, HandCategory handCategory,
-			SortedSet<CardModel> permutationHand) {
-		ArrayList<StraightModel> listDraw = new ArrayList<>();
-
-		String rankString = this.toRankString();
-
-		int diffRank = 0;
-
-		int nbDrawMax = rankString.length() - 2;
-
-		int i = 0;
-
-		while (i < nbDrawMax) {
-			Rank rank1 = Rank.fromShortName(rankString.charAt(i + 0));
-			Rank rank2 = Rank.fromShortName(rankString.charAt(i + 1));
-			Rank rank3 = Rank.fromShortName(rankString.charAt(i + 2));
-
-			diffRank = (rank3.ordinal() - rank2.ordinal()) + (rank2.ordinal() - rank1.ordinal());
-
-			String drawString = rankString.substring(0 + i, 3 + i);
-
-			if (diffRank >= diffRankMin && diffRank <= diffRankMax) {
-				StraightModel straightModel = new StraightModel(handCategory, drawString, permutationHand);
-				listDraw.add(straightModel);
-
-				System.out.println(straightModel);
-			}
-
-			i++;
-		}
-
-		// TODO AS LOW sort
-
-		return listDraw;
 	}
 
 	public ArrayList<FlushModel> searchFlushDraw(int min, int max, SortedSet<CardModel> permutationHand) {
@@ -350,8 +326,8 @@ public class CardPackModel {
 	}
 
 	protected void initKickers() {
-		if (cards != null && !cards.isEmpty()) {
-			ArrayList<CardModel> listCards = new ArrayList<>(cards);
+		if (setCards != null && !setCards.isEmpty()) {
+			ArrayList<CardModel> listCards = new ArrayList<>(setCards);
 			Collections.reverse(listCards);
 
 			kickerPack1 = listCards.get(0).getRank();

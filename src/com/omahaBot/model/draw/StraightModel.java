@@ -28,13 +28,23 @@ public @Data class StraightModel extends DrawModel {
 
 		this.drawString = drawString;
 
-		initialize(drawString);
-
 		if (permutationHand != null) {
-			initHoleCards(permutationHand);
+			initHoleCards(permutationHand);	
+			
+			if (handCategory.equals(HandCategory.STRAIGHT)) {
+				char cardKicker = drawString.charAt(drawString.length()-1);
+				kicker = Rank.fromShortName(cardKicker);	
+			}
+			else if (handCategory.equals(HandCategory.STRAIGHT_ACE_LOW)) {
+				kicker = Rank.FIVE;
+			}
+		}
+		else {
+			initialize(drawString);	
 		}
 	}
 
+	//  TODO à revoir
 	@Override
 	public String toString() {
 		String display = "";

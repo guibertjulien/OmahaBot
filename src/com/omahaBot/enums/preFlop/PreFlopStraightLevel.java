@@ -7,7 +7,7 @@ import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public enum PreFlopConnectorLevel {
+public enum PreFlopStraightLevel {
 
 	// FOUR CONNECTORS
 	// par les 2 bouts
@@ -30,10 +30,10 @@ public enum PreFlopConnectorLevel {
 
 	private final String[] arrayHand;
 
-	private static final Map<String, PreFlopConnectorLevel> mapHandConnector = new
-			HashMap<String, PreFlopConnectorLevel>();
+	private static final Map<String, PreFlopStraightLevel> mapHandConnector = new
+			HashMap<String, PreFlopStraightLevel>();
 
-	private PreFlopConnectorLevel(PreFlopPowerPoint powerPoint, String... arrayHands) {
+	private PreFlopStraightLevel(PreFlopPowerPoint powerPoint, String... arrayHands) {
 		this.powerPoint = powerPoint;
 		this.arrayHand = arrayHands;
 	}
@@ -48,7 +48,7 @@ public enum PreFlopConnectorLevel {
 
 	// map permettant de récupérer le power avec une hand
 	static {
-		for (PreFlopConnectorLevel preFlopConnectorLevel : values()) {
+		for (PreFlopStraightLevel preFlopConnectorLevel : values()) {
 			for (int i = 0; i < preFlopConnectorLevel.getArrayHand().length; i++) {
 				mapHandConnector.put(preFlopConnectorLevel.getArrayHand()[i], preFlopConnectorLevel);
 			}
@@ -56,8 +56,8 @@ public enum PreFlopConnectorLevel {
 	}
 
 	// récupération de l'instance
-	public static PreFlopConnectorLevel fromTypeAndHand(String hand) {
-		PreFlopConnectorLevel value = null;
+	public static PreFlopStraightLevel fromTypeAndHand(String hand) {
+		PreFlopStraightLevel value = null;
 
 		value = checkPattern(hand, mapHandConnector);
 
@@ -69,8 +69,8 @@ public enum PreFlopConnectorLevel {
 		// throw new IllegalArgumentException();
 	}
 
-	private static PreFlopConnectorLevel checkPattern(String hand, Map<String, PreFlopConnectorLevel> map) {
-		PreFlopConnectorLevel value;
+	private static PreFlopStraightLevel checkPattern(String hand, Map<String, PreFlopStraightLevel> map) {
+		PreFlopStraightLevel value;
 		value = map.get(hand);
 
 		if (value == null) {
@@ -78,7 +78,7 @@ public enum PreFlopConnectorLevel {
 				Entry couple = (Entry) i.next();
 
 				String handPattern = (String) couple.getKey();
-				PreFlopConnectorLevel preFlopConnectorLevel = (PreFlopConnectorLevel) couple.getValue();
+				PreFlopStraightLevel preFlopConnectorLevel = (PreFlopStraightLevel) couple.getValue();
 
 				Pattern pattern = Pattern.compile(handPattern);
 				Matcher matcher = pattern.matcher(hand);

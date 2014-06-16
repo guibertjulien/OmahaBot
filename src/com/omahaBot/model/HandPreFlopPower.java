@@ -13,8 +13,8 @@ import lombok.Data;
 
 import com.omahaBot.enums.Rank;
 import com.omahaBot.enums.Suit;
-import com.omahaBot.enums.preFlop.PreFlopConnectorLevel;
-import com.omahaBot.enums.preFlop.PreFlopPairLevel;
+import com.omahaBot.enums.preFlop.PreFlopStraightLevel;
+import com.omahaBot.enums.preFlop.PreFlopRankLevel;
 import com.omahaBot.enums.preFlop.PreFlopSuitLevel;
 
 @Data
@@ -36,11 +36,11 @@ public class HandPreFlopPower {
 
 	private PairType pairType;
 
-	private PreFlopPairLevel preFlopPairLevel = PreFlopPairLevel.NO_PAIR;
+	private PreFlopRankLevel preFlopRankLevel = PreFlopRankLevel.NO_PAIR;
 
 	private PreFlopSuitLevel preFlopSuitLevel = PreFlopSuitLevel.UNSUITED;
 
-	private PreFlopConnectorLevel preFlopConnectorLevel = PreFlopConnectorLevel.NO_CONNECTOR;
+	private PreFlopStraightLevel preFlopStraightLevel = PreFlopStraightLevel.NO_CONNECTOR;
 
 	public enum PairType {
 		NO_PAIR, ONE_PAIR, DOUBLE_PAIR
@@ -61,7 +61,7 @@ public class HandPreFlopPower {
 
 		initPairs();
 		initSuits();
-		preFlopConnectorLevel = PreFlopConnectorLevel.fromTypeAndHand(handModel.toRankString());
+		preFlopStraightLevel = PreFlopStraightLevel.fromTypeAndHand(handModel.toRankString());
 
 		checkTrashHand();
 
@@ -69,8 +69,8 @@ public class HandPreFlopPower {
 			checkIfBestHand();
 		}
 		
-		power = preFlopPairLevel.getPowerPoint().getPoint() + preFlopSuitLevel.getPowerPoint().getPoint()
-				+ preFlopConnectorLevel.getPowerPoint().getPoint();
+		power = preFlopRankLevel.getPowerPoint().getPoint() + preFlopSuitLevel.getPowerPoint().getPoint()
+				+ preFlopStraightLevel.getPowerPoint().getPoint();
 	}
 
 	private void initPairs() {
@@ -93,13 +93,13 @@ public class HandPreFlopPower {
 
 		if (pairs.size() == 2) {
 			pairType = PairType.DOUBLE_PAIR;
-			preFlopPairLevel = PreFlopPairLevel.fromTypeAndHand(pairType, handModel.toRankString());
+			preFlopRankLevel = PreFlopRankLevel.fromTypeAndHand(pairType, handModel.toRankString());
 		} else if (pairs.size() == 1) {
 			pairType = PairType.ONE_PAIR;
-			preFlopPairLevel = PreFlopPairLevel.fromTypeAndHand(pairType, handModel.toRankString());
+			preFlopRankLevel = PreFlopRankLevel.fromTypeAndHand(pairType, handModel.toRankString());
 		} else {
 			pairType = PairType.NO_PAIR;
-			preFlopPairLevel = PreFlopPairLevel.NO_PAIR;
+			preFlopRankLevel = PreFlopRankLevel.NO_PAIR;
 		}
 	}
 
@@ -178,9 +178,9 @@ public class HandPreFlopPower {
 	 */
 	private void checkTrashHand() {
 		if ((handModel.isFourOfAKind() || handModel.isThreeOfAKind())
-				|| (preFlopPairLevel.equals(PreFlopPairLevel.NO_PAIR)
+				|| (preFlopRankLevel.equals(PreFlopRankLevel.NO_PAIR)
 						&& preFlopSuitLevel.equals(PreFlopSuitLevel.UNSUITED)
-						&& preFlopConnectorLevel.equals(PreFlopConnectorLevel.NO_CONNECTOR))) {
+						&& preFlopStraightLevel.equals(PreFlopStraightLevel.NO_CONNECTOR))) {
 			level = 0;
 		}
 	}
@@ -195,9 +195,9 @@ public class HandPreFlopPower {
 					+ ", suited=" + suitedType
 					+ "]";
 		} else {
-			return "Moi: Ma main [" + handModel + " : power=" + power + ", pairLevel=" + preFlopPairLevel
+			return "Moi: Ma main [" + handModel + " : power=" + power + ", pairLevel=" + preFlopRankLevel
 					+ ", connectorLevel="
-					+ preFlopConnectorLevel + ", suitLevel=" + preFlopSuitLevel + "]";
+					+ preFlopStraightLevel + ", suitLevel=" + preFlopSuitLevel + "]";
 		}
 	}
 

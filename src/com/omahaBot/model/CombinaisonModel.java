@@ -11,7 +11,6 @@ import lombok.Data;
 
 import com.omahaBot.enums.HandCategory;
 import com.omahaBot.enums.Rank;
-import com.omahaBot.enums.StraightDrawType;
 import com.omahaBot.model.draw.DrawModel;
 import com.omahaBot.model.draw.FullModel;
 import com.omahaBot.model.draw.OnePairModel;
@@ -42,11 +41,9 @@ public class CombinaisonModel extends CardPackModel implements Comparable<Combin
 		this.permutationHand = permutationHand;
 		this.permutationBoard = permutationBoard;
 
-		cards = new TreeSet<CardModel>();
-		cards.addAll(permutationHand);
-		cards.addAll(permutationBoard);
-
-		// initHandPowerType();
+		setCards = new TreeSet<CardModel>();
+		setCards.addAll(permutationHand);
+		setCards.addAll(permutationBoard);
 	}
 
 	public CombinaisonModel(List<CardModel> permutationHand, List<CardModel> permutationBoard, boolean hasFlushDraw) {
@@ -54,17 +51,9 @@ public class CombinaisonModel extends CardPackModel implements Comparable<Combin
 		this.permutationBoard = new TreeSet<CardModel>(permutationBoard);
 		this.hasFlushDraw = hasFlushDraw;
 
-		cards = new TreeSet<CardModel>();
-		cards.addAll(permutationHand);
-		cards.addAll(permutationBoard);
-	}
-
-	public SortedSet<CardModel> getCards() {
-		return cards;
-	}
-
-	public void setCards(SortedSet<CardModel> cards) {
-		this.cards = cards;
+		setCards = new TreeSet<CardModel>();
+		setCards.addAll(permutationHand);
+		setCards.addAll(permutationBoard);
 	}
 
 	/**
@@ -75,15 +64,22 @@ public class CombinaisonModel extends CardPackModel implements Comparable<Combin
 
 		DrawModel drawModel = null;
 
-		if (!cards.isEmpty()) {
+		if (!setCards.isEmpty()) {
 			if (hasFlushDraw) {
 				listDraw.addAll(searchFlushDraw(4, 5, permutationHand));
 			}
 			
 			drawModel = searchBestRankDraw();
 
-			if (drawModel != null)
+			if (drawModel != null) {
 				listDraw.add(drawModel);
+			}
+			
+			drawModel = searchStraight();
+
+			if (drawModel != null) {
+				listDraw.add(drawModel);
+			}
 		}
 
 		return listDraw;
@@ -149,6 +145,24 @@ public class CombinaisonModel extends CardPackModel implements Comparable<Combin
 		return drawModel;
 	}
 
+	/**
+	 * 
+	 * @return
+	 */
+	public StraightModel searchStraight() {
+		
+		StraightModel straightModel = null;
+		
+		if (isStraightHigh()) {	
+			straightModel = new StraightModel(HandCategory.STRAIGHT, this.toRankString(), permutationHand);
+		}
+		else if (isStraightLow()) {	
+			straightModel = new StraightModel(HandCategory.STRAIGHT_ACE_LOW, this.toRankString(), permutationHand);
+		}
+		
+		return straightModel;
+	}
+	
 	@Override
 	public int compareTo(CombinaisonModel o) {
 		return 1;
@@ -167,6 +181,6 @@ public class CombinaisonModel extends CardPackModel implements Comparable<Combin
 
 	@Override
 	public String toString() {
-		return "Combinaison : " + cards;
+		return "Combinaison : " + setCards;
 	}
 }

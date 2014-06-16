@@ -11,6 +11,7 @@ import com.omahaBot.model.draw.DrawModel;
 import com.omahaBot.model.draw.FullModel;
 import com.omahaBot.model.draw.QuadsModel;
 import com.omahaBot.model.draw.SetModel;
+import com.omahaBot.model.draw.StraightModel;
 import com.omahaBot.model.draw.TwoPairModel;
 
 public class CombinaisonModelTest {
@@ -161,9 +162,45 @@ public class CombinaisonModelTest {
 		drawModel = combinaisonModel.searchBestRankDraw();
 		assertTrue(drawModel instanceof TwoPairModel);
 		twoPairModel = (TwoPairModel) drawModel;
-		assertTrue(twoPairModel.getRankPair1().equals(Rank.TWO));
-		assertTrue(twoPairModel.getRankPair2().equals(Rank.ACE));
+		assertTrue(twoPairModel.getRankPair1().equals(Rank.ACE));
+		assertTrue(twoPairModel.getRankPair2().equals(Rank.TWO));
 		System.out.println(combinaisonModel + " " + twoPairModel);
+	}
+	
+	@Test
+	public void testFindStraight() {
+		CombinaisonModel combinaisonModel;
+		DrawModel drawModel;
+		StraightModel straightModel;
+		CardPackModel permutationHand;
+		CardPackModel permutationBoard;
+
+		permutationHand = new CardPackModel("3d5s");
+		permutationBoard = new CardPackModel("4s6d7c");
+
+		combinaisonModel = new CombinaisonModel(permutationHand.getCards(), permutationBoard.getCards());
+		drawModel = combinaisonModel.searchStraight();
+		assertTrue(drawModel instanceof StraightModel);
+		straightModel = (StraightModel) drawModel;
+		assertTrue(straightModel.getKicker().equals(Rank.SEVEN));
+		System.out.println(combinaisonModel + " " + straightModel);
+		
+		permutationHand = new CardPackModel("3d5s");
+		permutationBoard = new CardPackModel("As4d2c");
+
+		combinaisonModel = new CombinaisonModel(permutationHand.getCards(), permutationBoard.getCards());
+		drawModel = combinaisonModel.searchStraight();
+		assertTrue(drawModel instanceof StraightModel);
+		straightModel = (StraightModel) drawModel;
+		assertTrue(straightModel.getKicker().equals(Rank.FIVE));
+		System.out.println(combinaisonModel + " " + straightModel);
+		
+		permutationHand = new CardPackModel("3d8s");
+		permutationBoard = new CardPackModel("As4d2c");
+
+		combinaisonModel = new CombinaisonModel(permutationHand.getCards(), permutationBoard.getCards());
+		drawModel = combinaisonModel.searchStraight();
+		assertTrue(drawModel == null);
 	}
 	
 	// @Test

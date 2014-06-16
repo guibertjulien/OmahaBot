@@ -5,7 +5,7 @@ import java.util.Comparator;
 import com.omahaBot.enums.Rank;
 import com.omahaBot.model.CardModel;
 
-public class RankAsLowComparator implements Comparator<CardModel> {
+public class RankAceLowComparator implements Comparator<CardModel> {
 
 	@Override
 	public int compare(CardModel o1, CardModel o2) {

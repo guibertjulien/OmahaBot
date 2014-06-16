@@ -231,9 +231,9 @@ public class AnalyseWidget extends Composite {
 			lbl_connectorLevelValue.setText("");
 		} else {
 			lbl_handValue.setText(myHand.toStringByRank());
-			lbl_pairLevelValue.setText(handPreFlopPower.getPreFlopPairLevel().toString());
+			lbl_pairLevelValue.setText(handPreFlopPower.getPreFlopRankLevel().toString());
 			lbl_suitLevelValue.setText(handPreFlopPower.getPreFlopSuitLevel().toString());
-			lbl_connectorLevelValue.setText(handPreFlopPower.getPreFlopConnectorLevel().toString());
+			lbl_connectorLevelValue.setText(handPreFlopPower.getPreFlopStraightLevel().toString());
 		}
 	}
 
