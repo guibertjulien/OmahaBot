@@ -1,6 +1,5 @@
 package com.omahaBot.model.draw;
 
-import java.util.Arrays;
 import java.util.SortedSet;
 
 import lombok.Data;
@@ -9,6 +8,7 @@ import com.omahaBot.enums.HandCategory;
 import com.omahaBot.enums.Rank;
 import com.omahaBot.enums.Suit;
 import com.omahaBot.model.CardModel;
+import com.omahaBot.model.CoupleCards;
 
 public @Data class TwoPairModel extends DrawModel {
 
@@ -43,7 +43,7 @@ public @Data class TwoPairModel extends DrawModel {
 		CardModel card1 = new CardModel(rankPair1, Suit.SPADE);
 		CardModel card2 = new CardModel(rankPair2, Suit.HEART);
 
-		nutsOrHoleCards.addAll(Arrays.asList(card1, card2));
+		nutsOrHoleCards = new CoupleCards(card1, card2);
 	}
 
 	@Override
@@ -80,9 +80,11 @@ public @Data class TwoPairModel extends DrawModel {
 
 		if (!this.equals(obj))
 			return false;
-		if (!nutsOrHoleCards.first().getRank().equals(other.nutsOrHoleCards.first().getRank()))
+		if (!nutsOrHoleCards.getSortedCards().first().getRank()
+				.equals(other.nutsOrHoleCards.getSortedCards().first().getRank()))
 			return false;
-		if (!nutsOrHoleCards.last().getRank().equals(other.nutsOrHoleCards.last().getRank()))
+		if (!nutsOrHoleCards.getSortedCards().last().getRank()
+				.equals(other.nutsOrHoleCards.getSortedCards().last().getRank()))
 			return false;
 		return true;
 	}

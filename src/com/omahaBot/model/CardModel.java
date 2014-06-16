@@ -14,6 +14,12 @@ public class CardModel implements Comparable<CardModel> {
 		this.rank = rank;
 		this.suit = suit;
 	}
+	
+	public CardModel(Rank rank) {
+		super();
+		this.rank = rank;
+		this.suit = Suit.UNKNOW;
+	}
 
 	public CardModel(String cardString) {
 		super();

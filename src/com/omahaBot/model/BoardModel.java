@@ -342,6 +342,8 @@ public class BoardModel extends CardPackModel {
 
 			diffRank = (rank3.ordinal() - rank2.ordinal()) + (rank2.ordinal() - rank1.ordinal());
 
+			System.out.println("diffRank : " + diffRank);
+			
 			String drawString = rankString.substring(0 + i, 3 + i);
 
 			if (diffRank >= diffRankMin && diffRank <= diffRankMax) {

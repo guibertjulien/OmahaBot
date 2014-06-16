@@ -57,22 +57,22 @@ class FlushModel extends DrawModel {
 
 		int i = 0;
 
-		for (Rank rank : listRank) {
-			if (!rank.equals(Rank.UNKNOWN) && !rank.equals(card.getRank())) {
-				nutsOrHoleCards.add(new CardModel(rank, suit));
-				if (nutsOrHoleCards.size() == 2) {
-					break;
-				}
-			} else if (rank.equals(card.getRank())) {
-				if (i == 1) {
-					Rank rankNext = Rank.values()[rank.ordinal() - 1];
-					nutsOrHoleCards.add(new CardModel(rankNext, suit));
-				}
-				else {
-					card = listCard.get(++i);
-				}
-			}
-		}
+//		for (Rank rank : listRank) {
+//			if (!rank.equals(Rank.UNKNOWN) && !rank.equals(card.getRank())) {
+//				nutsOrHoleCards.add(new CardModel(rank, suit));
+//				if (nutsOrHoleCards.size() == 2) {
+//					break;
+//				}
+//			} else if (rank.equals(card.getRank())) {
+//				if (i == 1) {
+//					Rank rankNext = Rank.values()[rank.ordinal() - 1];
+//					nutsOrHoleCards.add(new CardModel(rankNext, suit));
+//				}
+//				else {
+//					card = listCard.get(++i);
+//				}
+//			}
+//		}
 	}
 	
 	@Override
@@ -86,10 +86,11 @@ class FlushModel extends DrawModel {
 	public boolean isNuts(Object obj) {
 		FlushModel other = (FlushModel) obj;
 		
-		if (!this.equals(obj))
+		if (!this.equals(obj)) {
 			return false;
-		if (!nutsOrHoleCards.last().getRank().equals(other.nutsOrHoleCards.last().getRank()))
-			return false;
-		return true;
+		}
+		else {
+			return nutsOrHoleCards.isEqualsKicker(other.nutsOrHoleCards);
+		}
 	}
 }

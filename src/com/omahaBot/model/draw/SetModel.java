@@ -9,6 +9,7 @@ import com.omahaBot.enums.HandCategory;
 import com.omahaBot.enums.Rank;
 import com.omahaBot.enums.Suit;
 import com.omahaBot.model.CardModel;
+import com.omahaBot.model.CoupleCards;
 
 public @Data
 class SetModel extends DrawModel {
@@ -41,7 +42,7 @@ class SetModel extends DrawModel {
 		CardModel card1 = new CardModel(rank, Suit.SPADE);
 		CardModel card2 = new CardModel(rank, Suit.HEART);
 
-		nutsOrHoleCards.addAll(Arrays.asList(card1, card2));
+		nutsOrHoleCards = new CoupleCards(card1, card2);
 	}
 
 	@Override
@@ -50,9 +51,9 @@ class SetModel extends DrawModel {
 
 		if (!this.equals(obj))
 			return false;
-		if (!nutsOrHoleCards.first().getRank().equals(other.nutsOrHoleCards.first().getRank()))
+		if (!nutsOrHoleCards.getSortedCards().first().getRank().equals(other.nutsOrHoleCards.getSortedCards().first().getRank()))
 			return false;
-		if (!nutsOrHoleCards.last().getRank().equals(other.nutsOrHoleCards.last().getRank()))
+		if (!nutsOrHoleCards.getSortedCards().last().getRank().equals(other.nutsOrHoleCards.getSortedCards().last().getRank()))
 			return false;
 		return true;
 	}

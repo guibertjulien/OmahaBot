@@ -1,18 +1,18 @@
 package com.omahaBot.model.draw;
 
 import java.util.SortedSet;
-import java.util.TreeSet;
 
 import lombok.Data;
 
 import com.omahaBot.enums.HandCategory;
 import com.omahaBot.model.CardModel;
+import com.omahaBot.model.CoupleCards;
 
 public @Data abstract class DrawModel implements Comparable<DrawModel>, DrawAnalyserService {
 
 	private int nbOut = 0;
 	private double percent = 0.0;
-	protected SortedSet<CardModel> nutsOrHoleCards = new TreeSet<CardModel>();
+	protected CoupleCards nutsOrHoleCards;
 	protected final HandCategory handCategory;
 	protected final SortedSet<CardModel> permutationHand;
 
@@ -26,67 +26,17 @@ public @Data abstract class DrawModel implements Comparable<DrawModel>, DrawAnal
 	}
 
 	public String displayNutsOrHoleCards() {
-		if (permutationHand != null) {
-			return displayHoleCards();
+		if (nutsOrHoleCards == null) {
+			return "";
+		} else if (permutationHand != null) {
+			return nutsOrHoleCards.displayHoleCards();
+		} else {
+			return nutsOrHoleCards.displayNuts(handCategory);
 		}
-		else {
-			return displayNuts();
-		}
-	}
-
-	/**
-	 * if FLUSH, display AsKs else AK
-	 * 
-	 * @return
-	 */
-	private String displayNuts() {
-		String display = "";
-
-		if (nutsOrHoleCards != null && !nutsOrHoleCards.isEmpty()) {
-			CardModel card1 = nutsOrHoleCards.first();
-			CardModel card2 = nutsOrHoleCards.last();
-
-			switch (handCategory) {
-			case STRAIGHT_FLUSH:
-			case FLUSH:
-			case FLUSH_DRAW:
-				display = card1.toString().concat(card2.toString());
-				break;
-			case FOUR_OF_A_KIND:
-			case FULL_HOUSE:
-			case STRAIGHT:	
-			case THREE_OF_A_KIND:
-			case TWO_PAIR:
-				display = card1.getRank().getShortName().concat(card2.getRank().getShortName());
-				break;
-
-			default:
-				break;
-			}
-		}
-
-		return display;
-	}
-
-	/**
-	 * 
-	 * @return
-	 */
-	private String displayHoleCards() {
-		String display = "";
-
-		if (nutsOrHoleCards != null && !nutsOrHoleCards.isEmpty()) {
-			CardModel card1 = nutsOrHoleCards.first();
-			CardModel card2 = nutsOrHoleCards.last();
-			display = card1.toString().concat(card2.toString());
-		}
-
-		return display;
 	}
 
 	public void initHoleCards(SortedSet<CardModel> permutationHand) {
-		nutsOrHoleCards.clear();
-		nutsOrHoleCards.addAll(permutationHand);
+		nutsOrHoleCards = new CoupleCards(permutationHand);
 	}
 
 	@Override
@@ -101,17 +51,21 @@ public @Data abstract class DrawModel implements Comparable<DrawModel>, DrawAnal
 	}
 
 	public int compareHoleCards(DrawModel o) {
-		if (this.nutsOrHoleCards.last().getRank().ordinal() > o.nutsOrHoleCards.last().getRank().ordinal()) {
+		if (this.nutsOrHoleCards.getSortedCards().last().getRank().ordinal() > o.nutsOrHoleCards.getSortedCards()
+				.last().getRank().ordinal()) {
 			return -1;
 		}
-		else if (this.nutsOrHoleCards.last().getRank().ordinal() < o.nutsOrHoleCards.last().getRank().ordinal()) {
+		else if (this.nutsOrHoleCards.getSortedCards().last().getRank().ordinal() < o.nutsOrHoleCards.getSortedCards()
+				.last().getRank().ordinal()) {
 			return 1;
 		}
 		else {
-			if (this.nutsOrHoleCards.first().getRank().ordinal() > o.nutsOrHoleCards.first().getRank().ordinal()) {
+			if (this.nutsOrHoleCards.getSortedCards().first().getRank().ordinal() > o.nutsOrHoleCards.getSortedCards()
+					.first().getRank().ordinal()) {
 				return -1;
 			}
-			else if (this.nutsOrHoleCards.first().getRank().ordinal() < o.nutsOrHoleCards.first().getRank().ordinal()) {
+			else if (this.nutsOrHoleCards.getSortedCards().first().getRank().ordinal() < o.nutsOrHoleCards
+					.getSortedCards().first().getRank().ordinal()) {
 				return 1;
 			}
 			else {

@@ -24,7 +24,7 @@ public class StraightDrawService {
 		
 		this.combinaisonCards = new ArrayList<CardModel>(combinaisonCardsSortedSet);
 		this.boardModel = boardModel;
-
+		
 		this.card1 = this.combinaisonCards.get(0);
 		this.card2 = this.combinaisonCards.get(1);
 		this.card3 = this.combinaisonCards.get(2);

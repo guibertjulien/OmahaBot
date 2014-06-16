@@ -1,6 +1,5 @@
 package com.omahaBot.model.draw;
 
-import java.util.Arrays;
 import java.util.SortedSet;
 
 import lombok.Data;
@@ -9,14 +8,14 @@ import com.omahaBot.enums.HandCategory;
 import com.omahaBot.enums.Rank;
 import com.omahaBot.enums.Suit;
 import com.omahaBot.model.CardModel;
+import com.omahaBot.model.CoupleCards;
 
 /**
  * 
  * @author Julien
  * 
  */
-public @Data
-class FullModel extends DrawModel {
+public @Data class FullModel extends DrawModel {
 
 	private Rank rankThree;
 	private Rank rankPair;
@@ -28,7 +27,7 @@ class FullModel extends DrawModel {
 		this.rankPair = rankPair;
 
 		initialize(boardCategory, rankGroup, kickerPack1, kickerPack2);
-		
+
 		if (permutationHand != null) {
 			initHoleCards(permutationHand);
 		}
@@ -58,7 +57,7 @@ class FullModel extends DrawModel {
 				card2 = new CardModel(rankPair, Suit.HEART);
 			}
 			else {
-				card2 = new CardModel(rankThree, Suit.HEART); 
+				card2 = new CardModel(rankThree, Suit.HEART);
 			}
 
 			break;
@@ -135,14 +134,14 @@ class FullModel extends DrawModel {
 		}
 
 		if (card1 != null && card2 != null) {
-			nutsOrHoleCards.addAll(Arrays.asList(card1, card2));
+			nutsOrHoleCards = new CoupleCards(card1, card2);
 		}
 	}
 
 	@Override
 	public boolean equals(Object obj) {
 		FullModel other = (FullModel) obj;
-		
+
 		if (rankPair != other.rankPair)
 			return false;
 		if (rankThree != other.rankThree)
@@ -156,9 +155,11 @@ class FullModel extends DrawModel {
 
 		if (!this.equals(obj))
 			return false;
-		if (!nutsOrHoleCards.first().getRank().equals(other.nutsOrHoleCards.first().getRank()))
+		if (!nutsOrHoleCards.getSortedCards().first().getRank()
+				.equals(other.nutsOrHoleCards.getSortedCards().first().getRank()))
 			return false;
-		if (!nutsOrHoleCards.last().getRank().equals(other.nutsOrHoleCards.last().getRank()))
+		if (!nutsOrHoleCards.getSortedCards().last().getRank()
+				.equals(other.nutsOrHoleCards.getSortedCards().last().getRank()))
 			return false;
 		return true;
 	}

@@ -137,7 +137,10 @@ public class HandModel extends CardPackModel {
 				.findFirst();
 
 		handDrawsSorted.removeIf(filter_rankDraws);
-		handDrawsSorted.add(bestRankDraw.get());
+		
+		if (bestRankDraw.isPresent()) {
+			handDrawsSorted.add(bestRankDraw.get());			
+		}
 	}
 
 	/**
@@ -156,7 +159,10 @@ public class HandModel extends CardPackModel {
 				.findFirst();
 
 		handDrawsSorted.removeIf(filter_rankDraws);
-		handDrawsSorted.add(bestRankDraw.get());
+		
+		if (bestRankDraw.isPresent()) {
+			handDrawsSorted.add(bestRankDraw.get());
+		}
 	}
 	
 	/**

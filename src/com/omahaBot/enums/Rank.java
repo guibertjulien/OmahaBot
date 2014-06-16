@@ -3,6 +3,8 @@ package com.omahaBot.enums;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.omahaBot.model.CardModel;
+
 /**
  * TODO Cf. GUAVA
  * 
@@ -72,5 +74,25 @@ public enum Rank {
 		}
 
 		throw new IllegalArgumentException();
+	}
+	
+	public boolean isConnected(Rank o) {
+		// cas particulier A2
+		if (this.equals(Rank.ACE) && o.equals(Rank.TWO)) {
+			return true;
+		}
+		else {
+			return (this.ordinal() - o.ordinal() == -1);
+		}
+	}
+	
+	public int diff(Rank o) {
+		// cas particulier A2
+		if (this.equals(Rank.ACE) && o.equals(Rank.TWO)) {
+			return 1;
+		}
+		else {
+			return (o.ordinal() - this.ordinal());
+		}
 	}
 }

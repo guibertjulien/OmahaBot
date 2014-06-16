@@ -62,31 +62,34 @@ public class PostFlopAnalyser {
 		handDrawsSorted = handModel.initCombinaisonDraws(boardModel);
 		boardDrawsSorted = new TreeSet<DrawModel>(boardModel.initDraws(handModel));
 
-		// comparaison de handDraws & boardDraws
-		DrawModel bestPermutation = handDrawsSorted.first();
+		if (!handDrawsSorted.isEmpty()) {
 
-		handLevel = 0;
-		nutsForLevel = false;
+			// comparaison de handDraws & boardDraws
+			DrawModel bestPermutation = handDrawsSorted.first();
 
-		for (DrawModel drawModelBoard : boardDrawsSorted) {
+			handLevel = 0;
+			nutsForLevel = false;
 
-			if (bestPermutation != null && drawModelBoard != null) {
-				// same handCategory
-				if (bestPermutation.getHandCategory().equals(drawModelBoard.getHandCategory())) {
-					nutsForLevel = bestPermutation.isNuts(drawModelBoard);
-					break;
+			for (DrawModel drawModelBoard : boardDrawsSorted) {
+
+				if (bestPermutation != null && drawModelBoard != null) {
+					// same handCategory
+					if (bestPermutation.getHandCategory().equals(drawModelBoard.getHandCategory())) {
+						nutsForLevel = bestPermutation.isNuts(drawModelBoard);
+						break;
+					}
 				}
-			}
 
-			handLevel++;
+				handLevel++;
+			}
 		}
-		
+
 		// TODO test si STRAIGHT
-		
+
 		// STRAIGHT DRAWS
 		StraightDrawType straightDrawType = handModel.searchStraightDrawType(boardModel);
 		System.out.println("\n=> STRAIGHT HAND DRAWS : " + straightDrawType);
-		
+
 		System.out.println("\n=> HAND DRAWS : ");
 		for (DrawModel drawModel : handDrawsSorted) {
 			System.out.println(drawModel);
@@ -123,72 +126,76 @@ public class PostFlopAnalyser {
 
 		return bettingDecision;
 	}
-	
+
 	public BettingDecision decideFlop() {
 		BettingDecision bettingDecision = BettingDecision.CHECK_FOLD;
 
-		DrawModel bestPermutation = handDrawsSorted.first();
-		ArrayList<DrawModel> boardDraws = new ArrayList<DrawModel>(boardDrawsSorted);
+		if (!handDrawsSorted.isEmpty()) {
 
-		List<DrawModel> boardflushDraws = boardDraws.stream()
-				.filter(d -> d.getHandCategory().equals(HandCategory.FLUSH))
-				.collect(Collectors.toList());
+			DrawModel bestPermutation = handDrawsSorted.first();
+			ArrayList<DrawModel> boardDraws = new ArrayList<DrawModel>(boardDrawsSorted);
 
-		if (boardflushDraws.isEmpty()) {
-			boardflushDraws = boardDraws.stream().filter(d -> d.getHandCategory().equals(HandCategory.FLUSH_DRAW))
+			List<DrawModel> boardflushDraws = boardDraws.stream()
+					.filter(d -> d.getHandCategory().equals(HandCategory.FLUSH))
 					.collect(Collectors.toList());
-		}
-		
-		switch (bestPermutation.getHandCategory()) {
-		case FOUR_OF_A_KIND:
-		case FULL_HOUSE:
-			if (handLevel == 0) {
-				BettingDecision.randomBetween(BettingDecision.BET_RAISE, BettingDecision.CHECK_CALL);
-			}
-			else {
-				BettingDecision.randomBetween(BettingDecision.CHECK_CALL, BettingDecision.CHECK_FOLD);
-			}
-			break;
-		case FLUSH:
-		case FLUSH_DRAW:
-			if (handLevel == 0) {
-				BettingDecision.randomBetween(BettingDecision.BET_RAISE, BettingDecision.CHECK_CALL);
-			}
-			else {
-				BettingDecision.randomBetween(BettingDecision.CHECK_CALL, BettingDecision.CHECK_FOLD);
-			}
-			break;
-		case THREE_OF_A_KIND:
+
 			if (boardflushDraws.isEmpty()) {
-				bettingDecision = BettingDecision.ALLIN;
+				boardflushDraws = boardDraws.stream().filter(d -> d.getHandCategory().equals(HandCategory.FLUSH_DRAW))
+						.collect(Collectors.toList());
 			}
-			else {
-				if (boardflushDraws.get(0).getHandCategory().equals(HandCategory.FLUSH)) {
-					bettingDecision = BettingDecision.CHECK_FOLD;
+
+			switch (bestPermutation.getHandCategory()) {
+			case FOUR_OF_A_KIND:
+			case FULL_HOUSE:
+				if (handLevel == 0) {
+					BettingDecision.randomBetween(BettingDecision.BET_RAISE, BettingDecision.CHECK_CALL);
 				}
 				else {
-					bettingDecision = BettingDecision.CHECK_CALL;
+					BettingDecision.randomBetween(BettingDecision.CHECK_CALL, BettingDecision.CHECK_FOLD);
 				}
+				break;
+			case FLUSH:
+			case FLUSH_DRAW:
+				if (handLevel == 0) {
+					BettingDecision.randomBetween(BettingDecision.BET_RAISE, BettingDecision.CHECK_CALL);
+				}
+				else {
+					BettingDecision.randomBetween(BettingDecision.CHECK_CALL, BettingDecision.CHECK_FOLD);
+				}
+				break;
+			case THREE_OF_A_KIND:
+				if (boardflushDraws.isEmpty()) {
+					bettingDecision = BettingDecision.ALLIN;
+				}
+				else {
+					if (boardflushDraws.get(0).getHandCategory().equals(HandCategory.FLUSH)) {
+						bettingDecision = BettingDecision.CHECK_FOLD;
+					}
+					else {
+						bettingDecision = BettingDecision.CHECK_CALL;
+					}
+				}
+				break;
+			case TWO_PAIR:
+			case ONE_PAIR:
+				bettingDecision = BettingDecision.CHECK_FOLD;
+				break;
+			default:
+				bettingDecision = BettingDecision.CHECK_FOLD;
+				break;
 			}
-			break;
-		case TWO_PAIR:
-		case ONE_PAIR:
-			bettingDecision = BettingDecision.CHECK_FOLD;
-			break;
-		default:
-			bettingDecision = BettingDecision.CHECK_FOLD;
-			break;
 		}
-	
+
 		return bettingDecision;
 	}
 
 	public BettingDecision decideTurn() {
 		return decideFlop();
 	}
+	
 
 	public BettingDecision decideRiver() {
-		BettingDecision bettingDecision = BettingDecision.CHECK_FOLD; 
+		BettingDecision bettingDecision = BettingDecision.CHECK_FOLD;
 
 		if (handLevel == 0) {
 			BettingDecision.randomBetween(BettingDecision.ALLIN, BettingDecision.BET_RAISE);
