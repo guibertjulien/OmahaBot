@@ -41,9 +41,9 @@ public class CombinaisonModel extends CardPackModel implements Comparable<Combin
 		this.permutationHand = permutationHand;
 		this.permutationBoard = permutationBoard;
 
-		setCards = new TreeSet<CardModel>();
-		setCards.addAll(permutationHand);
-		setCards.addAll(permutationBoard);
+		sortedCards = new TreeSet<CardModel>();
+		sortedCards.addAll(permutationHand);
+		sortedCards.addAll(permutationBoard);
 	}
 
 	public CombinaisonModel(List<CardModel> permutationHand, List<CardModel> permutationBoard, boolean hasFlushDraw) {
@@ -51,9 +51,9 @@ public class CombinaisonModel extends CardPackModel implements Comparable<Combin
 		this.permutationBoard = new TreeSet<CardModel>(permutationBoard);
 		this.hasFlushDraw = hasFlushDraw;
 
-		setCards = new TreeSet<CardModel>();
-		setCards.addAll(permutationHand);
-		setCards.addAll(permutationBoard);
+		sortedCards = new TreeSet<CardModel>();
+		sortedCards.addAll(permutationHand);
+		sortedCards.addAll(permutationBoard);
 	}
 
 	/**
@@ -64,7 +64,7 @@ public class CombinaisonModel extends CardPackModel implements Comparable<Combin
 
 		DrawModel drawModel = null;
 
-		if (!setCards.isEmpty()) {
+		if (!sortedCards.isEmpty()) {
 			if (hasFlushDraw) {
 				listDraw.addAll(searchFlushDraw(4, 5, permutationHand));
 			}
@@ -181,6 +181,6 @@ public class CombinaisonModel extends CardPackModel implements Comparable<Combin
 
 	@Override
 	public String toString() {
-		return "Combinaison : " + setCards;
+		return "Combinaison : " + sortedCards;
 	}
 }

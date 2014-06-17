@@ -1,7 +1,5 @@
 package com.omahaBot.service.ai;
 
-import junit.framework.Assert;
-
 import org.junit.Before;
 import org.junit.Test;
 
@@ -159,8 +157,30 @@ public class AnalyserServiceTest {
 
 		System.out.println(handModel);
 		System.out.println(boardModel);
+		
+		analyserService.analyseHand(handModel, boardModel);
+		analyserService.decideFlop();
+		
+		System.out.println("#######################################################");
+		
+		dealStep = DealStep.FLOP;
+		handModel = new HandModel("Tc9d6c5d");
+		boardModel = new BoardModel("Ah4h5s", dealStep);
 
-		Assert.assertFalse("ACE LOW à tester", true);
+		System.out.println(handModel);
+		System.out.println(boardModel);
+		
+		analyserService.analyseHand(handModel, boardModel);
+		analyserService.decideFlop();
+		
+		System.out.println("#######################################################");
+		
+		dealStep = DealStep.FLOP;
+		handModel = new HandModel("Tc9d6c5d");
+		boardModel = new BoardModel("Ah3h5s", dealStep);
+
+		System.out.println(handModel);
+		System.out.println(boardModel);
 		
 		analyserService.analyseHand(handModel, boardModel);
 		analyserService.decideFlop();
@@ -173,11 +193,24 @@ public class AnalyserServiceTest {
 
 		System.out.println(handModel);
 		System.out.println(boardModel);
-
-		analyserService.analyseHand(handModel, boardModel);
-		analyserService.decideFlop();
-
-		System.out.println("#######################################################");
+//
+//		analyserService.analyseHand(handModel, boardModel);
+//		analyserService.decideFlop();
+//
+//		System.out.println("#######################################################");
+//		
+//		dealStep = DealStep.FLOP;
+//		handModel = new HandModel("Tc9d6c5d");
+//		boardModel = new BoardModel("2h4h6s", dealStep);
+//
+//		System.out.println(handModel);
+//		System.out.println(boardModel);
+//
+//		analyserService.analyseHand(handModel, boardModel);
+//		analyserService.decideFlop();
+//
+//		System.out.println("#######################################################");
+		
 	}
 		
 		

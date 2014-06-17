@@ -11,20 +11,22 @@ import java.util.regex.Pattern;
 import com.omahaBot.enums.DealStep;
 import com.omahaBot.enums.HandCategory;
 import com.omahaBot.enums.Rank;
+import com.omahaBot.model.comparator.RankAceLowComparator;
 import com.omahaBot.model.draw.DrawModel;
 import com.omahaBot.model.draw.FullModel;
 import com.omahaBot.model.draw.QuadsModel;
 import com.omahaBot.model.draw.SetModel;
 import com.omahaBot.model.draw.StraightModel;
 import com.omahaBot.model.draw.TwoPairModel;
+import com.omahaBot.utils.CardUtils;
 import com.omahaBot.utils.PermutationsOfN;
 
 public class BoardModel extends CardPackModel {
 
 	private final DealStep dealStep;
 
-	public BoardModel(SortedSet<CardModel> cards, DealStep dealStep) {
-		super(cards);
+	public BoardModel(SortedSet<CardModel> sortedCards, DealStep dealStep) {
+		super(sortedCards);
 		this.dealStep = dealStep;
 		initKickers();
 	}
@@ -32,24 +34,24 @@ public class BoardModel extends CardPackModel {
 	public BoardModel(String handString, DealStep dealStep) {
 		super();
 
-		setCards = new TreeSet<CardModel>();
+		sortedCards = new TreeSet<CardModel>();
 
 		if (dealStep.ordinal() >= DealStep.FLOP.ordinal()) {
 			CardModel card1 = new CardModel(handString.substring(0, 2));
 			CardModel card2 = new CardModel(handString.substring(2, 4));
 			CardModel card3 = new CardModel(handString.substring(4, 6));
-			setCards.add(card1);
-			setCards.add(card2);
-			setCards.add(card3);
+			sortedCards.add(card1);
+			sortedCards.add(card2);
+			sortedCards.add(card3);
 		}
 
 		if (dealStep.ordinal() >= DealStep.TURN.ordinal()) {
 			CardModel card4 = new CardModel(handString.substring(6, 8));
-			setCards.add(card4);
+			sortedCards.add(card4);
 		}
 		if (dealStep.equals(DealStep.RIVER)) {
 			CardModel card5 = new CardModel(handString.substring(8, 10));
-			setCards.add(card5);
+			sortedCards.add(card5);
 		}
 
 		this.dealStep = dealStep;
@@ -58,11 +60,11 @@ public class BoardModel extends CardPackModel {
 
 	@Override
 	public String toString() {
-		return "Board : " + setCards;
+		return "Board : " + sortedCards;
 	}
 
 	public List<List<CardModel>> permutations(int nbCard) {
-		ArrayList<CardModel> listCards = new ArrayList<>(setCards);
+		ArrayList<CardModel> listCards = new ArrayList<>(sortedCards);
 		PermutationsOfN<CardModel> permutationsOrdered = new PermutationsOfN<CardModel>();
 
 		return permutationsOrdered.processSubsets(listCards, nbCard);
@@ -151,7 +153,8 @@ public class BoardModel extends CardPackModel {
 
 	/**
 	 * - check if hand not contain only same rank card
-	 * @param handModel 
+	 * 
+	 * @param handModel
 	 * @return
 	 */
 	public ArrayList<DrawModel> searchQuadsDraw(HandModel handModel) {
@@ -178,7 +181,7 @@ public class BoardModel extends CardPackModel {
 			}
 
 			rankGroup = Rank.fromShortName(group.charAt(0));
-			
+
 			if (handModel != null && !handModel.hasOnlyOneRankCard(rankGroup)) {
 				QuadsModel quadsModel = new QuadsModel(rankGroup, boardCategory, null);
 				listDraw.add(quadsModel);
@@ -194,7 +197,7 @@ public class BoardModel extends CardPackModel {
 	 */
 	public DrawModel searchBestTwoPairDraw() {
 
-		ArrayList<CardModel> listCards = new ArrayList<>(setCards);
+		ArrayList<CardModel> listCards = new ArrayList<>(sortedCards);
 		Collections.reverse(listCards);
 
 		CardModel topPair1 = listCards.get(0);
@@ -210,7 +213,7 @@ public class BoardModel extends CardPackModel {
 	 * @return
 	 */
 	public SetModel searchBestSetDraw() {
-		ArrayList<CardModel> listCards = new ArrayList<>(setCards);
+		ArrayList<CardModel> listCards = new ArrayList<>(sortedCards);
 		Collections.reverse(listCards);
 
 		CardModel topSet = listCards.get(0);
@@ -225,10 +228,10 @@ public class BoardModel extends CardPackModel {
 	 */
 	public ArrayList<DrawModel> initDraws(HandModel handModel) {
 		ArrayList<DrawModel> draws = new ArrayList<>();
-		
+
 		DrawModel drawModel = null;
 
-		if (!setCards.isEmpty()) {
+		if (!sortedCards.isEmpty()) {
 
 			if (dealStep.equals(DealStep.FLOP) || dealStep.equals(DealStep.TURN)) {
 				draws.addAll(searchFlushDraw(2, 4, null));
@@ -237,32 +240,20 @@ public class BoardModel extends CardPackModel {
 				draws.addAll(searchFlushDraw(3, 5, null));
 			}
 
-			if (dealStep.equals(DealStep.FLOP) || dealStep.equals(DealStep.TURN)) {
-				ArrayList<DrawModel> straightDraws = new ArrayList<>();
-				straightDraws.addAll(searchStraightDraw(2, 4, HandCategory.STRAIGHT, null));
-				
-				if (straightDraws.isEmpty()) {
-					straightDraws.addAll(searchStraightDraw(4, 6, HandCategory.STRAIGHT_DRAW, null));
-				}
-				
-				draws.addAll(straightDraws);
-			}
-			else if (dealStep.equals(DealStep.RIVER)) {
-				draws.addAll(searchStraightDraw(2, 4, HandCategory.STRAIGHT, null));
-			}	
-			
+			draws.addAll(searchStraightDraw());
+
 			draws.addAll(searchQuadsDraw(handModel));
-			
+
 			drawModel = searchBestFullDraw();
 			if (drawModel != null) {
 				draws.add(drawModel);
 			}
-			
+
 			drawModel = searchBestSetDraw();
 			if (drawModel != null) {
 				draws.add(drawModel);
 			}
-			
+
 			drawModel = searchBestTwoPairDraw();
 			if (drawModel != null) {
 				draws.add(drawModel);
@@ -272,22 +263,6 @@ public class BoardModel extends CardPackModel {
 		return draws;
 	}
 
-	// public boolean isFourOfAKindDraw() {
-	// return isThreeOfAKind();
-	// }
-	//
-	// /**
-	// * TODO : LEVEL
-	// *
-	// * @return
-	// */
-	// public boolean isFullDraw() {
-	// return isFourOfAKind()
-	// || isTwoPair()
-	// || isOnePair();
-	//
-	// }
-
 	/**
 	 * TODO : LEVEL; Kicker; openEnded
 	 * 
@@ -295,8 +270,8 @@ public class BoardModel extends CardPackModel {
 	 */
 	public boolean isStraightDraw() {
 		boolean result = false;
-		
-		ArrayList<CardModel> cards = new ArrayList<CardModel>(setCards);
+
+		ArrayList<CardModel> cards = new ArrayList<CardModel>(sortedCards);
 
 		switch (dealStep) {
 		case FLOP:
@@ -312,22 +287,42 @@ public class BoardModel extends CardPackModel {
 
 		return result;
 	}
-	
+
 	/**
-	 * STRAIGHT : 2, 4
-	 * STRAIGH : 4, 6
 	 * 
-	 * @param diffRankMin
-	 * @param diffRankMax
-	 * @param handCategory
-	 * @param permutationHand
-	 * @return
 	 */
-	public ArrayList<StraightModel> searchStraightDraw(int diffRankMin, int diffRankMax, HandCategory handCategory,
-			SortedSet<CardModel> permutationHand) {
+	public ArrayList<StraightModel> searchStraightDraw() {
+
 		ArrayList<StraightModel> listDraw = new ArrayList<>();
 
-		String rankString = this.toRankString();
+		// draws HIGH
+		listDraw.addAll(searchStraightDrawByHandCategory(HandCategory.STRAIGHT));
+
+		if (listDraw.isEmpty()) {
+			// draws ACE LOW
+			listDraw.addAll(searchStraightDrawByHandCategory(HandCategory.STRAIGHT_ACE_LOW));
+		}
+
+		return listDraw;
+	}
+
+	/**
+	 * 
+	 * @param handCategory
+	 * @return
+	 */
+	private ArrayList<StraightModel> searchStraightDrawByHandCategory(HandCategory handCategory) {
+
+		ArrayList<CardModel> cards = new ArrayList<>(sortedCards);
+
+		if (handCategory.equals(HandCategory.STRAIGHT_ACE_LOW)) {
+			RankAceLowComparator rankAsLowComparator = new RankAceLowComparator();
+			Collections.sort(cards, rankAsLowComparator);
+		}
+
+		ArrayList<StraightModel> listDraw = new ArrayList<>();
+
+		String rankString = CardUtils.toRankString(cards);
 
 		int diffRank = 0;
 
@@ -335,19 +330,25 @@ public class BoardModel extends CardPackModel {
 
 		int i = 0;
 
+		int ordinalRank1 = 0;
+
 		while (i < nbDrawMax) {
 			Rank rank1 = Rank.fromShortName(rankString.charAt(i + 0));
 			Rank rank2 = Rank.fromShortName(rankString.charAt(i + 1));
 			Rank rank3 = Rank.fromShortName(rankString.charAt(i + 2));
 
-			diffRank = (rank3.ordinal() - rank2.ordinal()) + (rank2.ordinal() - rank1.ordinal());
+			if (rank1.equals(Rank.ACE)) {
+				ordinalRank1 = -1;
+			} else {
+				ordinalRank1 = rank1.ordinal();
+			}
 
-			System.out.println("diffRank : " + diffRank);
-			
+			diffRank = (rank3.ordinal() - rank2.ordinal()) + (rank2.ordinal() - ordinalRank1);
+
 			String drawString = rankString.substring(0 + i, 3 + i);
 
-			if (diffRank >= diffRankMin && diffRank <= diffRankMax) {
-				StraightModel straightModel = new StraightModel(handCategory, drawString, permutationHand);
+			if (diffRank >= 2 && diffRank <= 4) {
+				StraightModel straightModel = new StraightModel(handCategory, drawString, null);
 				listDraw.add(straightModel);
 
 				System.out.println(straightModel);
@@ -356,9 +357,6 @@ public class BoardModel extends CardPackModel {
 			i++;
 		}
 
-		// TODO AS LOW sort
-
 		return listDraw;
 	}
-
 }

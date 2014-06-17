@@ -16,24 +16,28 @@ import com.omahaBot.model.draw.FlushModel;
 
 public class CardPackModel {
 
-	protected SortedSet<CardModel> setCards;
+	protected SortedSet<CardModel> sortedCards;
 
 	protected Rank kickerPack1 = Rank.UNKNOWN;
 	protected Rank kickerPack2 = Rank.UNKNOWN;
 
 	public CardPackModel(SortedSet<CardModel> setCards) {
-		this.setCards = setCards;
+		this.sortedCards = setCards;
 	}
 
 	public CardPackModel(String cardPackString) {
 		super();
 
-		setCards = new TreeSet<CardModel>();
+		sortedCards = new TreeSet<CardModel>();
 
 		while (cardPackString.length() > 0) {
-			setCards.add(new CardModel(cardPackString.substring(0, 2)));
+			sortedCards.add(new CardModel(cardPackString.substring(0, 2)));
 			cardPackString = cardPackString.substring(2);
 		}
+	}
+
+	public CardPackModel(ArrayList<CardModel> cards) {
+		sortedCards = new TreeSet<CardModel>(cards);
 	}
 
 	public CardPackModel() {
@@ -47,7 +51,7 @@ public class CardPackModel {
 	public String toRankString() {
 		String handRank = "";
 
-		for (CardModel cardModel : this.setCards) {
+		for (CardModel cardModel : this.sortedCards) {
 			handRank += cardModel.getRank().getShortName();
 		}
 
@@ -60,7 +64,7 @@ public class CardPackModel {
 	 * @return
 	 */
 	public String toSuitString() {
-		ArrayList<CardModel> listCards = new ArrayList<>(setCards);
+		ArrayList<CardModel> listCards = new ArrayList<>(sortedCards);
 		SuitComparator suitComparator = new SuitComparator();
 
 		Collections.sort(listCards, suitComparator);
@@ -75,7 +79,7 @@ public class CardPackModel {
 	}
 
 	public String toStringByRank() {
-		ArrayList<CardModel> listCards = new ArrayList<>(setCards);
+		ArrayList<CardModel> listCards = new ArrayList<>(sortedCards);
 
 		String result = "";
 
@@ -87,7 +91,7 @@ public class CardPackModel {
 	}
 
 	public String toStringBySuit() {
-		ArrayList<CardModel> listCards = new ArrayList<>(setCards);
+		ArrayList<CardModel> listCards = new ArrayList<>(sortedCards);
 		SuitComparator suitComparator = new SuitComparator();
 		Collections.sort(listCards, suitComparator);
 
@@ -101,11 +105,11 @@ public class CardPackModel {
 	}
 
 	public SortedSet<CardModel> getCards() {
-		return setCards;
+		return sortedCards;
 	}
 
 	public void setCards(SortedSet<CardModel> cards) {
-		this.setCards = cards;
+		this.sortedCards = cards;
 	}
 
 	public boolean isOnePair() {
@@ -146,19 +150,21 @@ public class CardPackModel {
 
 	/**
 	 * with ACE HIGH
+	 * 
 	 * @return
 	 */
 	public boolean isStraightHigh() {
-		ArrayList<CardModel> cards = new ArrayList<>(setCards);
+		ArrayList<CardModel> cards = new ArrayList<>(sortedCards);
 		return isNbConnected(cards, 5);
 	}
 
 	/**
 	 * with ACE LOW
+	 * 
 	 * @return
 	 */
 	public boolean isStraightLow() {
-		ArrayList<CardModel> cards = new ArrayList<>(setCards);
+		ArrayList<CardModel> cards = new ArrayList<>(sortedCards);
 		RankAceLowComparator rankAsLowComparator = new RankAceLowComparator();
 		Collections.sort(cards, rankAsLowComparator);
 		return isNbConnected(cards, 5);
@@ -169,7 +175,7 @@ public class CardPackModel {
 	}
 
 	private boolean isNbPair(int nbPairShould) {
-		ArrayList<CardModel> listCards = new ArrayList<>(setCards);
+		ArrayList<CardModel> listCards = new ArrayList<>(sortedCards);
 
 		int nbPair = 0;
 		CardModel cardPrec = null;
@@ -190,7 +196,7 @@ public class CardPackModel {
 	}
 
 	private boolean isNbSuit(int nbSuitSould) {
-		ArrayList<CardModel> listCards = new ArrayList<>(setCards);
+		ArrayList<CardModel> listCards = new ArrayList<>(sortedCards);
 		SuitComparator suitComparator = new SuitComparator();
 		Collections.sort(listCards, suitComparator);
 
@@ -239,7 +245,7 @@ public class CardPackModel {
 	}
 
 	public boolean isNbSameCardRank(int nbSameShould) {
-		ArrayList<CardModel> listCards = new ArrayList<>(setCards);
+		ArrayList<CardModel> listCards = new ArrayList<>(sortedCards);
 
 		if (listCards.size() > nbSameShould - 1) {
 
@@ -267,7 +273,7 @@ public class CardPackModel {
 	}
 
 	public boolean isNbSameCardSuit(int nbSameShould) {
-		ArrayList<CardModel> listCards = new ArrayList<>(setCards);
+		ArrayList<CardModel> listCards = new ArrayList<>(sortedCards);
 		SuitComparator suitComparator = new SuitComparator();
 		Collections.sort(listCards, suitComparator);
 
@@ -326,8 +332,8 @@ public class CardPackModel {
 	}
 
 	protected void initKickers() {
-		if (setCards != null && !setCards.isEmpty()) {
-			ArrayList<CardModel> listCards = new ArrayList<>(setCards);
+		if (sortedCards != null && !sortedCards.isEmpty()) {
+			ArrayList<CardModel> listCards = new ArrayList<>(sortedCards);
 			Collections.reverse(listCards);
 
 			kickerPack1 = listCards.get(0).getRank();
@@ -377,4 +383,11 @@ public class CardPackModel {
 
 		return count;
 	}
+
+	@Override
+	public String toString() {
+		return "CardPackModel [setCards=" + sortedCards + "]";
+	}
+	
+	
 }

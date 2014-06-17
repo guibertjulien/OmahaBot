@@ -1,6 +1,5 @@
 package com.omahaBot.model.draw;
 
-import java.util.Arrays;
 import java.util.SortedSet;
 
 import lombok.Data;

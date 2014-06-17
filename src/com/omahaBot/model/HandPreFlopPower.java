@@ -13,8 +13,8 @@ import lombok.Data;
 
 import com.omahaBot.enums.Rank;
 import com.omahaBot.enums.Suit;
-import com.omahaBot.enums.preFlop.PreFlopStraightLevel;
 import com.omahaBot.enums.preFlop.PreFlopRankLevel;
+import com.omahaBot.enums.preFlop.PreFlopStraightLevel;
 import com.omahaBot.enums.preFlop.PreFlopSuitLevel;
 
 @Data

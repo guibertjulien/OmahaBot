@@ -30,48 +30,35 @@ public class HandModel extends CardPackModel {
 
 	public HandModel() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 
-	public HandModel(SortedSet<CardModel> cards) {
-		super(cards);
-		// TODO Auto-generated constructor stub
+	public HandModel(SortedSet<CardModel> sortedCards) {
+		super(sortedCards);
 	}
 
 	public HandModel(String cardPackString) {
 		super(cardPackString);
-		// TODO Auto-generated constructor stub
 	}
 
 	@Override
 	public String toString() {
-		return "Hand : " + setCards;
+		return "Hand : " + sortedCards;
 	}
 
-	public boolean isTwoPairSuited()
-	{
-		return isTwoPair() && isDoubleSuited();
-	}
-
-	public boolean isTwoPairConnected()
-	{
-		// TODO
-		return false;
-	}
-
-	public boolean isTwoPairSuitedConnector()
-	{
-		// TODO
-		return false;
-	}
-
+	/**
+	 * 
+	 * @return
+	 */
 	public List<List<CardModel>> permutations() {
-		ArrayList<CardModel> listCards = new ArrayList<>(setCards);
+		ArrayList<CardModel> cards = new ArrayList<>(sortedCards);
 		PermutationsOfN<CardModel> permutationsOrdered = new PermutationsOfN<CardModel>();
-
-		return permutationsOrdered.processSubsets(listCards, 2);
+		return permutationsOrdered.processSubsets(cards, 2);
 	}
 
+	/**
+	 * 
+	 * @return
+	 */
 	public boolean hasFlushDraw() {
 		String whithoutRank = this.toStringBySuit().replaceAll("[^shdc]", "");
 		return !Suit.ALL_SUIT.equals(whithoutRank);
@@ -137,9 +124,9 @@ public class HandModel extends CardPackModel {
 				.findFirst();
 
 		handDrawsSorted.removeIf(filter_rankDraws);
-		
+
 		if (bestRankDraw.isPresent()) {
-			handDrawsSorted.add(bestRankDraw.get());			
+			handDrawsSorted.add(bestRankDraw.get());
 		}
 	}
 
@@ -149,8 +136,7 @@ public class HandModel extends CardPackModel {
 	 */
 	private void cleanStraightDraws(SortedSet<DrawModel> handDrawsSorted) {
 
-		Predicate<? super DrawModel> filter_rankDraws = (d -> d.getHandCategory().equals(HandCategory.STRAIGHT_DRAW)
-				|| d.getHandCategory().equals(HandCategory.STRAIGHT_ACE_LOW)
+		Predicate<? super DrawModel> filter_rankDraws = (d -> d.getHandCategory().equals(HandCategory.STRAIGHT_ACE_LOW)
 				|| d.getHandCategory().equals(HandCategory.STRAIGHT));
 
 		Optional<DrawModel> bestRankDraw = handDrawsSorted
@@ -159,14 +145,15 @@ public class HandModel extends CardPackModel {
 				.findFirst();
 
 		handDrawsSorted.removeIf(filter_rankDraws);
-		
+
 		if (bestRankDraw.isPresent()) {
 			handDrawsSorted.add(bestRankDraw.get());
 		}
 	}
-	
+
 	/**
 	 * for dealStep = FLOP or TURN
+	 * 
 	 * @param boardModel
 	 * @return
 	 */
@@ -179,30 +166,29 @@ public class HandModel extends CardPackModel {
 		for (List<CardModel> permutationBoard : boardModel.permutations(2)) {
 
 			SortedSet<CardModel> combinaisonCards = new TreeSet<CardModel>(permutationBoard);
-			combinaisonCards.addAll(setCards);
+			combinaisonCards.addAll(sortedCards);
 
 			StraightDrawService straightDrawService = new StraightDrawService(combinaisonCards, boardModel);
-			
+
 			straightDrawType = straightDrawService.straightDrawType();
 
-			/* START gestion du ACE LOW */
+			// ACE LOW
 			CardPackModel cardPackModel = new CardPackModel(combinaisonCards);
-			
+
 			if (cardPackModel.hasRankCard(Rank.ACE)) {
 				ArrayList<CardModel> combinaisonCardsByAceLow = new ArrayList<>(cardPackModel.getCards());
 				RankAceLowComparator rankAceLowComparator = new RankAceLowComparator();
 				Collections.sort(combinaisonCardsByAceLow, rankAceLowComparator);
 
-				StraightDrawService straightDrawServiceLow = new StraightDrawService(combinaisonCardsByAceLow, boardModel);
+				StraightDrawService straightDrawServiceLow = new StraightDrawService(combinaisonCardsByAceLow,
+						boardModel);
 				StraightDrawType straightDrawTypeLow = straightDrawServiceLow.straightDrawType();
-				
+
 				if (straightDrawTypeLow.ordinal() > straightDrawType.ordinal()) {
 					straightDrawType = straightDrawTypeLow;
 				}
 			}
-			/* END gestion du ACE LOW */
-			
-			
+
 			if (straightDrawType.ordinal() > straightDrawTypeMax.ordinal()) {
 				straightDrawTypeMax = straightDrawType;
 			}

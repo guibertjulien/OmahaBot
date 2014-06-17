@@ -3,9 +3,9 @@ package com.omahaBot.model;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import com.omahaBot.enums.HandCategory;
-
 import lombok.Data;
+
+import com.omahaBot.enums.HandCategory;
 
 @Data
 public class CoupleCards {
@@ -57,6 +57,7 @@ public class CoupleCards {
 		case FOUR_OF_A_KIND:
 		case FULL_HOUSE:
 		case STRAIGHT:
+		case STRAIGHT_ACE_LOW:
 		case THREE_OF_A_KIND:
 		case TWO_PAIR:
 			display = card1.getRank().getShortName().concat(card2.getRank().getShortName());

@@ -1,10 +1,10 @@
 package com.omahaBot.utils;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.SortedSet;
 
 import com.omahaBot.model.CardModel;
-import com.omahaBot.model.HandModel;
 
 public class CardUtils {
 
@@ -63,4 +63,19 @@ public class CardUtils {
 //		
 //		return nuts;
 //	}
+	
+	/**
+	 * ex : 2sJdKcAc --> 2JKA
+	 * 
+	 * @return
+	 */
+	public static String toRankString(ArrayList<CardModel> cards) {
+		String handRank = "";
+
+		for (CardModel cardModel : cards) {
+			handRank += cardModel.getRank().getShortName();
+		}
+
+		return handRank;
+	}
 }
