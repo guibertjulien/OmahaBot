@@ -105,7 +105,7 @@ public class HandModelTest {
 		HandModel handModel;
 		BoardModel boardModel;
 		StraightDrawType straightDrawType;
-		
+						
 		// test if Gut-Shot
 		handModel = new HandModel("AsJs9s2s");
 		boardModel = new BoardModel("4s5s8s", DealStep.FLOP);

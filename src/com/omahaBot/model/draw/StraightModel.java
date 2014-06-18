@@ -65,8 +65,6 @@ public @Data class StraightModel extends DrawModel {
 	private void initialize(String drawString) {
 		assertTrue("drawString != 3", drawString.length() == 3);
 
-		System.out.println("drawString : " + drawString);
-
 		Rank rankA = Rank.fromShortName(drawString.charAt(0));
 		Rank rankB = Rank.fromShortName(drawString.charAt(1));
 		Rank rankC = Rank.fromShortName(drawString.charAt(2));

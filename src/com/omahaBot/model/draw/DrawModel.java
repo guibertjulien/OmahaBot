@@ -28,11 +28,8 @@ public @Data abstract class DrawModel implements Comparable<DrawModel>, DrawAnal
 	public String displayNutsOrHoleCards() {
 		if (nutsOrHoleCards == null) {
 			return "";
-		} else if (permutationHand != null) {
-			return nutsOrHoleCards.displayHoleCards();
-		} else {
-			return nutsOrHoleCards.displayNuts(handCategory);
 		}
+		return nutsOrHoleCards.toString();
 	}
 
 	public void initHoleCards(SortedSet<CardModel> permutationHand) {

@@ -54,6 +54,8 @@ public class StraightDrawService {
 		
 		StraightDrawType straightDrawType = StraightDrawType.NO_DRAW;
 		
+		// 2s, 3d, 4c, 5d, 6h
+		
 		if (isValidConnectors()) {
 			if (is20CardWrap()) {
 				return StraightDrawType.CARD20_WRAP;

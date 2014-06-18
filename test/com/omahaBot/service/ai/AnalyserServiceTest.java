@@ -128,7 +128,7 @@ public class AnalyserServiceTest {
 		DealStep dealStep;
 		
 		dealStep = DealStep.FLOP;
-		handModel = new HandModel("Tc9d6c5d");
+		handModel = new HandModel("Tc3d4c5d");
 		boardModel = new BoardModel("6h5h2s", dealStep);
 
 		System.out.println(handModel);

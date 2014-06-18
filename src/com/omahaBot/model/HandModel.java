@@ -164,10 +164,10 @@ public class HandModel extends CardPackModel {
 
 		// permutations de 2 cartes du board + hand => 6 cartes
 		for (List<CardModel> permutationBoard : boardModel.permutations(2)) {
-
+			
 			SortedSet<CardModel> combinaisonCards = new TreeSet<CardModel>(permutationBoard);
 			combinaisonCards.addAll(sortedCards);
-
+			
 			StraightDrawService straightDrawService = new StraightDrawService(combinaisonCards, boardModel);
 
 			straightDrawType = straightDrawService.straightDrawType();
@@ -195,5 +195,23 @@ public class HandModel extends CardPackModel {
 		}
 
 		return straightDrawTypeMax;
+	}
+	
+	/**
+	 * 
+	 * @param handDrawsSorted
+	 * @return
+	 */
+	public boolean isStraight(SortedSet<DrawModel> handDrawsSorted) {
+
+		Predicate<? super DrawModel> filter_rankDraws = (d -> d.getHandCategory().equals(HandCategory.STRAIGHT_ACE_LOW)
+				|| d.getHandCategory().equals(HandCategory.STRAIGHT));
+
+		Optional<DrawModel> bestRankDraw = handDrawsSorted
+				.stream()
+				.filter(filter_rankDraws)
+				.findFirst();
+		
+		return bestRankDraw.isPresent();
 	}
 }

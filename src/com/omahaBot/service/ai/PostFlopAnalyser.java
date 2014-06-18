@@ -84,11 +84,12 @@ public class PostFlopAnalyser {
 			}
 		}
 
-		// TODO test si STRAIGHT
-
-		// STRAIGHT DRAWS
-		StraightDrawType straightDrawType = handModel.searchStraightDrawType(boardModel);
-		System.out.println("\n=> STRAIGHT HAND DRAWS : " + straightDrawType);
+		// analyse de STRAIGHT DRAWS TYPE si pas de STRAIGHT
+		if (!handModel.isStraight(handDrawsSorted)) {
+			// STRAIGHT DRAWS TYPE
+			StraightDrawType straightDrawType = handModel.searchStraightDrawType(boardModel);
+			System.out.println("\n=> STRAIGHT HAND DRAWS : " + straightDrawType);			
+		}
 
 		System.out.println("\n=> HAND DRAWS : ");
 		for (DrawModel drawModel : handDrawsSorted) {

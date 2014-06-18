@@ -350,8 +350,6 @@ public class BoardModel extends CardPackModel {
 			if (diffRank >= 2 && diffRank <= 4) {
 				StraightModel straightModel = new StraightModel(handCategory, drawString, null);
 				listDraw.add(straightModel);
-
-				System.out.println(straightModel);
 			}
 
 			i++;

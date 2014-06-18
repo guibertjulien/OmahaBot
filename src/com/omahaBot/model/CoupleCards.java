@@ -37,40 +37,40 @@ public class CoupleCards {
 
 	@Override
 	public String toString() {
-		return String.join(card1.toString(), card2.toString());
+		return String.join(", ", card1.toString(), card2.toString());
 	}
 
 	public boolean isEqualsKicker(CoupleCards other) {
 		return (this.sortedCards.last().getRank().equals(other.sortedCards.last().getRank()));
 	}
 	
-	public String displayNuts(HandCategory handCategory) {
-		
-		String display = "";
-		
-		switch (handCategory) {
-		case STRAIGHT_FLUSH:
-		case FLUSH:
-		case FLUSH_DRAW:
-			display = this.toString();
-			break;
-		case FOUR_OF_A_KIND:
-		case FULL_HOUSE:
-		case STRAIGHT:
-		case STRAIGHT_ACE_LOW:
-		case THREE_OF_A_KIND:
-		case TWO_PAIR:
-			display = card1.getRank().getShortName().concat(card2.getRank().getShortName());
-			break;
-
-		default:
-			break;
-		}
-		
-		return display;
-	}
-	
-	public String displayHoleCards() {
-		return this.toString();
-	}
+//	public String displayNuts(HandCategory handCategory) {
+//		
+//		String display = "";
+//		
+//		switch (handCategory) {
+//		case STRAIGHT_FLUSH:
+//		case FLUSH:
+//		case FLUSH_DRAW:
+//			display = this.toString();
+//			break;
+//		case FOUR_OF_A_KIND:
+//		case FULL_HOUSE:
+//		case STRAIGHT:
+//		case STRAIGHT_ACE_LOW:
+//		case THREE_OF_A_KIND:
+//		case TWO_PAIR:
+//			display = card1.getRank().getShortName().concat(card2.getRank().getShortName());
+//			break;
+//
+//		default:
+//			break;
+//		}
+//		
+//		return display;
+//	}
+//	
+//	public String displayHoleCards() {
+//		return this.toString();
+//	}
 }
