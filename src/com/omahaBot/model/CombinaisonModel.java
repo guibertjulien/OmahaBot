@@ -9,6 +9,7 @@ import java.util.regex.Pattern;
 
 import lombok.Data;
 
+import com.omahaBot.enums.BoardCategory;
 import com.omahaBot.enums.HandCategory;
 import com.omahaBot.enums.Rank;
 import com.omahaBot.model.draw.DrawModel;
@@ -87,7 +88,7 @@ public class CombinaisonModel extends CardPackModel implements Comparable<Combin
 
 	public DrawModel searchBestRankDraw() {
 
-		HandCategory boardCategory = HandCategory.UNKNOWN;
+		BoardCategory boardCategory = BoardCategory.UNKNOWN;
 		DrawModel drawModel = null;
 
 		String whithoutSuit = this.toStringByRank().replaceAll("[shdc]", ".");
@@ -108,10 +109,10 @@ public class CombinaisonModel extends CardPackModel implements Comparable<Combin
 			if (group1.length() == 8) {
 
 				if (CardUtils.coupleIsPair(permutationHand)) {
-					boardCategory = HandCategory.ONE_PAIR;
+					boardCategory = BoardCategory.ONE_PAIR;
 				}
 				else {
-					boardCategory = HandCategory.THREE_OF_A_KIND;
+					boardCategory = BoardCategory.THREE_OF_A_KIND;
 				}
 
 				drawModel = new QuadsModel(rank1, boardCategory, permutationHand);

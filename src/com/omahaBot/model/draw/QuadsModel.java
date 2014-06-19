@@ -1,9 +1,12 @@
 package com.omahaBot.model.draw;
 
+import java.util.Arrays;
 import java.util.SortedSet;
+import java.util.TreeSet;
 
 import lombok.Data;
 
+import com.omahaBot.enums.BoardCategory;
 import com.omahaBot.enums.HandCategory;
 import com.omahaBot.enums.Rank;
 import com.omahaBot.enums.Suit;
@@ -14,7 +17,7 @@ public @Data class QuadsModel extends DrawModel {
 
 	private final Rank rank;
 
-	public QuadsModel(Rank rank, HandCategory boardCategory, SortedSet<CardModel> permutationHand) {
+	public QuadsModel(Rank rank, BoardCategory boardCategory, SortedSet<CardModel> permutationHand) {
 		super(HandCategory.FOUR_OF_A_KIND, permutationHand);
 		this.rank = rank;
 
@@ -31,12 +34,13 @@ public @Data class QuadsModel extends DrawModel {
 
 		display += handCategory + " " + rank + "; ";
 		display += (permutationHand != null) ? "holeCards" : "nuts";
-		display += "=[" + displayNutsOrHoleCards() + "]";
+		display += "=[" + displayNutsOrHoleCards() + "]; ";
+		display += "boardCategory : " + boardCategory;
 
 		return display;
 	}
 
-	private void initialize(HandCategory boardCategory) {
+	private void initialize(BoardCategory boardCategory) {
 		CardModel card1 = null;
 		CardModel card2 = null;
 
@@ -55,7 +59,7 @@ public @Data class QuadsModel extends DrawModel {
 		}
 
 		if (card1 != null && card2 != null) {
-			nutsOrHoleCards = new CoupleCards(card1, card2);
+			nutsOrHoleCards =  new CoupleCards(new TreeSet<CardModel>(Arrays.asList(card1, card2)));
 		}
 	}
 

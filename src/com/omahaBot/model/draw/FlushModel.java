@@ -40,7 +40,8 @@ class FlushModel extends DrawModel {
 
 		display += handCategory + " of " + suit + " with kicker " + kicker + "; ";
 		display += (permutationHand != null) ? "holeCards" : "nuts";
-		display += "=[" + displayNutsOrHoleCards() + "]";
+		display += "=[" + displayNutsOrHoleCards() + "]; ";
+		display += "boardCategory : " + boardCategory;
 
 		return display;
 	}

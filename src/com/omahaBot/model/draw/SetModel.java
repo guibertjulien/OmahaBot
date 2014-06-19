@@ -1,6 +1,8 @@
 package com.omahaBot.model.draw;
 
+import java.util.Arrays;
 import java.util.SortedSet;
+import java.util.TreeSet;
 
 import lombok.Data;
 
@@ -32,8 +34,9 @@ class SetModel extends DrawModel {
 
 		display += handCategory + " " + rank + "; ";
 		display += (permutationHand != null) ? "holeCards" : "nuts";
-		display += "=[" + displayNutsOrHoleCards() + "]";
-
+		display += "=[" + displayNutsOrHoleCards() + "]; ";
+		display += "boardCategory : " + boardCategory;
+		
 		return display;
 	}
 
@@ -41,7 +44,7 @@ class SetModel extends DrawModel {
 		CardModel card1 = new CardModel(rank, Suit.SPADE);
 		CardModel card2 = new CardModel(rank, Suit.HEART);
 
-		nutsOrHoleCards = new CoupleCards(card1, card2);
+		nutsOrHoleCards =  new CoupleCards(new TreeSet<CardModel>(Arrays.asList(card1, card2)));
 	}
 
 	@Override

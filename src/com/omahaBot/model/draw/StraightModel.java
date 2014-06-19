@@ -4,7 +4,9 @@ import static com.omahaBot.enums.Rank.ACE;
 import static com.omahaBot.enums.Rank.UNKNOWN;
 import static junit.framework.Assert.assertTrue;
 
+import java.util.Arrays;
 import java.util.SortedSet;
+import java.util.TreeSet;
 
 import lombok.Data;
 
@@ -112,7 +114,7 @@ public @Data class StraightModel extends DrawModel {
 				rankHole1 = Rank.values()[kicker.ordinal() - 4];
 				rankHole2 = Rank.values()[kicker.ordinal() - 1];
 				break;
-			default :
+			default:
 				if (rankB.diff(rankC) == 2) {// AB_C_
 					kicker = Rank.values()[rankC.ordinal() + 1];
 					rankHole1 = Rank.values()[kicker.ordinal() - 3];
@@ -133,12 +135,12 @@ public @Data class StraightModel extends DrawModel {
 				if (rankA.equals(Rank.ACE)) {// A__BC
 					kicker = rankC;
 					rankHole1 = Rank.values()[kicker.ordinal() - 3];
-					rankHole2 = Rank.values()[kicker.ordinal() - 2];					
+					rankHole2 = Rank.values()[kicker.ordinal() - 2];
 				}
 				else {// _A_BC
 					kicker = rankC;
 					rankHole1 = ACE;
-					rankHole2 = Rank.values()[kicker.ordinal() - 2];					
+					rankHole2 = Rank.values()[kicker.ordinal() - 2];
 				}
 				break;
 			case ACE:// _A_BC
@@ -160,22 +162,25 @@ public @Data class StraightModel extends DrawModel {
 				break;
 			}
 		}
-		else if (rankA.diff(rankB) == 2 && rankB.diff(rankC) == 2) {//A_B_C
+		else if (rankA.diff(rankB) == 2 && rankB.diff(rankC) == 2) {// A_B_C
 			if (rankA.equals(Rank.ACE)) {// ACE_LOW
 				kicker = rankC;
 				rankHole1 = Rank.values()[kicker.ordinal() - 3];
-				rankHole2 = Rank.values()[kicker.ordinal() - 1];					
+				rankHole2 = Rank.values()[kicker.ordinal() - 1];
 			} else {
 				kicker = rankC;
 				rankHole1 = Rank.values()[kicker.ordinal() - 3];
-				rankHole2 = Rank.values()[kicker.ordinal() - 1];				
+				rankHole2 = Rank.values()[kicker.ordinal() - 1];
 			}
 		}
 		else {
 			System.err.println("???");
 		}
 
-		nutsOrHoleCards = new CoupleCards(new CardModel(rankHole1), new CardModel(rankHole2));
+		CardModel card1 = new CardModel(rankHole1);
+		CardModel card2 = new CardModel(rankHole2);
+
+		nutsOrHoleCards = new CoupleCards(new TreeSet<CardModel>(Arrays.asList(card1, card2)));
 	}
 
 	@Override

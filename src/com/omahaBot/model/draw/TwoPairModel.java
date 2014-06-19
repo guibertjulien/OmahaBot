@@ -1,6 +1,8 @@
 package com.omahaBot.model.draw;
 
+import java.util.Arrays;
 import java.util.SortedSet;
+import java.util.TreeSet;
 
 import lombok.Data;
 
@@ -43,7 +45,7 @@ public @Data class TwoPairModel extends DrawModel {
 		CardModel card1 = new CardModel(rankPair1, Suit.SPADE);
 		CardModel card2 = new CardModel(rankPair2, Suit.HEART);
 
-		nutsOrHoleCards = new CoupleCards(card1, card2);
+		nutsOrHoleCards = new CoupleCards(new TreeSet<CardModel>(Arrays.asList(card1, card2)));
 	}
 
 	@Override

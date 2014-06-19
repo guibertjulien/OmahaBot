@@ -1,9 +1,12 @@
 package com.omahaBot.model.draw;
 
+import java.util.Arrays;
 import java.util.SortedSet;
+import java.util.TreeSet;
 
 import lombok.Data;
 
+import com.omahaBot.enums.BoardCategory;
 import com.omahaBot.enums.HandCategory;
 import com.omahaBot.enums.Rank;
 import com.omahaBot.enums.Suit;
@@ -20,14 +23,16 @@ public @Data class FullModel extends DrawModel {
 	private Rank rankThree;
 	private Rank rankPair;
 
-	public FullModel(Rank rankThree, Rank rankPair, HandCategory boardCategory, Rank rankGroup, Rank kickerPack1,
+	public FullModel(Rank rankThree, Rank rankPair, BoardCategory boardCategory, Rank rankGroup, Rank kickerPack1,
 			Rank kickerPack2, SortedSet<CardModel> permutationHand) {
 		super(HandCategory.FULL_HOUSE, permutationHand);
 		this.rankThree = rankThree;
 		this.rankPair = rankPair;
 
+		this.boardCategory = boardCategory;
+		
 		initialize(boardCategory, rankGroup, kickerPack1, kickerPack2);
-
+		
 		if (permutationHand != null) {
 			initHoleCards(permutationHand);
 		}
@@ -39,12 +44,13 @@ public @Data class FullModel extends DrawModel {
 
 		display += handCategory + " " + rankThree + " full of " + rankPair + "; ";
 		display += (permutationHand != null) ? "holeCards" : "nuts";
-		display += "=[" + displayNutsOrHoleCards() + "]";
-
+		display += "=[" + displayNutsOrHoleCards() + "]; ";
+		display += "boardCategory : " + boardCategory;
+		
 		return display;
 	}
 
-	private void initialize(HandCategory boardCategory, Rank rankGroup, Rank kickerPack1, Rank kickerPack2) {
+	private void initialize(BoardCategory boardCategory, Rank rankGroup, Rank kickerPack1, Rank kickerPack2) {
 		CardModel card1 = null;
 		CardModel card2 = null;
 
@@ -134,7 +140,7 @@ public @Data class FullModel extends DrawModel {
 		}
 
 		if (card1 != null && card2 != null) {
-			nutsOrHoleCards = new CoupleCards(card1, card2);
+			nutsOrHoleCards = new CoupleCards(new TreeSet<CardModel>(Arrays.asList(card1, card2)));
 		}
 	}
 

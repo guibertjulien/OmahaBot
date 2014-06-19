@@ -4,6 +4,7 @@ import java.util.SortedSet;
 
 import lombok.Data;
 
+import com.omahaBot.enums.BoardCategory;
 import com.omahaBot.enums.HandCategory;
 import com.omahaBot.model.CardModel;
 import com.omahaBot.model.CoupleCards;
@@ -17,7 +18,7 @@ public @Data abstract class DrawModel implements Comparable<DrawModel>, DrawAnal
 	protected final SortedSet<CardModel> permutationHand;
 
 	// TODO à revoir
-	public HandCategory boardCategory;
+	public BoardCategory boardCategory;
 
 	public DrawModel(HandCategory handCategory, SortedSet<CardModel> permutationHand) {
 		super();
