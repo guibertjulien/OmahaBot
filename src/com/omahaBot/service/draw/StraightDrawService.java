@@ -2,6 +2,7 @@ package com.omahaBot.service.draw;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 import java.util.SortedSet;
 
@@ -9,6 +10,7 @@ import com.omahaBot.enums.Rank;
 import com.omahaBot.enums.StraightDrawType;
 import com.omahaBot.model.BoardModel;
 import com.omahaBot.model.CardModel;
+import com.omahaBot.utils.PermutationsOfN;
 
 public class StraightDrawService {
 
@@ -53,8 +55,6 @@ public class StraightDrawService {
 	public StraightDrawType straightDrawType() {
 		
 		StraightDrawType straightDrawType = StraightDrawType.NO_DRAW;
-		
-		// 2s, 3d, 4c, 5d, 6h
 		
 		if (isValidConnectors()) {
 			if (is20CardWrap()) {
@@ -111,14 +111,14 @@ public class StraightDrawService {
 			return false;
 		}
 
-		// case 1
-		if (boardModel.getCards().containsAll(connectors.subList(0, 2))) {
-			return true;
-		}
-
-		// case 1
-		if (boardModel.getCards().containsAll(connectors.subList(2, 4))) {
-			return true;
+		ArrayList<CardModel> cards = new ArrayList<>(connectors);
+		PermutationsOfN<CardModel> permutationsOrdered = new PermutationsOfN<CardModel>();
+		List<List<CardModel>> permutations = permutationsOrdered.processSubsets(cards, 2);
+		
+		for (List<CardModel> list : permutations) {
+			if (boardModel.getCards().containsAll(list)) {
+				return true;
+			}
 		}
 
 		return false;
@@ -232,15 +232,17 @@ public class StraightDrawService {
 		
 		for (CardModel cardModel : combinaisonCards) {
 			if (i < combinaisonCards.size() - 1) {
-				cardModelNext = combinaisonCards.get(i+1);
-				
-				if (cardModel.isConnected(cardModelNext)) {
+				cardModelNext = combinaisonCards.get(i + 1);
+
+				if (cardModel.ordinal() == cardModelNext.ordinal()) {
+					i++;
+					continue;// itération suivante
+				} else if (cardModel.isConnected(cardModelNext)) {
 					if (connectors.isEmpty()) {
 						connectors.add(cardModel);
 					}
 					connectors.add(cardModelNext);
-				}
-				else {
+				} else {
 					if (connectors.size() < 4) {
 						connectors.clear();
 					}

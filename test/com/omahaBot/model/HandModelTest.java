@@ -352,20 +352,27 @@ public class HandModelTest {
 		System.out.println(straightDrawType);
 		assertTrue(straightDrawType.equals(StraightDrawType.GUT_SHOT));
 
-		// test if Open-Ended
+		// test if Open-Ended [45][67]
 		handModel = new HandModel("QsQh5d4c");
 		boardModel = new BoardModel("Ks6s7s", DealStep.FLOP);
 		straightDrawType = handModel.searchStraightDrawType(boardModel);
 		System.out.println(straightDrawType);
 		assertTrue(straightDrawType.equals(StraightDrawType.OPEN_ENDED));
 
-		// test if Open-Ended
+		// test if Open-Ended : [57][46]
+		handModel = new HandModel("5s7s5h7d");
+		boardModel = new BoardModel("4sJs6d", DealStep.FLOP);
+		straightDrawType = handModel.searchStraightDrawType(boardModel);
+		System.out.println(straightDrawType);
+		assertTrue(straightDrawType.equals(StraightDrawType.OPEN_ENDED));
+		
+		// test if Inside Broadway
 		handModel = new HandModel("KsJsTs5s");
 		boardModel = new BoardModel("AsQs7s", DealStep.FLOP);
 		straightDrawType = handModel.searchStraightDrawType(boardModel);
 		System.out.println(straightDrawType);
 		assertTrue(straightDrawType.equals(StraightDrawType.INSIDE_BROADWAY));
-
+		
 		// test if 12 outs Straight Draw
 		handModel = new HandModel("QsJs9s7s");
 		boardModel = new BoardModel("Ts8s2s", DealStep.FLOP);
@@ -393,6 +400,8 @@ public class HandModelTest {
 		straightDrawType = handModel.searchStraightDrawType(boardModel);
 		System.out.println(straightDrawType);
 		assertTrue(straightDrawType.equals(StraightDrawType.CARD20_WRAP));
+		
+
 	}
 
 	@Test
