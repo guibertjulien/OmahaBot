@@ -12,6 +12,7 @@ import lombok.Data;
 
 import com.omahaBot.enums.HandCategory;
 import com.omahaBot.enums.Rank;
+import com.omahaBot.exception.StraightInitializeException;
 import com.omahaBot.model.CardModel;
 import com.omahaBot.model.CoupleCards;
 
@@ -60,8 +61,9 @@ public @Data class StraightModel extends DrawModel {
 	 * 
 	 * @param handCategory
 	 * @param drawString
+	 * @throws StraightInitializeException 
 	 */
-	public StraightModel(HandCategory handCategory, String drawString) {
+	public StraightModel(HandCategory handCategory, String drawString) throws StraightInitializeException {
 		super(handCategory);
 
 		this.drawString = drawString;
@@ -75,7 +77,7 @@ public @Data class StraightModel extends DrawModel {
 		return this.display(rank + "-high " + handCategory + " [" + drawString + "]; ");
 	}
 
-	private void initRankAndNuts(String drawString) {
+	private void initRankAndNuts(String drawString) throws StraightInitializeException {
 		assertTrue("drawString != 3", drawString.length() == 3);
 
 		Rank rankA = Rank.fromShortName(drawString.charAt(0));
@@ -185,7 +187,7 @@ public @Data class StraightModel extends DrawModel {
 			}
 		}
 		else {
-			System.err.println("???");
+			throw new StraightInitializeException(this.toString());
 		}
 
 		CardModel card1 = new CardModel(rankHole1);

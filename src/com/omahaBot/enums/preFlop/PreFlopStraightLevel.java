@@ -21,7 +21,7 @@ public enum PreFlopStraightLevel {
 	CONNECTOR3_OUTSIDE(PreFlopPowerPoint.MEDIUM, "234", "345", "456", "567", "678",
 			"789", "89T", "9TJ", "TJQ", "JQK"),
 	// par un seul bout
-	CONNECTOR3_INSIDE(PreFlopPowerPoint.LOW, "AKQ", "23.A"),
+	CONNECTOR3_INSIDE(PreFlopPowerPoint.LOW, "QKA", "23.A"),
 
 	// TWO CONNECTOR OR NO_CONNECTOR
 	NO_CONNECTOR(PreFlopPowerPoint.MIN);

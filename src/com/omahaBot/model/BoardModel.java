@@ -16,6 +16,7 @@ import com.omahaBot.enums.BoardCategory;
 import com.omahaBot.enums.DealStep;
 import com.omahaBot.enums.HandCategory;
 import com.omahaBot.enums.Rank;
+import com.omahaBot.exception.StraightInitializeException;
 import com.omahaBot.model.comparator.RankAceLowComparator;
 import com.omahaBot.model.draw.DrawModel;
 import com.omahaBot.model.draw.FullModel;
@@ -285,8 +286,9 @@ public class BoardModel extends CardPackModel {
 	/**
 	 * 
 	 * @return
+	 * @throws StraightInitializeException 
 	 */
-	public ArrayList<StraightModel> searchStraightDraw() {
+	public ArrayList<StraightModel> searchStraightDraw() throws StraightInitializeException {
 
 		ArrayList<StraightModel> listDraw = new ArrayList<>();
 
@@ -306,8 +308,9 @@ public class BoardModel extends CardPackModel {
 	 * @param handCategory
 	 *            : STRAIGHT ou STRAIGHT_ACE_LOW
 	 * @return
+	 * @throws StraightInitializeException 
 	 */
-	private ArrayList<StraightModel> searchStraightDrawByHandCategory(HandCategory handCategory) {
+	private ArrayList<StraightModel> searchStraightDrawByHandCategory(HandCategory handCategory) throws StraightInitializeException {
 
 		Assert.assertTrue(handCategory.equals(HandCategory.STRAIGHT)
 				|| handCategory.equals(HandCategory.STRAIGHT_ACE_LOW));
@@ -336,6 +339,11 @@ public class BoardModel extends CardPackModel {
 			Rank rank2 = Rank.fromShortName(rankString.charAt(i + 1));
 			Rank rank3 = Rank.fromShortName(rankString.charAt(i + 2));
 
+			if (rank1.equals(rank2) || rank2.equals(rank3)) {
+				i++;
+				continue;
+			}
+			
 			if (rank1.equals(Rank.ACE)) {
 				ordinalRank1 = -1;
 			} else {
@@ -345,7 +353,7 @@ public class BoardModel extends CardPackModel {
 			diffRank = (rank3.ordinal() - rank2.ordinal()) + (rank2.ordinal() - ordinalRank1);
 
 			String drawString = rankString.substring(0 + i, 3 + i);
-
+			
 			if (diffRank >= 2 && diffRank <= 4) {
 				StraightModel straightModel = new StraightModel(handCategory, drawString);
 				listDraw.add(straightModel);
@@ -365,8 +373,9 @@ public class BoardModel extends CardPackModel {
 	 * 
 	 * @param handModel
 	 * @return
+	 * @throws StraightInitializeException 
 	 */
-	public TreeSet<DrawModel> initDraws(HandModel handModel) {
+	public TreeSet<DrawModel> initDraws(HandModel handModel) throws StraightInitializeException {
 
 		ArrayList<DrawModel> draws = new ArrayList<DrawModel>();
 		Set<DrawModel> drawsSet;

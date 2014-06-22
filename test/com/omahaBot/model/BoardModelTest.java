@@ -15,6 +15,7 @@ import com.omahaBot.enums.HandCategory;
 import com.omahaBot.enums.Rank;
 import com.omahaBot.enums.Suit;
 import com.omahaBot.exception.CardPackNonValidException;
+import com.omahaBot.exception.StraightInitializeException;
 import com.omahaBot.model.draw.DrawModel;
 import com.omahaBot.model.draw.FlushModel;
 import com.omahaBot.model.draw.FullModel;
@@ -493,10 +494,16 @@ public class BoardModelTest {
 	}
 
 	@Test
-	public final void testSearchStraightDraw() {
+	public final void testSearchStraightDraw() throws StraightInitializeException {
 		BoardModel boardModel;
 		ArrayList<DrawModel> listDraw = new ArrayList<>();
 
+		// same rank cards in draw
+		listDraw.clear();
+		boardModel = new BoardModel("JsJd4s7s", DealStep.TURN);
+		listDraw.addAll(boardModel.searchStraightDraw());
+		assertTrue(listDraw.isEmpty());
+		
 		listDraw.clear();
 		boardModel = new BoardModel("7s4sKs", DealStep.FLOP);
 		listDraw.addAll(boardModel.searchStraightDraw());
@@ -615,7 +622,7 @@ public class BoardModelTest {
 	}
 
 	@Test
-	public final void testInitDraws() throws CardPackNonValidException {
+	public final void testInitDraws() throws CardPackNonValidException, StraightInitializeException {
 		BoardModel boardModel;
 		HandModel handModel;// just for dead cards
 		ArrayList<DrawModel> listDraw = new ArrayList<>();

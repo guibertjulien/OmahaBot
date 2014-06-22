@@ -19,6 +19,7 @@ import com.omahaBot.enums.DealStep;
 import com.omahaBot.enums.HandCategory;
 import com.omahaBot.enums.Rank;
 import com.omahaBot.enums.StraightDrawType;
+import com.omahaBot.enums.preFlop.PreFlopStraightLevel;
 import com.omahaBot.exception.CardPackNonValidException;
 import com.omahaBot.model.draw.DrawModel;
 import com.omahaBot.model.draw.FullModel;
@@ -462,5 +463,15 @@ public class HandModelTest {
 		assertTrue(!handPreFlopPower.isBestHand());
 		assertTrue(!handPreFlopPower.isDoubledSuited());
 		System.out.println(handPreFlopPower.toString());
+	}
+	
+	@Test
+	public void testBug1() throws CardPackNonValidException {
+		// - Ma main est une poubelle !	[hand=[Td, Qh, Ks, Ac] : 
+		// => CONNECTOR3_INSIDE(PreFlopPowerPoint.LOW, "AKQ", "23.A"),
+		
+		HandModel handModel = new HandModel("TsKcAcQd");
+		PreFlopStraightLevel preFlopStraightLevel = PreFlopStraightLevel.fromTypeAndHand(handModel.toRankString());
+		assertTrue(preFlopStraightLevel.equals(PreFlopStraightLevel.CONNECTOR3_INSIDE));
 	}
 }

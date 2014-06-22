@@ -11,6 +11,7 @@ import com.omahaBot.enums.BettingDecision;
 import com.omahaBot.enums.DealStep;
 import com.omahaBot.enums.HandCategory;
 import com.omahaBot.enums.StraightDrawType;
+import com.omahaBot.exception.StraightInitializeException;
 import com.omahaBot.model.BoardModel;
 import com.omahaBot.model.draw.DrawModel;
 import com.omahaBot.model.hand.HandModel;
@@ -59,7 +60,13 @@ public class PostFlopAnalyser {
 
 	public void analyseHand(HandModel handModel, BoardModel boardModel) {
 		handDrawsSorted = handModel.initCombinaisonDraws(boardModel);
-		boardDrawsSorted = boardModel.initDraws(handModel);
+		
+		try {
+			boardDrawsSorted = boardModel.initDraws(handModel);
+		} catch (StraightInitializeException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 		if (!handDrawsSorted.isEmpty()) {
 
