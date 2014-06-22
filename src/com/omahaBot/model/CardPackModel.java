@@ -2,8 +2,10 @@ package com.omahaBot.model;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Optional;
 import java.util.SortedSet;
 import java.util.TreeSet;
+import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -12,6 +14,7 @@ import com.omahaBot.enums.Rank;
 import com.omahaBot.enums.Suit;
 import com.omahaBot.model.comparator.RankAceLowComparator;
 import com.omahaBot.model.comparator.SuitComparator;
+import com.omahaBot.model.draw.DrawModel;
 import com.omahaBot.model.draw.FlushModel;
 
 public class CardPackModel {
@@ -387,6 +390,27 @@ public class CardPackModel {
 	@Override
 	public String toString() {
 		return "CardPackModel [setCards=" + sortedCards + "]";
+	}
+	
+	/**
+	 *
+	 * @param handDrawsSorted
+	 */
+	protected void cleanStraightDraws(SortedSet<DrawModel> handDrawsSorted) {
+
+		Predicate<? super DrawModel> filter_rankDraws = (d -> d.getHandCategory().equals(HandCategory.STRAIGHT_ACE_LOW)
+				|| d.getHandCategory().equals(HandCategory.STRAIGHT));
+
+		Optional<DrawModel> bestRankDraw = handDrawsSorted
+				.stream()
+				.filter(filter_rankDraws)
+				.findFirst();
+
+		handDrawsSorted.removeIf(filter_rankDraws);
+
+		if (bestRankDraw.isPresent()) {
+			handDrawsSorted.add(bestRankDraw.get());
+		}
 	}
 	
 	

@@ -9,7 +9,6 @@ import lombok.Data;
 import com.omahaBot.enums.BoardCategory;
 import com.omahaBot.enums.HandCategory;
 import com.omahaBot.enums.Rank;
-import com.omahaBot.enums.Suit;
 import com.omahaBot.model.CardModel;
 import com.omahaBot.model.CoupleCards;
 
@@ -21,6 +20,8 @@ public @Data class QuadsModel extends DrawModel {
 		super(HandCategory.FOUR_OF_A_KIND, permutationHand);
 		this.rank = rank;
 
+		this.boardCategory = boardCategory;
+		
 		initialize(boardCategory);
 
 		if (permutationHand != null) {
@@ -46,12 +47,12 @@ public @Data class QuadsModel extends DrawModel {
 
 		switch (boardCategory) {
 		case ONE_PAIR:
-			card1 = new CardModel(rank, Suit.SPADE);
-			card2 = new CardModel(rank, Suit.HEART);
+			card1 = new CardModel(rank);
+			card2 = new CardModel(rank);
 			break;
 		case THREE_OF_A_KIND:
-			card1 = new CardModel(rank, Suit.SPADE);
-			card2 = new CardModel(Rank.UNKNOWN, Suit.HEART);
+			card1 = new CardModel(rank);
+			card2 = new CardModel(Rank.UNKNOWN);
 			break;
 		default:
 			// TODO exception

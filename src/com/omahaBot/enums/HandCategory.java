@@ -8,10 +8,11 @@ public enum HandCategory {
 	//STRAIGHT_DRAW,
 	STRAIGHT_ACE_LOW,
 	STRAIGHT,
-	FLUSH_DRAW,
-	FLUSH,
+	FLUSH_DRAW,// 2 suited cards on board
+	FLUSH,// 3 suited cards on board
 	FULL_HOUSE,
 	FOUR_OF_A_KIND,
+	STRAIGHT_FLUSH_ACE_LOW,
 	STRAIGHT_FLUSH,
 	UNKNOWN;
 }

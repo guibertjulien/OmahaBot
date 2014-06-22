@@ -197,8 +197,28 @@ public @Data class StraightModel extends DrawModel {
 		if (!this.equals(obj)) {
 			return false;
 		}
+		else {// on kicker of straight
+			return this.kicker.equals(other.getKicker());
+		}
+	}
+
+	@Override
+	public int compareTo(DrawModel o) {
+
+		if (o instanceof StraightModel) {
+			
+			StraightModel drawCompare = (StraightModel) o;
+			
+			if (this.getKicker().ordinal() > drawCompare.getKicker().ordinal()) {
+				return -1;
+			} else if (this.getKicker().ordinal() < drawCompare.getKicker().ordinal()) {
+				return 1;
+			} else {
+				return 0;
+			}
+		}
 		else {
-			return nutsOrHoleCards.isEqualsKicker(other.nutsOrHoleCards);
+			return super.compareTo(o);
 		}
 	}
 }

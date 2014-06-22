@@ -131,27 +131,6 @@ public class HandModel extends CardPackModel {
 	}
 
 	/**
-	 *
-	 * @param handDrawsSorted
-	 */
-	private void cleanStraightDraws(SortedSet<DrawModel> handDrawsSorted) {
-
-		Predicate<? super DrawModel> filter_rankDraws = (d -> d.getHandCategory().equals(HandCategory.STRAIGHT_ACE_LOW)
-				|| d.getHandCategory().equals(HandCategory.STRAIGHT));
-
-		Optional<DrawModel> bestRankDraw = handDrawsSorted
-				.stream()
-				.filter(filter_rankDraws)
-				.findFirst();
-
-		handDrawsSorted.removeIf(filter_rankDraws);
-
-		if (bestRankDraw.isPresent()) {
-			handDrawsSorted.add(bestRankDraw.get());
-		}
-	}
-
-	/**
 	 * for dealStep = FLOP or TURN
 	 * 
 	 * @param boardModel

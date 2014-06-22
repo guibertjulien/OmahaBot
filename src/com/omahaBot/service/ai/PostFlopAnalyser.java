@@ -60,7 +60,7 @@ public class PostFlopAnalyser {
 
 	public void analyseHand(HandModel handModel, BoardModel boardModel) {
 		handDrawsSorted = handModel.initCombinaisonDraws(boardModel);
-		boardDrawsSorted = new TreeSet<DrawModel>(boardModel.initDraws(handModel));
+		boardDrawsSorted = boardModel.initDraws(handModel);
 
 		if (!handDrawsSorted.isEmpty()) {
 
@@ -69,6 +69,7 @@ public class PostFlopAnalyser {
 
 			handLevel = 0;
 			nutsForLevel = false;
+			boolean isFlushDraw = false;
 
 			for (DrawModel drawModelBoard : boardDrawsSorted) {
 
@@ -80,7 +81,12 @@ public class PostFlopAnalyser {
 					}
 				}
 
-				handLevel++;
+				// don't update level if 2 flushDraw
+				if (!(isFlushDraw && drawModelBoard.getHandCategory().equals(HandCategory.FLUSH_DRAW))) {
+					handLevel++;	
+				}	
+				
+				isFlushDraw = drawModelBoard.getHandCategory().equals(HandCategory.FLUSH_DRAW);
 			}
 		}
 

@@ -8,12 +8,10 @@ import lombok.Data;
 
 import com.omahaBot.enums.HandCategory;
 import com.omahaBot.enums.Rank;
-import com.omahaBot.enums.Suit;
 import com.omahaBot.model.CardModel;
 import com.omahaBot.model.CoupleCards;
 
-public @Data
-class SetModel extends DrawModel {
+public @Data class SetModel extends DrawModel {
 
 	private final Rank rank;
 
@@ -35,16 +33,15 @@ class SetModel extends DrawModel {
 		display += handCategory + " " + rank + "; ";
 		display += (permutationHand != null) ? "holeCards" : "nuts";
 		display += "=[" + displayNutsOrHoleCards() + "]; ";
-		display += "boardCategory : " + boardCategory;
-		
+
 		return display;
 	}
 
 	private void initialize() {
-		CardModel card1 = new CardModel(rank, Suit.SPADE);
-		CardModel card2 = new CardModel(rank, Suit.HEART);
+		CardModel card1 = new CardModel(rank);
+		CardModel card2 = new CardModel(rank);
 
-		nutsOrHoleCards =  new CoupleCards(new TreeSet<CardModel>(Arrays.asList(card1, card2)));
+		nutsOrHoleCards = new CoupleCards(new TreeSet<CardModel>(Arrays.asList(card1, card2)));
 	}
 
 	@Override
@@ -53,9 +50,11 @@ class SetModel extends DrawModel {
 
 		if (!this.equals(obj))
 			return false;
-		if (!nutsOrHoleCards.getSortedCards().first().getRank().equals(other.nutsOrHoleCards.getSortedCards().first().getRank()))
+		if (!nutsOrHoleCards.getSortedCards().first().getRank()
+				.equals(other.nutsOrHoleCards.getSortedCards().first().getRank()))
 			return false;
-		if (!nutsOrHoleCards.getSortedCards().last().getRank().equals(other.nutsOrHoleCards.getSortedCards().last().getRank()))
+		if (!nutsOrHoleCards.getSortedCards().last().getRank()
+				.equals(other.nutsOrHoleCards.getSortedCards().last().getRank()))
 			return false;
 		return true;
 	}

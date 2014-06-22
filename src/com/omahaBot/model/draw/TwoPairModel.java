@@ -8,7 +8,6 @@ import lombok.Data;
 
 import com.omahaBot.enums.HandCategory;
 import com.omahaBot.enums.Rank;
-import com.omahaBot.enums.Suit;
 import com.omahaBot.model.CardModel;
 import com.omahaBot.model.CoupleCards;
 
@@ -42,8 +41,8 @@ public @Data class TwoPairModel extends DrawModel {
 	}
 
 	private void initialize() {
-		CardModel card1 = new CardModel(rankPair1, Suit.SPADE);
-		CardModel card2 = new CardModel(rankPair2, Suit.HEART);
+		CardModel card1 = new CardModel(rankPair1);
+		CardModel card2 = new CardModel(rankPair2);
 
 		nutsOrHoleCards = new CoupleCards(new TreeSet<CardModel>(Arrays.asList(card1, card2)));
 	}
