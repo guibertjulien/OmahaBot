@@ -3,8 +3,8 @@ package com.omahaBot.service.ai;
 import lombok.Data;
 
 import com.omahaBot.enums.BettingDecision;
-import com.omahaBot.model.HandModel;
-import com.omahaBot.model.HandPreFlopPower;
+import com.omahaBot.model.hand.HandModel;
+import com.omahaBot.model.hand.HandPreFlopPower;
 
 @Data
 public class PreFlopAnalyser {

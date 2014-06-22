@@ -1,4 +1,4 @@
-package com.omahaBot.model;
+package com.omahaBot.model.hand;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -16,6 +16,7 @@ import com.omahaBot.enums.Suit;
 import com.omahaBot.enums.preFlop.PreFlopRankLevel;
 import com.omahaBot.enums.preFlop.PreFlopStraightLevel;
 import com.omahaBot.enums.preFlop.PreFlopSuitLevel;
+import com.omahaBot.model.StringPattern;
 
 @Data
 public class HandPreFlopPower {
@@ -29,7 +30,7 @@ public class HandPreFlopPower {
 	private ArrayList<HandSuit> suits = new ArrayList<HandSuit>();
 
 	private int level = -1;
-	
+
 	private int power = -1;
 
 	private SuitedType suitedType;
@@ -68,7 +69,7 @@ public class HandPreFlopPower {
 		if (!isTrashHand()) {
 			checkIfBestHand();
 		}
-		
+
 		power = preFlopRankLevel.getPowerPoint().getPoint() + preFlopSuitLevel.getPowerPoint().getPoint()
 				+ preFlopStraightLevel.getPowerPoint().getPoint();
 	}
@@ -187,15 +188,14 @@ public class HandPreFlopPower {
 
 	@Override
 	public String toString() {
-
 		if (level == 0) {
-			return "Moi: Ma main est une poubelle ! [" + handModel + " : power=" + power + " ] ";
+			return "- Ma main est une poubelle !\n\t[" + handModel + " : power=" + power + " ] ";
 		} else if (level > 0) {
-			return "- Ma main est dans le TOP 30 ! [" + handModel + " : power=" + power + ", level=" + level
+			return "- Ma main est dans le TOP 30 !\n\t[" + handModel + " : power=" + power + ", level=" + level
 					+ ", suited=" + suitedType
 					+ "]";
 		} else {
-			return "Moi: Ma main [" + handModel + " : power=" + power + ", pairLevel=" + preFlopRankLevel
+			return "- Ma main :\n\t[" + handModel + " : power=" + power + ", pairLevel=" + preFlopRankLevel
 					+ ", connectorLevel="
 					+ preFlopStraightLevel + ", suitLevel=" + preFlopSuitLevel + "]";
 		}

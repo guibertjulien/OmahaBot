@@ -3,8 +3,8 @@ package com.omahaBot.enums.preFlop;
 import java.util.List;
 
 import com.omahaBot.enums.Rank;
-import com.omahaBot.model.HandPreFlopPower.SuitedType;
-import com.omahaBot.model.HandSuit;
+import com.omahaBot.model.hand.HandPreFlopPower.SuitedType;
+import com.omahaBot.model.hand.HandSuit;
 
 public enum PreFlopSuitLevel {
 

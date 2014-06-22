@@ -17,30 +17,41 @@ public @Data class TwoPairModel extends DrawModel {
 
 	private final Rank rankPair2;
 
+	/**
+	 * Constructor for HandModel / CombinaisonModel
+	 * 
+	 * @param rankPair1
+	 * @param rankPair2
+	 * @param permutationHand
+	 */
 	public TwoPairModel(Rank rankPair1, Rank rankPair2, SortedSet<CardModel> permutationHand) {
-		super(HandCategory.TWO_PAIR, permutationHand);
+		super(HandCategory.TWO_PAIR);
 		this.rankPair1 = rankPair1;
 		this.rankPair2 = rankPair2;
 
-		initialize();
+		initHoleCards(permutationHand);
+	}
 
-		if (permutationHand != null) {
-			initHoleCards(permutationHand);
-		}
+	/**
+	 * Constructor for BoardModel
+	 * 
+	 * @param rankPair1
+	 * @param rankPair2
+	 */
+	public TwoPairModel(Rank rankPair1, Rank rankPair2) {
+		super(HandCategory.TWO_PAIR);
+		this.rankPair1 = rankPair1;
+		this.rankPair2 = rankPair2;
+
+		initNuts();
 	}
 
 	@Override
 	public String toString() {
-		String display = "";
-
-		display += handCategory + " of " + rankPair1 + " and " + rankPair2 + "; ";
-		display += (permutationHand != null) ? "holeCards" : "nuts";
-		display += "=[" + displayNutsOrHoleCards() + "]";
-
-		return display;
+		return this.display(handCategory + " of " + rankPair1 + " and " + rankPair2 + "; ");
 	}
 
-	private void initialize() {
+	private void initNuts() {
 		CardModel card1 = new CardModel(rankPair1);
 		CardModel card2 = new CardModel(rankPair2);
 

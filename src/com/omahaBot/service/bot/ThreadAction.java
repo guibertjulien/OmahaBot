@@ -18,9 +18,9 @@ import com.omahaBot.enums.PlayerBlock;
 import com.omahaBot.model.ActionModel;
 import com.omahaBot.model.BoardModel;
 import com.omahaBot.model.CardModel;
-import com.omahaBot.model.HandModel;
 import com.omahaBot.model.PlayerModel;
 import com.omahaBot.model.draw.DrawModel;
+import com.omahaBot.model.hand.HandModel;
 import com.omahaBot.ui.form.MainForm;
 
 public class ThreadAction extends MyThread {

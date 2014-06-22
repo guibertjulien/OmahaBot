@@ -15,29 +15,39 @@ public @Data class SetModel extends DrawModel {
 
 	private final Rank rank;
 
+	/**
+	 * Constructor for HandModel / CombinaisonModel
+	 * 
+	 * @param rank
+	 * @param permutationHand
+	 */
 	public SetModel(Rank rank, SortedSet<CardModel> permutationHand) {
-		super(HandCategory.THREE_OF_A_KIND, permutationHand);
+		super(HandCategory.THREE_OF_A_KIND);
+
 		this.rank = rank;
 
-		initialize();
+		initHoleCards(permutationHand);
+	}
 
-		if (permutationHand != null) {
-			initHoleCards(permutationHand);
-		}
+	/**
+	 * Constructor for BoardModel
+	 * 
+	 * @param rank
+	 */
+	public SetModel(Rank rank) {
+		super(HandCategory.THREE_OF_A_KIND);
+
+		this.rank = rank;
+
+		initNuts();
 	}
 
 	@Override
 	public String toString() {
-		String display = "";
-
-		display += handCategory + " " + rank + "; ";
-		display += (permutationHand != null) ? "holeCards" : "nuts";
-		display += "=[" + displayNutsOrHoleCards() + "]; ";
-
-		return display;
+		return this.display(handCategory + " " + rank + "; ");
 	}
 
-	private void initialize() {
+	private void initNuts() {
 		CardModel card1 = new CardModel(rank);
 		CardModel card2 = new CardModel(rank);
 

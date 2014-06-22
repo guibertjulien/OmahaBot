@@ -11,37 +11,54 @@ import com.omahaBot.enums.HandCategory;
 import com.omahaBot.enums.Rank;
 import com.omahaBot.model.CardModel;
 import com.omahaBot.model.CoupleCards;
+import com.omahaBot.utils.CardUtils;
 
 public @Data class QuadsModel extends DrawModel {
 
 	private final Rank rank;
 
-	public QuadsModel(Rank rank, BoardCategory boardCategory, SortedSet<CardModel> permutationHand) {
-		super(HandCategory.FOUR_OF_A_KIND, permutationHand);
+	/**
+	 * Constructor for HandModel / CombinaisonModel
+	 * 
+	 * @param rank
+	 * @param permutationHand
+	 */
+	public QuadsModel(Rank rank, SortedSet<CardModel> permutationHand) {
+		super(HandCategory.FOUR_OF_A_KIND);
+
 		this.rank = rank;
 
-		this.boardCategory = boardCategory;
-		
-		initialize(boardCategory);
-
-		if (permutationHand != null) {
-			initHoleCards(permutationHand);
+		if (CardUtils.coupleIsPair(permutationHand)) {
+			boardCategory = BoardCategory.ONE_PAIR;
 		}
+		else {
+			boardCategory = BoardCategory.THREE_OF_A_KIND;
+		}
+
+		initHoleCards(permutationHand);
+	}
+
+	/**
+	 * Constructor for BoardModel
+	 * 
+	 * @param rank
+	 * @param boardCategory
+	 */
+	public QuadsModel(Rank rank, BoardCategory boardCategory) {
+		super(HandCategory.FOUR_OF_A_KIND);
+
+		this.rank = rank;
+		this.boardCategory = boardCategory;
+
+		initNuts(boardCategory);
 	}
 
 	@Override
 	public String toString() {
-		String display = "";
-
-		display += handCategory + " " + rank + "; ";
-		display += (permutationHand != null) ? "holeCards" : "nuts";
-		display += "=[" + displayNutsOrHoleCards() + "]; ";
-		display += "boardCategory : " + boardCategory;
-
-		return display;
+		return this.display(handCategory + " " + rank + "; ");
 	}
 
-	private void initialize(BoardCategory boardCategory) {
+	private void initNuts(BoardCategory boardCategory) {
 		CardModel card1 = null;
 		CardModel card2 = null;
 
@@ -60,7 +77,7 @@ public @Data class QuadsModel extends DrawModel {
 		}
 
 		if (card1 != null && card2 != null) {
-			nutsOrHoleCards =  new CoupleCards(new TreeSet<CardModel>(Arrays.asList(card1, card2)));
+			nutsOrHoleCards = new CoupleCards(new TreeSet<CardModel>(Arrays.asList(card1, card2)));
 		}
 	}
 

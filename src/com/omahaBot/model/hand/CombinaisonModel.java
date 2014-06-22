@@ -1,4 +1,4 @@
-package com.omahaBot.model;
+package com.omahaBot.model.hand;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,9 +9,10 @@ import java.util.regex.Pattern;
 
 import lombok.Data;
 
-import com.omahaBot.enums.BoardCategory;
 import com.omahaBot.enums.HandCategory;
 import com.omahaBot.enums.Rank;
+import com.omahaBot.model.CardModel;
+import com.omahaBot.model.CardPackModel;
 import com.omahaBot.model.draw.DrawModel;
 import com.omahaBot.model.draw.FullModel;
 import com.omahaBot.model.draw.OnePairModel;
@@ -19,7 +20,6 @@ import com.omahaBot.model.draw.QuadsModel;
 import com.omahaBot.model.draw.SetModel;
 import com.omahaBot.model.draw.StraightModel;
 import com.omahaBot.model.draw.TwoPairModel;
-import com.omahaBot.utils.CardUtils;
 
 /**
  * 5 cards (permutations of 2 hole cards and 3 board cards)
@@ -69,13 +69,13 @@ public class CombinaisonModel extends CardPackModel implements Comparable<Combin
 			if (hasFlushDraw) {
 				listDraw.addAll(searchFlushDraw(4, 5, permutationHand));
 			}
-			
+
 			drawModel = searchBestRankDraw();
 
 			if (drawModel != null) {
 				listDraw.add(drawModel);
 			}
-			
+
 			drawModel = searchStraight();
 
 			if (drawModel != null) {
@@ -88,7 +88,6 @@ public class CombinaisonModel extends CardPackModel implements Comparable<Combin
 
 	public DrawModel searchBestRankDraw() {
 
-		BoardCategory boardCategory = BoardCategory.UNKNOWN;
 		DrawModel drawModel = null;
 
 		String whithoutSuit = this.toStringByRank().replaceAll("[shdc]", ".");
@@ -107,20 +106,13 @@ public class CombinaisonModel extends CardPackModel implements Comparable<Combin
 			rank1 = Rank.fromShortName(group1.charAt(0));
 
 			if (group1.length() == 8) {
-
-				if (CardUtils.coupleIsPair(permutationHand)) {
-					boardCategory = BoardCategory.ONE_PAIR;
-				}
-				else {
-					boardCategory = BoardCategory.THREE_OF_A_KIND;
-				}
-
-				drawModel = new QuadsModel(rank1, boardCategory, permutationHand);
+				drawModel = new QuadsModel(rank1, permutationHand);
 			} else if (group1.length() == 6) {
 				if (matcher.find()) {
 					group2 = matcher.group(0);
-					rank2 = Rank.fromShortName(String.valueOf(group2.charAt(0)));
-					drawModel = new FullModel(rank1, rank2, boardCategory, null, null, null, permutationHand);
+					rank2 = Rank.fromShortName(group2.charAt(0));
+
+					drawModel = new FullModel(rank1, rank2, permutationHand);
 				}
 				else {
 					drawModel = new SetModel(rank1, permutationHand);
@@ -128,10 +120,11 @@ public class CombinaisonModel extends CardPackModel implements Comparable<Combin
 			} else if (group1.length() == 4) {
 				if (matcher.find()) {
 					group2 = matcher.group(0);
-					rank2 = Rank.fromShortName(String.valueOf(group2.charAt(0)));
+					rank2 = Rank.fromShortName(group2.charAt(0));
 
 					if (group2.length() == 6) {
-						drawModel = new FullModel(rank2, rank1, boardCategory, null, null, null, permutationHand);
+
+						drawModel = new FullModel(rank2, rank1, permutationHand);
 					}
 					else {
 						drawModel = new TwoPairModel(rank2, rank1, permutationHand);
@@ -151,19 +144,19 @@ public class CombinaisonModel extends CardPackModel implements Comparable<Combin
 	 * @return
 	 */
 	public StraightModel searchStraight() {
-		
+
 		StraightModel straightModel = null;
-		
-		if (isStraightHigh()) {	
+
+		if (isStraightHigh()) {
 			straightModel = new StraightModel(HandCategory.STRAIGHT, this.toRankString(), permutationHand);
 		}
-		else if (isStraightLow()) {	
+		else if (isStraightLow()) {
 			straightModel = new StraightModel(HandCategory.STRAIGHT_ACE_LOW, this.toRankString(), permutationHand);
 		}
-		
+
 		return straightModel;
 	}
-	
+
 	@Override
 	public int compareTo(CombinaisonModel o) {
 		return 1;

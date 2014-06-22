@@ -4,8 +4,9 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.omahaBot.enums.DealStep;
+import com.omahaBot.exception.CardPackNonValidException;
 import com.omahaBot.model.BoardModel;
-import com.omahaBot.model.HandModel;
+import com.omahaBot.model.hand.HandModel;
 
 public class AnalyserServiceTest {
 
@@ -121,7 +122,7 @@ public class AnalyserServiceTest {
 	}
 	
 	@Test
-	public void analyseStraightPostFlop() {
+	public void analyseStraightPostFlop() throws CardPackNonValidException {
 
 		HandModel handModel;
 		BoardModel boardModel;

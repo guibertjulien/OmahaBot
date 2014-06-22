@@ -7,7 +7,7 @@ import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.omahaBot.model.HandPreFlopPower.PairType;
+import com.omahaBot.model.hand.HandPreFlopPower.PairType;
 
 public enum PreFlopRankLevel {
 

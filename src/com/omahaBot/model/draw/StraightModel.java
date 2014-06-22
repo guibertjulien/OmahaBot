@@ -25,46 +25,57 @@ import com.omahaBot.model.CoupleCards;
  */
 public @Data class StraightModel extends DrawModel {
 
-	private Rank kicker;
+	private Rank rank;// kicker
 
-	private String drawString;
+	private final String drawString;
 
+	// TODO
 	private boolean straightFlush;
 
+	/**
+	 * Constructor for HandModel / CombinaisonModel
+	 * 
+	 * @param handCategory
+	 * @param drawString
+	 * @param permutationHand
+	 */
 	public StraightModel(HandCategory handCategory, String drawString, SortedSet<CardModel> permutationHand) {
-		super(handCategory, permutationHand);
+		super(handCategory);
 
 		this.drawString = drawString;
 
-		if (permutationHand != null) {
-			initHoleCards(permutationHand);
+		initHoleCards(permutationHand);
 
-			if (handCategory.equals(HandCategory.STRAIGHT)) {
-				char cardKicker = drawString.charAt(drawString.length() - 1);
-				kicker = Rank.fromShortName(cardKicker);
-			}
-			else if (handCategory.equals(HandCategory.STRAIGHT_ACE_LOW)) {
-				kicker = Rank.FIVE;
-			}
+		if (handCategory.equals(HandCategory.STRAIGHT)) {
+			char cardrank = drawString.charAt(drawString.length() - 1);
+			rank = Rank.fromShortName(cardrank);
 		}
-		else {
-			initialize(drawString);
+		else if (handCategory.equals(HandCategory.STRAIGHT_ACE_LOW)) {
+			rank = Rank.FIVE;
 		}
+	}
+
+	/**
+	 * Constructor for BoardModel
+	 * 
+	 * @param handCategory
+	 * @param drawString
+	 */
+	public StraightModel(HandCategory handCategory, String drawString) {
+		super(handCategory);
+
+		this.drawString = drawString;
+
+		initRankAndNuts(drawString);
 	}
 
 	// TODO à revoir
 	@Override
 	public String toString() {
-		String display = "";
-
-		display += kicker + "-high " + handCategory + " [" + drawString + "]; ";
-		display += (permutationHand != null) ? "holeCards" : "nuts";
-		display += "=[" + displayNutsOrHoleCards() + "]";
-
-		return display;
+		return this.display(rank + "-high " + handCategory + " [" + drawString + "]; ");
 	}
 
-	private void initialize(String drawString) {
+	private void initRankAndNuts(String drawString) {
 		assertTrue("drawString != 3", drawString.length() == 3);
 
 		Rank rankA = Rank.fromShortName(drawString.charAt(0));
@@ -79,25 +90,25 @@ public @Data class StraightModel extends DrawModel {
 			switch (rankC) {
 			case ACE:// __ABC
 				if (rankB.equals(Rank.KING)) {// ACE HIGH
-					kicker = rankC;
-					rankHole1 = Rank.values()[kicker.ordinal() - 4];
-					rankHole2 = Rank.values()[kicker.ordinal() - 3];
+					rank = rankC;
+					rankHole1 = Rank.values()[rank.ordinal() - 4];
+					rankHole2 = Rank.values()[rank.ordinal() - 3];
 				}
 				else {
-					kicker = rankB;
+					rank = rankB;
 					rankHole1 = ACE;// ACE LOW
 					rankHole2 = Rank.TWO;
 				}
 				break;
 			case KING:// _ABC_
-				kicker = ACE;
-				rankHole1 = Rank.values()[kicker.ordinal() - 4];
-				rankHole2 = kicker;
+				rank = ACE;
+				rankHole1 = Rank.values()[rank.ordinal() - 4];
+				rankHole2 = rank;
 				break;
 			default:// ABC__
-				kicker = Rank.values()[rankC.ordinal() + 2];
-				rankHole1 = Rank.values()[kicker.ordinal() - 1];
-				rankHole2 = kicker;
+				rank = Rank.values()[rankC.ordinal() + 2];
+				rankHole1 = Rank.values()[rank.ordinal() - 1];
+				rankHole2 = rank;
 				break;
 			}
 		}
@@ -105,25 +116,25 @@ public @Data class StraightModel extends DrawModel {
 		else if (rankA.isConnected(rankB)) {
 			switch (rankC) {
 			case FIVE:// _AB_C
-				kicker = rankC;
+				rank = rankC;
 				rankHole1 = ACE;// ACE LOW
-				rankHole2 = Rank.values()[kicker.ordinal() - 1];
+				rankHole2 = Rank.values()[rank.ordinal() - 1];
 				break;
 			case ACE:// _AB_C
-				kicker = rankC;
-				rankHole1 = Rank.values()[kicker.ordinal() - 4];
-				rankHole2 = Rank.values()[kicker.ordinal() - 1];
+				rank = rankC;
+				rankHole1 = Rank.values()[rank.ordinal() - 4];
+				rankHole2 = Rank.values()[rank.ordinal() - 1];
 				break;
 			default:
 				if (rankB.diff(rankC) == 2) {// AB_C_
-					kicker = Rank.values()[rankC.ordinal() + 1];
-					rankHole1 = Rank.values()[kicker.ordinal() - 3];
-					rankHole2 = kicker;
+					rank = Rank.values()[rankC.ordinal() + 1];
+					rankHole1 = Rank.values()[rank.ordinal() - 3];
+					rankHole2 = rank;
 				}
 				else {// AB__C
-					kicker = rankC;
-					rankHole1 = Rank.values()[kicker.ordinal() - 2];
-					rankHole2 = Rank.values()[kicker.ordinal() - 1];
+					rank = rankC;
+					rankHole1 = Rank.values()[rank.ordinal() - 2];
+					rankHole2 = Rank.values()[rank.ordinal() - 1];
 				}
 				break;
 			}
@@ -133,44 +144,44 @@ public @Data class StraightModel extends DrawModel {
 			switch (rankC) {
 			case FIVE: // ACE LOW
 				if (rankA.equals(Rank.ACE)) {// A__BC
-					kicker = rankC;
-					rankHole1 = Rank.values()[kicker.ordinal() - 3];
-					rankHole2 = Rank.values()[kicker.ordinal() - 2];
+					rank = rankC;
+					rankHole1 = Rank.values()[rank.ordinal() - 3];
+					rankHole2 = Rank.values()[rank.ordinal() - 2];
 				}
 				else {// _A_BC
-					kicker = rankC;
+					rank = rankC;
 					rankHole1 = ACE;
-					rankHole2 = Rank.values()[kicker.ordinal() - 2];
+					rankHole2 = Rank.values()[rank.ordinal() - 2];
 				}
 				break;
 			case ACE:// _A_BC
-				kicker = rankC;
-				rankHole1 = Rank.values()[kicker.ordinal() - 4];
-				rankHole2 = Rank.values()[kicker.ordinal() - 2];
+				rank = rankC;
+				rankHole1 = Rank.values()[rank.ordinal() - 4];
+				rankHole2 = Rank.values()[rank.ordinal() - 2];
 				break;
 			default:
 				if (rankA.diff(rankB) == 2) {// A_BC_
-					kicker = Rank.values()[rankC.ordinal() + 1];
-					rankHole1 = Rank.values()[kicker.ordinal() - 3];
-					rankHole2 = kicker;
+					rank = Rank.values()[rankC.ordinal() + 1];
+					rankHole1 = Rank.values()[rank.ordinal() - 3];
+					rankHole2 = rank;
 				}
 				else {// A__BC
-					kicker = rankC;
-					rankHole1 = Rank.values()[kicker.ordinal() - 3];
-					rankHole2 = Rank.values()[kicker.ordinal() - 2];
+					rank = rankC;
+					rankHole1 = Rank.values()[rank.ordinal() - 3];
+					rankHole2 = Rank.values()[rank.ordinal() - 2];
 				}
 				break;
 			}
 		}
 		else if (rankA.diff(rankB) == 2 && rankB.diff(rankC) == 2) {// A_B_C
 			if (rankA.equals(Rank.ACE)) {// ACE_LOW
-				kicker = rankC;
-				rankHole1 = Rank.values()[kicker.ordinal() - 3];
-				rankHole2 = Rank.values()[kicker.ordinal() - 1];
+				rank = rankC;
+				rankHole1 = Rank.values()[rank.ordinal() - 3];
+				rankHole2 = Rank.values()[rank.ordinal() - 1];
 			} else {
-				kicker = rankC;
-				rankHole1 = Rank.values()[kicker.ordinal() - 3];
-				rankHole2 = Rank.values()[kicker.ordinal() - 1];
+				rank = rankC;
+				rankHole1 = Rank.values()[rank.ordinal() - 3];
+				rankHole2 = Rank.values()[rank.ordinal() - 1];
 			}
 		}
 		else {
@@ -187,7 +198,7 @@ public @Data class StraightModel extends DrawModel {
 	public boolean equals(Object obj) {
 		StraightModel other = (StraightModel) obj;
 
-		return kicker.equals(other.kicker);
+		return rank.equals(other.rank);
 	}
 
 	@Override
@@ -197,8 +208,8 @@ public @Data class StraightModel extends DrawModel {
 		if (!this.equals(obj)) {
 			return false;
 		}
-		else {// on kicker of straight
-			return this.kicker.equals(other.getKicker());
+		else {// on rank of straight
+			return this.rank.equals(other.getRank());
 		}
 	}
 
@@ -206,12 +217,12 @@ public @Data class StraightModel extends DrawModel {
 	public int compareTo(DrawModel o) {
 
 		if (o instanceof StraightModel) {
-			
+
 			StraightModel drawCompare = (StraightModel) o;
-			
-			if (this.getKicker().ordinal() > drawCompare.getKicker().ordinal()) {
+
+			if (this.getRank().ordinal() > drawCompare.getRank().ordinal()) {
 				return -1;
-			} else if (this.getKicker().ordinal() < drawCompare.getKicker().ordinal()) {
+			} else if (this.getRank().ordinal() < drawCompare.getRank().ordinal()) {
 				return 1;
 			} else {
 				return 0;

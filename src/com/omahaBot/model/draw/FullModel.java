@@ -12,6 +12,7 @@ import com.omahaBot.enums.Rank;
 import com.omahaBot.enums.Suit;
 import com.omahaBot.model.CardModel;
 import com.omahaBot.model.CoupleCards;
+import com.omahaBot.utils.CardUtils;
 
 /**
  * 
@@ -23,38 +24,67 @@ public @Data class FullModel extends DrawModel {
 	private Rank rankThree;
 	private Rank rankPair;
 
-	public FullModel(Rank rankThree, Rank rankPair, BoardCategory boardCategory, Rank rankGroup, Rank kickerPack1,
-			Rank kickerPack2, SortedSet<CardModel> permutationHand) {
-		super(HandCategory.FULL_HOUSE, permutationHand);
+	/**
+	 * Constructor for HandModel / CombinaisonModel
+	 * 
+	 * @param rankThree
+	 * @param rankPair
+	 * @param permutationHand
+	 */
+	public FullModel(Rank rankThree, Rank rankPair, SortedSet<CardModel> permutationHand) {
+		super(HandCategory.FULL_HOUSE);
 		this.rankThree = rankThree;
 		this.rankPair = rankPair;
-
-		this.boardCategory = boardCategory;
 		
-		initialize(boardCategory, rankGroup, kickerPack1, kickerPack2);
-		
-		if (permutationHand != null) {
-			initHoleCards(permutationHand);
+		if (CardUtils.coupleIsPair(permutationHand)) {
+			boardCategory = BoardCategory.THREE_OF_A_KIND;
 		}
+		else {
+			boardCategory = BoardCategory.ONE_PAIR;
+		}
+
+		initHoleCards(permutationHand);
+	}
+
+	/**
+	 * Constructor for BoardModel
+	 * 
+	 * @param rankThree
+	 * @param rankPair
+	 * @param boardCategory
+	 * @param rankGroup
+	 * @param kickerPack1
+	 * @param kickerPack2
+	 */
+	public FullModel(Rank rankThree, Rank rankPair, BoardCategory boardCategory, Rank rankGroup, Rank kickerPack1,
+			Rank kickerPack2) {
+		super(HandCategory.FULL_HOUSE);
+		this.rankThree = rankThree;
+		this.rankPair = rankPair;
+		this.boardCategory = boardCategory;
+
+		initRanksAndNuts(boardCategory, rankGroup, kickerPack1, kickerPack2);
 	}
 
 	@Override
 	public String toString() {
-		String display = "";
-
-		display += handCategory + " " + rankThree + " full of " + rankPair + "; ";
-		display += (permutationHand != null) ? "holeCards" : "nuts";
-		display += "=[" + displayNutsOrHoleCards() + "]; ";
-		display += "boardCategory : " + boardCategory;
-		
-		return display;
+		return this.display(handCategory + " " + rankThree + " full of " + rankPair + "; ");
 	}
 
-	private void initialize(BoardCategory boardCategory, Rank rankGroup, Rank kickerPack1, Rank kickerPack2) {
+	/**
+	 * init rankThree, rankPair and nuts
+	 * 
+	 * @param boardCategory
+	 * @param rankGroup
+	 * @param kickerPack1
+	 * @param kickerPack2
+	 */
+	private void initRanksAndNuts(BoardCategory boardCategory, Rank rankGroup, Rank kickerPack1, Rank kickerPack2) {
 		CardModel card1 = null;
 		CardModel card2 = null;
 
 		switch (boardCategory) {
+		
 		case ONE_PAIR:
 		case TWO_PAIR:
 			card1 = new CardModel(rankThree, Suit.SPADE);

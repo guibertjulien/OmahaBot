@@ -12,6 +12,7 @@ import java.util.regex.Pattern;
 import com.omahaBot.enums.HandCategory;
 import com.omahaBot.enums.Rank;
 import com.omahaBot.enums.Suit;
+import com.omahaBot.exception.CardPackNonValidException;
 import com.omahaBot.model.comparator.RankAceLowComparator;
 import com.omahaBot.model.comparator.SuitComparator;
 import com.omahaBot.model.draw.DrawModel;
@@ -28,14 +29,20 @@ public class CardPackModel {
 		this.sortedCards = setCards;
 	}
 
-	public CardPackModel(String cardPackString) {
+	public CardPackModel(String cardPackString) throws CardPackNonValidException {
 		super();
 
 		sortedCards = new TreeSet<CardModel>();
+		
+		String s = cardPackString;
 
-		while (cardPackString.length() > 0) {
-			sortedCards.add(new CardModel(cardPackString.substring(0, 2)));
-			cardPackString = cardPackString.substring(2);
+		while (s.length() > 0) {
+			sortedCards.add(new CardModel(s.substring(0, 2)));
+			s = s.substring(2);
+		}
+		
+		if (sortedCards.size() != cardPackString.length() / 2) {
+			throw new CardPackNonValidException("same cards");
 		}
 	}
 
@@ -393,7 +400,7 @@ public class CardPackModel {
 	}
 	
 	/**
-	 *
+	 * return best STARIGHT DRAW
 	 * @param handDrawsSorted
 	 */
 	protected void cleanStraightDraws(SortedSet<DrawModel> handDrawsSorted) {

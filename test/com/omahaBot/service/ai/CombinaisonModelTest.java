@@ -5,19 +5,20 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
 import com.omahaBot.enums.Rank;
+import com.omahaBot.exception.CardPackNonValidException;
 import com.omahaBot.model.CardPackModel;
-import com.omahaBot.model.CombinaisonModel;
 import com.omahaBot.model.draw.DrawModel;
 import com.omahaBot.model.draw.FullModel;
 import com.omahaBot.model.draw.QuadsModel;
 import com.omahaBot.model.draw.SetModel;
 import com.omahaBot.model.draw.StraightModel;
 import com.omahaBot.model.draw.TwoPairModel;
+import com.omahaBot.model.hand.CombinaisonModel;
 
 public class CombinaisonModelTest {
 
 	@Test
-	public void testFindFourOfAKind() {
+	public void testFindFourOfAKind() throws CardPackNonValidException {
 		CombinaisonModel combinaisonModel;
 		DrawModel drawModel;
 		QuadsModel quadsModel;
@@ -46,7 +47,7 @@ public class CombinaisonModelTest {
 	}
 
 	@Test
-	public void testFindFull() {
+	public void testFindFull() throws CardPackNonValidException {
 		CombinaisonModel combinaisonModel;
 		DrawModel drawModel;
 		FullModel fullModel;
@@ -99,7 +100,7 @@ public class CombinaisonModelTest {
 	}
 
 	@Test
-	public void testFindThreeOfAKind() {
+	public void testFindThreeOfAKind() throws CardPackNonValidException {
 		CombinaisonModel combinaisonModel;
 		DrawModel drawModel;
 		SetModel setModel;
@@ -148,7 +149,7 @@ public class CombinaisonModelTest {
 	}
 	
 	@Test
-	public void testFindTwoPair() {
+	public void testFindTwoPair() throws CardPackNonValidException {
 		CombinaisonModel combinaisonModel;
 		DrawModel drawModel;
 		TwoPairModel twoPairModel;
@@ -168,7 +169,7 @@ public class CombinaisonModelTest {
 	}
 	
 	@Test
-	public void testFindStraight() {
+	public void testFindStraight() throws CardPackNonValidException {
 		CombinaisonModel combinaisonModel;
 		DrawModel drawModel;
 		StraightModel straightModel;
@@ -182,7 +183,7 @@ public class CombinaisonModelTest {
 		drawModel = combinaisonModel.searchStraight();
 		assertTrue(drawModel instanceof StraightModel);
 		straightModel = (StraightModel) drawModel;
-		assertTrue(straightModel.getKicker().equals(Rank.SEVEN));
+		assertTrue(straightModel.getRank().equals(Rank.SEVEN));
 		System.out.println(combinaisonModel + " " + straightModel);
 		
 		permutationHand = new CardPackModel("3d5s");
@@ -192,7 +193,7 @@ public class CombinaisonModelTest {
 		drawModel = combinaisonModel.searchStraight();
 		assertTrue(drawModel instanceof StraightModel);
 		straightModel = (StraightModel) drawModel;
-		assertTrue(straightModel.getKicker().equals(Rank.FIVE));
+		assertTrue(straightModel.getRank().equals(Rank.FIVE));
 		System.out.println(combinaisonModel + " " + straightModel);
 		
 		permutationHand = new CardPackModel("3d8s");

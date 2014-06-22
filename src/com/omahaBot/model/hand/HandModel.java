@@ -1,4 +1,4 @@
-package com.omahaBot.model;
+package com.omahaBot.model.hand;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -14,6 +14,10 @@ import com.omahaBot.enums.HandCategory;
 import com.omahaBot.enums.Rank;
 import com.omahaBot.enums.StraightDrawType;
 import com.omahaBot.enums.Suit;
+import com.omahaBot.exception.CardPackNonValidException;
+import com.omahaBot.model.BoardModel;
+import com.omahaBot.model.CardModel;
+import com.omahaBot.model.CardPackModel;
 import com.omahaBot.model.comparator.RankAceLowComparator;
 import com.omahaBot.model.draw.DrawModel;
 import com.omahaBot.service.draw.StraightDrawService;
@@ -21,6 +25,7 @@ import com.omahaBot.utils.PermutationsOfN;
 
 /**
  * http://fr.pokerlistings.com/potlimit-omaha-mains-de-depart
+ * <p>
  * http://www.leveluplunch.com/java/examples/sort-a-collection/
  * 
  * @author Julien
@@ -36,13 +41,13 @@ public class HandModel extends CardPackModel {
 		super(sortedCards);
 	}
 
-	public HandModel(String cardPackString) {
+	public HandModel(String cardPackString) throws CardPackNonValidException {
 		super(cardPackString);
 	}
 
 	@Override
 	public String toString() {
-		return "Hand : " + sortedCards;
+		return "hand=" + sortedCards;
 	}
 
 	/**
@@ -53,15 +58,6 @@ public class HandModel extends CardPackModel {
 		ArrayList<CardModel> cards = new ArrayList<>(sortedCards);
 		PermutationsOfN<CardModel> permutationsOrdered = new PermutationsOfN<CardModel>();
 		return permutationsOrdered.processSubsets(cards, 2);
-	}
-
-	/**
-	 * 
-	 * @return
-	 */
-	public boolean hasFlushDraw() {
-		String whithoutRank = this.toStringBySuit().replaceAll("[^shdc]", "");
-		return !Suit.ALL_SUIT.equals(whithoutRank);
 	}
 
 	/**
@@ -99,6 +95,39 @@ public class HandModel extends CardPackModel {
 		handDrawsSet = new HashSet<DrawModel>(handDrawsSorted);
 
 		return new TreeSet<DrawModel>(handDrawsSet);
+	}
+
+	
+	/**
+	 * Prerequis : call before initCombinaisonDraws()
+	 * 
+	 * @param handDrawsSorted
+	 * @return
+	 */
+	public boolean isStraight(SortedSet<DrawModel> handDrawsSorted) {
+
+		Predicate<? super DrawModel> filter_rankDraws = (d -> d.getHandCategory().equals(HandCategory.STRAIGHT_ACE_LOW)
+				|| d.getHandCategory().equals(HandCategory.STRAIGHT));
+
+		Optional<DrawModel> bestRankDraw = handDrawsSorted
+				.stream()
+				.filter(filter_rankDraws)
+				.findFirst();
+		
+		return bestRankDraw.isPresent();
+	}
+	
+	// =========================================================================
+	// DRAWS METHODS
+	// =========================================================================
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public boolean hasFlushDraw() {
+		String whithoutRank = this.toStringBySuit().replaceAll("[^shdc]", "");
+		return !Suit.ALL_SUIT.equals(whithoutRank);
 	}
 
 	private void cleanDraws(SortedSet<DrawModel> handDrawsSorted) {
@@ -174,23 +203,5 @@ public class HandModel extends CardPackModel {
 		}
 
 		return straightDrawTypeMax;
-	}
-	
-	/**
-	 * 
-	 * @param handDrawsSorted
-	 * @return
-	 */
-	public boolean isStraight(SortedSet<DrawModel> handDrawsSorted) {
-
-		Predicate<? super DrawModel> filter_rankDraws = (d -> d.getHandCategory().equals(HandCategory.STRAIGHT_ACE_LOW)
-				|| d.getHandCategory().equals(HandCategory.STRAIGHT));
-
-		Optional<DrawModel> bestRankDraw = handDrawsSorted
-				.stream()
-				.filter(filter_rankDraws)
-				.findFirst();
-		
-		return bestRankDraw.isPresent();
 	}
 }

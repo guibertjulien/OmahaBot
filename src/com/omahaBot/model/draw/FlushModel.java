@@ -12,6 +12,7 @@ import com.google.common.collect.Lists;
 import com.omahaBot.enums.HandCategory;
 import com.omahaBot.enums.Rank;
 import com.omahaBot.enums.Suit;
+import com.omahaBot.exception.CardPackNonValidException;
 import com.omahaBot.model.CardModel;
 import com.omahaBot.model.CardPackModel;
 import com.omahaBot.model.CoupleCards;
@@ -20,15 +21,23 @@ public @Data class FlushModel extends DrawModel {
 
 	private final Suit suit;
 
-	private Rank kicker;
+	private Rank rank;// kicker
 
 	private boolean straightFlush;
 
+	/**
+	 * Just one constructor for DrawModel
+	 * 
+	 * @param handCategory
+	 * @param suit
+	 * @param drawString
+	 * @param permutationHand
+	 */
 	public FlushModel(HandCategory handCategory, Suit suit, String drawString, SortedSet<CardModel> permutationHand) {
-		super(handCategory, permutationHand);
+		super(handCategory);
 		this.suit = suit;
 
-		initialize(drawString);
+		initRankAndNuts(drawString);
 
 		if (permutationHand != null) {
 			initHoleCards(permutationHand);
@@ -37,58 +46,56 @@ public @Data class FlushModel extends DrawModel {
 
 	@Override
 	public String toString() {
-		String display = "";
-
-		display += handCategory + " of " + suit + " with kicker " + kicker + "; ";
-		display += (permutationHand != null) ? "holeCards" : "nuts";
-		display += "=[" + displayNutsOrHoleCards() + "]; ";
-
-		return display;
+		return this.display(handCategory + " of " + suit + " with kicker " + rank + "; ");
 	}
 
-	private void initialize(String drawString) {
+	private void initRankAndNuts(String drawString) {
 
-		CardPackModel cardPackModel = new CardPackModel(drawString);
+		try {
+			CardPackModel cardPackModel = new CardPackModel(drawString);
 
-		List<CardModel> cardsReverse = Lists.reverse(new ArrayList<>(cardPackModel.getCards()));
-		List<Rank> listRankReverse = Lists.reverse(Arrays.asList(Rank.values()));
+			List<CardModel> cardsReverse = Lists.reverse(new ArrayList<>(cardPackModel.getCards()));
+			List<Rank> listRankReverse = Lists.reverse(Arrays.asList(Rank.values()));
 
-		kicker = cardsReverse.get(0).getRank();
-		
-		List<CardModel> coupleCards = new ArrayList<CardModel>();
-		
-		CardModel card = null;
-		int i = 0;
-		
-		for (Rank rank : listRankReverse) {
-			
-			if (!rank.equals(Rank.UNKNOWN)) {
-				if (i < cardsReverse.size()) {
-					card = cardsReverse.get(i);
-					if (!rank.equals(card.getRank())) {
+			rank = cardsReverse.get(0).getRank();
+
+			List<CardModel> coupleCards = new ArrayList<CardModel>();
+
+			CardModel card = null;
+			int i = 0;
+
+			for (Rank rank : listRankReverse) {
+
+				if (!rank.equals(Rank.UNKNOWN)) {
+					if (i < cardsReverse.size()) {
+						card = cardsReverse.get(i);
+						if (!rank.equals(card.getRank())) {
+							coupleCards.add(new CardModel(rank, suit));
+							if (coupleCards.size() == 2) {
+								break;
+							}
+						}
+					}
+					else {
 						coupleCards.add(new CardModel(rank, suit));
 						if (coupleCards.size() == 2) {
 							break;
 						}
 					}
-				}
-				else {
-					coupleCards.add(new CardModel(rank, suit));
-					if (coupleCards.size() == 2) {
-						break;
+
+					if (rank.equals(card.getRank())) {
+						i++;
 					}
 				}
-				
-				if (rank.equals(card.getRank())) {
-					i++;	
-				}
 			}
-		}
 
-		if (coupleCards.size() == 2) {
-			nutsOrHoleCards = new CoupleCards(new TreeSet<CardModel>(coupleCards));
+			if (coupleCards.size() == 2) {
+				nutsOrHoleCards = new CoupleCards(new TreeSet<CardModel>(coupleCards));
+			}
+		} catch (CardPackNonValidException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-
 	}
 
 	@Override

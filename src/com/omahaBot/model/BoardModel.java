@@ -19,10 +19,12 @@ import com.omahaBot.enums.Rank;
 import com.omahaBot.model.comparator.RankAceLowComparator;
 import com.omahaBot.model.draw.DrawModel;
 import com.omahaBot.model.draw.FullModel;
+import com.omahaBot.model.draw.OnePairModel;
 import com.omahaBot.model.draw.QuadsModel;
 import com.omahaBot.model.draw.SetModel;
 import com.omahaBot.model.draw.StraightModel;
 import com.omahaBot.model.draw.TwoPairModel;
+import com.omahaBot.model.hand.HandModel;
 import com.omahaBot.utils.CardUtils;
 import com.omahaBot.utils.PermutationsOfN;
 
@@ -112,7 +114,7 @@ public class BoardModel extends CardPackModel {
 	 */
 	public FullModel searchBestFullDraw() {
 
-		BoardCategory boardCategory = BoardCategory.UNKNOWN;
+		BoardCategory boardCategory = BoardCategory.UNDEFINED;
 		FullModel fullModel = null;
 
 		String whithoutSuit = this.toStringByRank().replaceAll("[shdc]", ".");
@@ -180,8 +182,8 @@ public class BoardModel extends CardPackModel {
 			}
 		}
 
-		if (!boardCategory.equals(BoardCategory.UNKNOWN)) {
-			fullModel = new FullModel(rankThree, rankPair, boardCategory, rankGroup, kickerPack1, kickerPack2, null);
+		if (!boardCategory.equals(BoardCategory.UNDEFINED)) {
+			fullModel = new FullModel(rankThree, rankPair, boardCategory, rankGroup, kickerPack1, kickerPack2);
 		}
 
 		return fullModel;
@@ -196,7 +198,7 @@ public class BoardModel extends CardPackModel {
 	public ArrayList<DrawModel> searchQuadsDraw(HandModel handModel) {
 		ArrayList<DrawModel> listDraw = new ArrayList<>();
 
-		BoardCategory boardCategory = BoardCategory.UNKNOWN;
+		BoardCategory boardCategory = BoardCategory.UNDEFINED;
 
 		String whithoutSuit = this.toStringByRank().replaceAll("[shdc]", ".");
 
@@ -211,7 +213,7 @@ public class BoardModel extends CardPackModel {
 
 			if (group.length() == 8) {
 				// NO DRAW POSSIBLE : 4 same rank card on board
-				return listDraw;
+				break;
 			} else if (group.length() == 6) {
 				// THREE_OF_A_KIND
 				boardCategory = BoardCategory.THREE_OF_A_KIND;
@@ -224,12 +226,27 @@ public class BoardModel extends CardPackModel {
 
 			// test if handModel has a same rank card
 			if (handModel != null && !handModel.hasOnlyOneRankCard(rankGroup)) {
-				QuadsModel quadsModel = new QuadsModel(rankGroup, boardCategory, null);
+				QuadsModel quadsModel = new QuadsModel(rankGroup, boardCategory);
 				listDraw.add(quadsModel);
 			}
 		}
 
 		return listDraw;
+	}
+
+	/**
+	 * 
+	 * @return
+	 */
+	public SetModel searchBestSetDraw() {
+		ArrayList<CardModel> listCards = new ArrayList<>(sortedCards);
+		Collections.reverse(listCards);
+
+		CardModel topSet = listCards.get(0);
+
+		SetModel setModel = new SetModel(topSet.getRank());
+
+		return setModel;
 	}
 
 	/**
@@ -244,7 +261,7 @@ public class BoardModel extends CardPackModel {
 		CardModel topPair1 = listCards.get(0);
 		CardModel topPair2 = listCards.get(1);
 
-		TwoPairModel twoPairModel = new TwoPairModel(topPair1.getRank(), topPair2.getRank(), null);
+		TwoPairModel twoPairModel = new TwoPairModel(topPair1.getRank(), topPair2.getRank());
 
 		return twoPairModel;
 	}
@@ -253,15 +270,16 @@ public class BoardModel extends CardPackModel {
 	 * 
 	 * @return
 	 */
-	public SetModel searchBestSetDraw() {
+	public DrawModel searchBestOnePairDraw() {
+
 		ArrayList<CardModel> listCards = new ArrayList<>(sortedCards);
 		Collections.reverse(listCards);
 
-		CardModel topSet = listCards.get(0);
+		CardModel topPair = listCards.get(0);
 
-		SetModel setModel = new SetModel(topSet.getRank(), null);
+		OnePairModel onePairModel = new OnePairModel(topPair.getRank());
 
-		return setModel;
+		return onePairModel;
 	}
 
 	/**
@@ -329,7 +347,7 @@ public class BoardModel extends CardPackModel {
 			String drawString = rankString.substring(0 + i, 3 + i);
 
 			if (diffRank >= 2 && diffRank <= 4) {
-				StraightModel straightModel = new StraightModel(handCategory, drawString, null);
+				StraightModel straightModel = new StraightModel(handCategory, drawString);
 				listDraw.add(straightModel);
 			}
 
@@ -342,14 +360,14 @@ public class BoardModel extends CardPackModel {
 	// =========================================================================
 	// INIT ALL DRAWS
 	// =========================================================================
-	
+
 	/**
 	 * 
 	 * @param handModel
 	 * @return
 	 */
 	public TreeSet<DrawModel> initDraws(HandModel handModel) {
-		
+
 		ArrayList<DrawModel> draws = new ArrayList<DrawModel>();
 		Set<DrawModel> drawsSet;
 		SortedSet<DrawModel> drawsSorted;
@@ -383,6 +401,11 @@ public class BoardModel extends CardPackModel {
 			if (drawModel != null) {
 				draws.add(drawModel);
 			}
+			
+			drawModel = searchBestOnePairDraw();
+			if (drawModel != null) {
+				draws.add(drawModel);
+			}
 		}
 
 		// tri
@@ -393,16 +416,16 @@ public class BoardModel extends CardPackModel {
 
 		// Suppression des doublons
 		drawsSet = new HashSet<DrawModel>(drawsSorted);
-		
+
 		return new TreeSet<DrawModel>(drawsSet);
 	}
-	
+
 	/**
 	 * 
 	 * @param boardDrawsSorted
 	 */
 	private void cleanDraws(SortedSet<DrawModel> boardDrawsSorted) {
-		
+
 		// return best STRAIGHT DRAW
 		cleanStraightDraws(boardDrawsSorted);
 	}

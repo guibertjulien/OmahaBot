@@ -17,9 +17,9 @@ import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.wb.swt.SWTResourceManager;
 
 import com.omahaBot.model.BoardModel;
-import com.omahaBot.model.HandModel;
-import com.omahaBot.model.HandPreFlopPower;
 import com.omahaBot.model.draw.DrawModel;
+import com.omahaBot.model.hand.HandModel;
+import com.omahaBot.model.hand.HandPreFlopPower;
 
 public class AnalyseWidget extends Composite {
 	private Table table_boardDraw;
