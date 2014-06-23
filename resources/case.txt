@@ -1,0 +1,26 @@
+=> STRAIGHT HAND DRAWS : GUT_SHOT
+=> HAND DRAWS : 
+FULL_HOUSE SEVEN full of ACE; holeCards : 7c, As; boardCategory : ONE_PAIR
+FLUSH_DRAW of CLUB with kicker TEN; holeCards : 7c, Tc; 
+=> BOARD DRAWS : 
+Level 0 : FULL_HOUSE ACE full of SEVEN; nuts : As, Ah; boardCategory : ONE_PAIR
+Level 1 : THREE_OF_A_KIND ACE; nuts : A?, A?; 
+Level 2 : TWO_PAIR of ACE and HEIGHT; nuts : 8?, A?; 
+Level 3 : ONE_PAIR of ACE; nuts : A?, ??; 
+=> ANALYSE : 
+Level 0 / Nuts : false
+Moi: Je CHECK_FOLD RIVER
+threadId : 215 / random : 1209 / playerShortcut : CHECK_FOLD
+*************************************************************************************
+=> STRAIGHT HAND DRAWS : NO_DRAW
+=> HAND DRAWS : 
+TWO_PAIR of KING and JACK; holeCards : Jc, Ks; 
+=> BOARD DRAWS : 
+Level 0 : FLUSH_DRAW of DIAMOND with kicker JACK; nuts : Kd, Ad; 
+Level 1 : THREE_OF_A_KIND KING; nuts : K?, K?; 
+Level 2 : TWO_PAIR of KING and JACK; nuts : J?, K?; 
+Level 3 : ONE_PAIR of KING; nuts : K?, ??; 
+=> ANALYSE : 
+Level 2 / Nuts : true
+Moi: Je CHECK_FOLD FLOP
+threadId : 173 / random : 4812 / playerShortcut : CHECK_FOLD

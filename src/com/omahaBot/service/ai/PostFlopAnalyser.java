@@ -59,6 +59,8 @@ public class PostFlopAnalyser {
 	}
 
 	public void analyseHand(HandModel handModel, BoardModel boardModel) {
+		System.out.println("===== ANALYSE =====");
+		
 		handDrawsSorted = handModel.initCombinaisonDraws(boardModel);
 		
 		try {
@@ -96,31 +98,34 @@ public class PostFlopAnalyser {
 			}
 		}
 
+		System.out.println("----- HAND DRAWS -----");
+		
 		// analyse de STRAIGHT DRAWS TYPE si pas de STRAIGHT
 		if (!handModel.isStraight(handDrawsSorted)) {
-			// STRAIGHT DRAWS TYPE
 			StraightDrawType straightDrawType = handModel.searchStraightDrawType(boardModel);
-			System.out.println("\n=> STRAIGHT HAND DRAWS : " + straightDrawType);			
+			System.out.println("straightDrawType: " + straightDrawType);			
 		}
 
-		System.out.println("\n=> HAND DRAWS : ");
 		for (DrawModel drawModel : handDrawsSorted) {
 			System.out.println(drawModel);
 		}
 
-		System.out.println("\n=> BOARD DRAWS : ");
+		System.out.println("----- BOARD DRAWS -----");
+		
 		int level = 0;
 		for (DrawModel drawModel : boardDrawsSorted) {
-			System.out.println("Level " + level + " : " + drawModel);
+			System.out.println(level + ": " + drawModel);
 			level++;
 		}
 
-		System.out.println("\n=> ANALYSE : ");
-		System.out.println("Level " + handLevel + " / Nuts : " + isNutsForLevel());
+		System.out.println("==> ANALYSE: ");
+		System.out.println("Level: " + handLevel + "/Nuts: " + isNutsForLevel());
 	}
 
 	public BettingDecision decide(DealStep dealStep, HandModel myHand) {
 
+		System.out.println("===== DECISION " + dealStep + " =====");
+		
 		BettingDecision bettingDecision = BettingDecision.FOLD_ALWAYS;
 
 		switch (dealStep) {

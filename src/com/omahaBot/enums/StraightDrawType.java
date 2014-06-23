@@ -19,6 +19,4 @@ public enum StraightDrawType {
 	public int getOuts() {
 		return outs;
 	}
-	
-	
 }

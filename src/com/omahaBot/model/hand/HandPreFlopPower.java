@@ -185,19 +185,18 @@ public class HandPreFlopPower {
 			level = 0;
 		}
 	}
-
-	@Override
-	public String toString() {
-		if (level == 0) {
-			return "- Ma main est une poubelle !\n\t[" + handModel + " : power=" + power + " ] ";
-		} else if (level > 0) {
-			return "- Ma main est dans le TOP 30 !\n\t[" + handModel + " : power=" + power + ", level=" + level
-					+ ", suited=" + suitedType
-					+ "]";
+	
+	public void displayOut() {
+		if (isTrashHand()) {
+			System.out.println("Moi: Ma main est une poubelle !");
+		} else if (isBestHand()) {
+			System.out.println("Moi: Ma main est dans le TOP 30 ("+ level +") !");
+			System.out.println("-suited: " + suitedType);		
 		} else {
-			return "- Ma main :\n\t[" + handModel + " : power=" + power + ", pairLevel=" + preFlopRankLevel
-					+ ", connectorLevel="
-					+ preFlopStraightLevel + ", suitLevel=" + preFlopSuitLevel + "]";
+			System.out.println("-pairLevel: " + preFlopRankLevel);
+			System.out.println("-connectorLevel: " + preFlopStraightLevel);
+			System.out.println("-suitLevel: " + preFlopSuitLevel);
+			System.out.println("==>POWER: " + power);
 		}
 	}
 

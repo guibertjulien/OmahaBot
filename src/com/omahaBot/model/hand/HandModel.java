@@ -49,6 +49,10 @@ public class HandModel extends CardPackModel {
 	public String toString() {
 		return "hand=" + sortedCards;
 	}
+	
+	public void displayOut() {
+		System.out.println("Ma main: " + sortedCards);
+	}
 
 	/**
 	 * 

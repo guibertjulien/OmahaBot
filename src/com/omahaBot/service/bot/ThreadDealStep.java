@@ -24,8 +24,6 @@ public class ThreadDealStep extends MyThread {
 
 	private final static Logger LOGGER = Logger.getLogger(ThreadDealStep.class.getName());
 
-	private final static String START_LOG = "    ";
-
 	private List<CardModel> listBoardCard = new ArrayList<CardModel>();
 
 	private DealStep oldDealStep = DealStep.UNKNOW, currentDealStep;
@@ -57,15 +55,14 @@ public class ThreadDealStep extends MyThread {
 	@Override
 	public void run() {
 
-		System.out.println(START_LOG + ">> START ThreadDealStep : " + this.getId());
+		System.out.println(">> START ThreadDealStep : " + this.getId());
 
 		while (running) {
 			// scan du dealStep toutes les 1s
 			currentDealStep = initDealStep();// critère de rupture
 
 			if (!oldDealStep.equals(currentDealStep)) {
-				System.out.println(START_LOG + "---------------------------------------------");
-				System.out.println(START_LOG + "NEW DEAL STEP : " + currentDealStep);
+				System.out.println("===== NEW DEAL STEP : " + currentDealStep + "=====");
 
 				oldDealStep = currentDealStep;
 
@@ -99,7 +96,7 @@ public class ThreadDealStep extends MyThread {
 
 		}
 
-		System.out.println(START_LOG + "<< STOP ThreadDealStep : " + this.getId());
+		System.out.println("<< STOP ThreadDealStep : " + this.getId());
 	}
 
 	@Override

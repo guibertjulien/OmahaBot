@@ -12,8 +12,12 @@ public class PreFlopAnalyser {
 	private HandPreFlopPower handPreFlopPower;
 
 	public void analyseHand(HandModel handModel) {
+		System.out.println("===== ANALYSE PREFLOP =====");
+		
 		handPreFlopPower = new HandPreFlopPower(handModel);
-		System.out.println(handPreFlopPower.toString());
+		
+		handModel.displayOut();
+		handPreFlopPower.displayOut();
 	}
 
 	/**
@@ -27,7 +31,8 @@ public class PreFlopAnalyser {
 	 * @return
 	 */
 	public BettingDecision decide(HandModel handModel, boolean firstTurnBet) {
-
+		System.out.println("===== DECISION PREFLOP =====");
+		
 		BettingDecision bettingDecision = BettingDecision.CHECK_FOLD;
 
 		if (!firstTurnBet) {
