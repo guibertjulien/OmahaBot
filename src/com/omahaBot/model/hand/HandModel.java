@@ -10,6 +10,7 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.function.Predicate;
 
+import com.omahaBot.enums.DealStep;
 import com.omahaBot.enums.HandCategory;
 import com.omahaBot.enums.Rank;
 import com.omahaBot.enums.StraightDrawType;
@@ -33,23 +34,44 @@ import com.omahaBot.utils.PermutationsOfN;
  */
 public class HandModel extends CardPackModel {
 
+	// PREFLOP, FLOP, TURN ou RIVER
+	private final DealStep dealStep;
+
 	public HandModel() {
 		super();
+		this.dealStep = DealStep.PRE_FLOP;
 	}
 
 	public HandModel(SortedSet<CardModel> sortedCards) {
 		super(sortedCards);
+		this.dealStep = DealStep.PRE_FLOP;
 	}
 
 	public HandModel(String cardPackString) throws CardPackNonValidException {
 		super(cardPackString);
+		this.dealStep = DealStep.PRE_FLOP;
+	}
+
+	public HandModel(DealStep dealStep) {
+		super();
+		this.dealStep = dealStep;
+	}
+
+	public HandModel(SortedSet<CardModel> sortedCards, DealStep dealStep) {
+		super(sortedCards);
+		this.dealStep = dealStep;
+	}
+
+	public HandModel(String cardPackString, DealStep dealStep) throws CardPackNonValidException {
+		super(cardPackString);
+		this.dealStep = dealStep;
 	}
 
 	@Override
 	public String toString() {
 		return "hand=" + sortedCards;
 	}
-	
+
 	public void displayOut() {
 		System.out.println("Ma main: " + sortedCards);
 	}
@@ -101,7 +123,6 @@ public class HandModel extends CardPackModel {
 		return new TreeSet<DrawModel>(handDrawsSet);
 	}
 
-	
 	/**
 	 * Prerequis : call before initCombinaisonDraws()
 	 * 
@@ -117,14 +138,14 @@ public class HandModel extends CardPackModel {
 				.stream()
 				.filter(filter_rankDraws)
 				.findFirst();
-		
+
 		return bestRankDraw.isPresent();
 	}
-	
+
 	// =========================================================================
 	// DRAWS METHODS
 	// =========================================================================
-	
+
 	/**
 	 * 
 	 * @return
@@ -137,6 +158,7 @@ public class HandModel extends CardPackModel {
 	private void cleanDraws(SortedSet<DrawModel> handDrawsSorted) {
 		cleanRankDraws(handDrawsSorted);
 		cleanStraightDraws(handDrawsSorted);
+		cleanFlushDraws(handDrawsSorted);
 	}
 
 	/**
@@ -176,10 +198,10 @@ public class HandModel extends CardPackModel {
 
 		// permutations de 2 cartes du board + hand => 6 cartes
 		for (List<CardModel> permutationBoard : boardModel.permutations(2)) {
-			
+
 			SortedSet<CardModel> combinaisonCards = new TreeSet<CardModel>(permutationBoard);
 			combinaisonCards.addAll(sortedCards);
-			
+
 			StraightDrawService straightDrawService = new StraightDrawService(combinaisonCards, boardModel);
 
 			straightDrawType = straightDrawService.straightDrawType();
@@ -207,5 +229,14 @@ public class HandModel extends CardPackModel {
 		}
 
 		return straightDrawTypeMax;
+	}
+
+	private void cleanFlushDraws(SortedSet<DrawModel> handDrawsSorted) {
+
+		// suppression des FLUSH_DRAW si RIVER
+		if (dealStep.equals(DealStep.RIVER)) {
+			Predicate<? super DrawModel> filter_flushDraws = (d -> d.getHandCategory().equals(HandCategory.FLUSH_DRAW));
+			handDrawsSorted.removeIf(filter_flushDraws);
+		}
 	}
 }

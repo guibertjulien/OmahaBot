@@ -341,6 +341,6 @@ public class ThreadAction extends MyThread {
 
 	private void initMyHand() {
 		SortedSet<CardModel> listCard = ocrService.scanMyHand();
-		myHand = new HandModel(listCard);
+		myHand = new HandModel(listCard, dealStep);
 	}
 }

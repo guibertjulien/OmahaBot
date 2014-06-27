@@ -401,8 +401,6 @@ public class HandModelTest {
 		straightDrawType = handModel.searchStraightDrawType(boardModel);
 		System.out.println(straightDrawType);
 		assertTrue(straightDrawType.equals(StraightDrawType.CARD20_WRAP));
-		
-
 	}
 
 	@Test

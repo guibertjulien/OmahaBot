@@ -1,8 +1,8 @@
 package com.omahaBot.service.ai;
 
 
-public class PostFlopServiceImplTest {
-
+public class PostFlopServiceImplTest2 {
+	
 //	private PostFlopAnalyserServiceImpl postFlopAnalyserServiceImpl;
 //	
 //	@Before

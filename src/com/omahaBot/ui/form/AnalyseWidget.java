@@ -78,6 +78,9 @@ public class AnalyseWidget extends Composite {
 		lbl_connectorLevel.setText("ConnectorLevel :");
 		
 		lbl_connectorLevelValue = new Label(grpPreflopAnalyse, SWT.NONE);
+		GridData gd_lbl_connectorLevelValue = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
+		gd_lbl_connectorLevelValue.widthHint = 150;
+		lbl_connectorLevelValue.setLayoutData(gd_lbl_connectorLevelValue);
 		lbl_connectorLevelValue.setText("{}");
 
 		Composite composite = new Composite(this, SWT.NONE);

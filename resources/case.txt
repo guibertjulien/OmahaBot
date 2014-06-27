@@ -24,3 +24,8 @@ Level 3 : ONE_PAIR of KING; nuts : K?, ??;
 Level 2 / Nuts : true
 Moi: Je CHECK_FOLD FLOP
 threadId : 173 / random : 4812 / playerShortcut : CHECK_FOLD
+
+
+TEST DRAW PAIR 9 ON BOARD <> PAIR 10 ON HAND
+
+

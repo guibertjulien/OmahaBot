@@ -1,7 +1,8 @@
 package com.omahaBot.service.ai;
 
-import lombok.Data;
 
+import lombok.Data;
+import org.apache.log4j.Logger;
 import com.omahaBot.enums.BettingDecision;
 import com.omahaBot.model.hand.HandModel;
 import com.omahaBot.model.hand.HandPreFlopPower;
@@ -9,10 +10,17 @@ import com.omahaBot.model.hand.HandPreFlopPower;
 @Data
 public class PreFlopAnalyser {
 
+	 private static final Logger log = Logger.getLogger(PreFlopAnalyser.class);
+	
 	private HandPreFlopPower handPreFlopPower;
 
 	public void analyseHand(HandModel handModel) {
 		System.out.println("===== ANALYSE PREFLOP =====");
+		
+		if (log.isDebugEnabled()) {
+			
+		}
+
 		
 		handPreFlopPower = new HandPreFlopPower(handModel);
 		

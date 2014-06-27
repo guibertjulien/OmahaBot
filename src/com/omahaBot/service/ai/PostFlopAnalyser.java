@@ -59,8 +59,6 @@ public class PostFlopAnalyser {
 	}
 
 	public void analyseHand(HandModel handModel, BoardModel boardModel) {
-		System.out.println("===== ANALYSE =====");
-		
 		handDrawsSorted = handModel.initCombinaisonDraws(boardModel);
 		
 		try {
@@ -98,28 +96,38 @@ public class PostFlopAnalyser {
 			}
 		}
 
-		System.out.println("----- HAND DRAWS -----");
+		System.out.println("--------------------------------------------");
+		System.out.println("- HAND DRAWS");
+		System.out.println("--------------------------------------------");
 		
 		// analyse de STRAIGHT DRAWS TYPE si pas de STRAIGHT
 		if (!handModel.isStraight(handDrawsSorted)) {
 			StraightDrawType straightDrawType = handModel.searchStraightDrawType(boardModel);
-			System.out.println("straightDrawType: " + straightDrawType);			
+			System.out.println("straightDrawType=" + straightDrawType);			
 		}
 
 		for (DrawModel drawModel : handDrawsSorted) {
 			System.out.println(drawModel);
 		}
 
-		System.out.println("----- BOARD DRAWS -----");
+		System.out.println("--------------------------------------------");
+		System.out.println("- BOARD DRAWS");
+		System.out.println("--------------------------------------------");
 		
 		int level = 0;
 		for (DrawModel drawModel : boardDrawsSorted) {
-			System.out.println(level + ": " + drawModel);
+ 			System.out.println("#" + level + ": " + drawModel);
 			level++;
 		}
 
-		System.out.println("==> ANALYSE: ");
-		System.out.println("Level: " + handLevel + "/Nuts: " + isNutsForLevel());
+		System.out.println("============================================");
+		if (isNuts()) {
+			System.out.println("==> ANALYSE: NUTS !!!");	
+		}
+		else {
+			System.out.println("==> ANALYSE: LEVEL=" + handLevel + "NUTS for level=" + isNutsForLevel());
+		}
+		System.out.println("============================================");
 	}
 
 	public BettingDecision decide(DealStep dealStep, HandModel myHand) {
@@ -226,5 +234,9 @@ public class PostFlopAnalyser {
 		}
 
 		return bettingDecision;
+	}
+	
+	public boolean isNuts () {
+		return handLevel == 0;
 	}
 }
