@@ -6,8 +6,8 @@ import java.awt.Robot;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.SortedSet;
-import java.util.logging.Logger;
 
+import org.apache.log4j.Logger;
 import org.eclipse.swt.widgets.Display;
 
 import com.omahaBot.consts.Consts;
@@ -25,7 +25,7 @@ import com.omahaBot.ui.form.MainForm;
 
 public class ThreadAction extends MyThread {
 
-	private final static Logger LOGGER = Logger.getLogger(ThreadDealStep.class.getName());
+	private static final Logger log = Logger.getLogger(ThreadAction.class);
 
 	private ActionModel actionModel;
 
@@ -68,7 +68,7 @@ public class ThreadAction extends MyThread {
 		try {
 			robot = new Robot();
 		} catch (AWTException e) {
-			LOGGER.warning(e.getMessage());
+			log.error(e.getMessage());
 		}
 	}
 
@@ -77,8 +77,7 @@ public class ThreadAction extends MyThread {
 	 */
 	@Override
 	public void run() {
-
-		System.out.println(">> START ThreadAction : " + this.getId());
+		log.debug(">> START ThreadAction : " + this.getId());
 
 		initialize();
 
@@ -91,7 +90,7 @@ public class ThreadAction extends MyThread {
 			final int positionPlayerTurnPlay = positionPlayerTurnPlay();
 
 			if (positionPlayerTurnPlayOld != positionPlayerTurnPlay) {
-				System.out.println("===== NEW ACTION =====");
+				log.debug("NEW ACTION");
 
 				currentPot = ocrService.scanPot();
 
@@ -118,7 +117,7 @@ public class ThreadAction extends MyThread {
 					if (myHand == null) {
 						initMyHand();
 					}
-					
+
 					switch (dealStep) {
 					case PRE_FLOP:
 						preFlopAnalyser.analyseHand(myHand);
@@ -169,13 +168,13 @@ public class ThreadAction extends MyThread {
 			}
 		}
 
-		System.out.println("<< STOP ThreadAction: " + this.getId());
+		log.debug("<< STOP ThreadAction: " + this.getId());
 	}
 
 	private void play() {
 
-		BettingDecision bettingDecision = BettingDecision.FOLD_ALWAYS;
-		
+		BettingDecision bettingDecision = BettingDecision.CHECK_FOLD;
+
 		switch (dealStep) {
 		case PRE_FLOP:
 			bettingDecision = preFlopAnalyser.decide(myHand, firstTurnBet);
@@ -188,9 +187,7 @@ public class ThreadAction extends MyThread {
 		default:
 			break;
 		}
-		
-		System.out.println("Moi: Je " + bettingDecision);
-		
+
 		firstTurnBet = false;
 
 		try {
@@ -235,7 +232,7 @@ public class ThreadAction extends MyThread {
 			Color colorScaned = robot.getPixelColor(playerBlock.getActive().x, playerBlock.getActive().y);
 
 			if (!playerBlock.isActivePlayer(colorScaned)) {
-				System.out.println(playerBlock.name() + " OUT");
+				log.debug(playerBlock.name() + " OUT");
 				listCurrentPlayerBlock.remove(playerBlock);
 			}
 		}

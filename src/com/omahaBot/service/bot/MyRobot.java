@@ -3,13 +3,15 @@ package com.omahaBot.service.bot;
 import java.awt.AWTException;
 import java.awt.Robot;
 import java.util.Random;
-import java.util.logging.Logger;
+
+import org.apache.log4j.Logger;
 
 import com.omahaBot.enums.BettingDecision;
+import com.omahaBot.service.ai.PreFlopAnalyser;
 
 public class MyRobot extends Robot {
 
-	private final static Logger LOGGER = Logger.getLogger(MyRobot.class.getName());
+	private static final Logger log = Logger.getLogger(PreFlopAnalyser.class);
 
 	public static final int MIN = 1000;
 	public static final int MAX = 5000;
@@ -21,11 +23,16 @@ public class MyRobot extends Robot {
 
 	public void clickAction(BettingDecision bettingDecision, long threadId) {
 
+		if (log.isDebugEnabled()) {
+			log.debug(">> clickAction");
+		}
+		
 		Random rand = new Random();
 		int randomNumber = rand.nextInt(MAX - MIN + 1) + MIN;
 
-		System.out.println("threadId : " + threadId + " / random : " + randomNumber + " / playerShortcut : " + bettingDecision);
-		//LOGGER.log(Level.INFO, "ramdom : {0} / playerShortcut : {1}", new Object[] { randomNumber, playerShortcut });
+		if (log.isDebugEnabled()) {
+			log.debug("threadId=" + threadId + " / random=" + randomNumber + " / playerShortcut=" + bettingDecision);
+		}
 
 		delay(randomNumber);
 		this.keyPress(bettingDecision.getShortcut());

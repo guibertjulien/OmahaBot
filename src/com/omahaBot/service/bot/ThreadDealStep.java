@@ -7,8 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
-import java.util.logging.Logger;
 
+import org.apache.log4j.Logger;
 import org.eclipse.swt.widgets.Display;
 
 import com.omahaBot.consts.Consts;
@@ -22,7 +22,7 @@ import com.omahaBot.ui.form.MainForm;
 
 public class ThreadDealStep extends MyThread {
 
-	private final static Logger LOGGER = Logger.getLogger(ThreadDealStep.class.getName());
+	private static final Logger log = Logger.getLogger(ThreadDealStep.class);
 
 	private List<CardModel> listBoardCard = new ArrayList<CardModel>();
 
@@ -31,7 +31,7 @@ public class ThreadDealStep extends MyThread {
 	private DealStepModel dealStepModel;
 
 	private BoardModel board;
-	
+
 	private Robot robot;
 	//
 	// private ThreadPot threadPot;
@@ -45,7 +45,7 @@ public class ThreadDealStep extends MyThread {
 		try {
 			robot = new Robot();
 		} catch (AWTException e) {
-			LOGGER.warning(e.getMessage());
+			log.error(e.getMessage());
 		}
 	}
 
@@ -55,14 +55,14 @@ public class ThreadDealStep extends MyThread {
 	@Override
 	public void run() {
 
-		System.out.println(">> START ThreadDealStep : " + this.getId());
+		log.debug(">> START ThreadDealStep : " + this.getId());
 
 		while (running) {
 			// scan du dealStep toutes les 1s
 			currentDealStep = initDealStep();// critère de rupture
 
 			if (!oldDealStep.equals(currentDealStep)) {
-				System.out.println("===== NEW DEAL STEP : " + currentDealStep + "=====");
+				log.debug("NEW DEAL STEP : " + currentDealStep);
 
 				oldDealStep = currentDealStep;
 
@@ -96,7 +96,7 @@ public class ThreadDealStep extends MyThread {
 
 		}
 
-		System.out.println("<< STOP ThreadDealStep : " + this.getId());
+		log.debug("<< STOP ThreadDealStep : " + this.getId());
 	}
 
 	@Override

@@ -9,7 +9,7 @@ import java.util.regex.Pattern;
 
 import com.omahaBot.model.hand.HandPreFlopPower.PairType;
 
-public enum PreFlopRankLevel {
+public enum PreFlopPairLevel {
 
 	// TWO PAIRS
 	DOUBLE_PAIR_HIGH(PreFlopPowerPoint.MAX, PairType.DOUBLE_PAIR, "TTJJ", "TTQQ", "TTKK", "JJQQ", "JJKK", "QQKK",
@@ -30,13 +30,13 @@ public enum PreFlopRankLevel {
 
 	private final String[] arrayHand;
 
-	private static final Map<String, PreFlopRankLevel> mapHandTwoPair = new
-			HashMap<String, PreFlopRankLevel>();
+	private static final Map<String, PreFlopPairLevel> mapHandTwoPair = new
+			HashMap<String, PreFlopPairLevel>();
 
-	private static final Map<String, PreFlopRankLevel> mapHandOnePair = new
-			HashMap<String, PreFlopRankLevel>();
+	private static final Map<String, PreFlopPairLevel> mapHandOnePair = new
+			HashMap<String, PreFlopPairLevel>();
 
-	private PreFlopRankLevel(PreFlopPowerPoint powerPoint, PairType pairType, String... arrayHands) {
+	private PreFlopPairLevel(PreFlopPowerPoint powerPoint, PairType pairType, String... arrayHands) {
 		this.powerPoint = powerPoint;
 		this.pairType = pairType;
 		this.arrayHand = arrayHands;
@@ -56,7 +56,7 @@ public enum PreFlopRankLevel {
 
 	// map permettant de récupérer le power avec une hand
 	static {
-		for (PreFlopRankLevel preFlopRank : values()) {
+		for (PreFlopPairLevel preFlopRank : values()) {
 			for (int i = 0; i < preFlopRank.getArrayHand().length; i++) {
 				if (preFlopRank.pairType.equals(PairType.DOUBLE_PAIR)) {
 					mapHandTwoPair.put(preFlopRank.getArrayHand()[i], preFlopRank);
@@ -67,7 +67,7 @@ public enum PreFlopRankLevel {
 
 	// map permettant de récupérer le power avec une hand
 	static {
-		for (PreFlopRankLevel preFlopRank : values()) {
+		for (PreFlopPairLevel preFlopRank : values()) {
 			for (int i = 0; i < preFlopRank.getArrayHand().length; i++) {
 				if (preFlopRank.pairType.equals(PairType.ONE_PAIR)) {
 					mapHandOnePair.put(preFlopRank.getArrayHand()[i], preFlopRank);
@@ -77,8 +77,8 @@ public enum PreFlopRankLevel {
 	}
 
 	// récupération de l'instance
-	public static PreFlopRankLevel fromTypeAndHand(PairType pairType, String hand) {
-		PreFlopRankLevel value = null;
+	public static PreFlopPairLevel fromTypeAndHand(PairType pairType, String hand) {
+		PreFlopPairLevel value = null;
 
 		switch (pairType) {
 		case DOUBLE_PAIR:
@@ -100,8 +100,8 @@ public enum PreFlopRankLevel {
 		// throw new IllegalArgumentException();
 	}
 
-	private static PreFlopRankLevel checkPattern(String hand, Map<String, PreFlopRankLevel> map) {
-		PreFlopRankLevel value;
+	private static PreFlopPairLevel checkPattern(String hand, Map<String, PreFlopPairLevel> map) {
+		PreFlopPairLevel value;
 		value = map.get(hand);
 
 		if (value == null) {
@@ -109,7 +109,7 @@ public enum PreFlopRankLevel {
 				Entry couple = (Entry) i.next();
 
 				String handPattern = (String) couple.getKey();
-				PreFlopRankLevel pFlopPairLevel = (PreFlopRankLevel) couple.getValue();
+				PreFlopPairLevel pFlopPairLevel = (PreFlopPairLevel) couple.getValue();
 
 				Pattern pattern = Pattern.compile(handPattern);
 				Matcher matcher = pattern.matcher(hand);

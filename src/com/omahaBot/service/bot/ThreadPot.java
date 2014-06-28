@@ -2,18 +2,18 @@ package com.omahaBot.service.bot;
 
 import java.awt.AWTException;
 import java.awt.Robot;
-import java.util.logging.Logger;
 
+import org.apache.log4j.Logger;
 import org.eclipse.swt.widgets.Display;
 
 import com.omahaBot.ui.form.MainForm;
 
 public class ThreadPot extends MyThread {
 
-	private final static Logger LOGGER = Logger.getLogger(ThreadDealStep.class.getName());
+	private static final Logger log = Logger.getLogger(ThreadPot.class);
 
 	private Double oldPot = 0.0, currentPot;
-	
+
 	private static int REFRESH_POT = 100;
 
 	public ThreadPot(MainForm mainForm) {
@@ -23,7 +23,7 @@ public class ThreadPot extends MyThread {
 		try {
 			robot = new Robot();
 		} catch (AWTException e) {
-			LOGGER.warning(e.getMessage());
+			log.error(e.getMessage());
 		}
 	}
 
@@ -33,14 +33,13 @@ public class ThreadPot extends MyThread {
 	@Override
 	public void run() {
 
-		System.out.println("########## START ThreadPot");
-		
+		log.debug(">> START ThreadPot");
+
 		while (running) {
 			// scan du pot toutes les 100ms
 			currentPot = ocrService.scanPot();
 
 			if (!oldPot.equals(currentPot)) {
-				//System.out.println("--> NEW POT : " + currentPot);
 				oldPot = currentPot;
 
 				Display.getDefault().syncExec(new Runnable() {
@@ -59,7 +58,7 @@ public class ThreadPot extends MyThread {
 
 		}
 
-		System.out.println("########## STOP ThreadPot");
+		log.debug("<< STOP ThreadPot");
 	}
 
 	@Override
@@ -70,6 +69,6 @@ public class ThreadPot extends MyThread {
 	@Override
 	public void initialize() {
 		// TODO Auto-generated method stub
-		
+
 	}
 }

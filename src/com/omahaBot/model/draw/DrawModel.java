@@ -82,10 +82,10 @@ public @Data abstract class DrawModel implements Comparable<DrawModel>, DrawAnal
 		display.append(msgCategory);
 
 		if (nutsOrHoleCards != null) {
-			display.append(permutationHand != null ? "holeCards : " : "nuts : ").append(nutsOrHoleCards.toString()).append("; ");
+			display.append(permutationHand != null ? "holeCards=" : "nuts=").append(nutsOrHoleCards.toString()).append("; ");
 		}
 		if (!(boardCategory == null || boardCategory.equals(BoardCategory.UNDEFINED))) {
-			display.append("boardCategory : " + boardCategory);
+			display.append("boardCategory=" + boardCategory);
 		}
 
 		return display.toString();

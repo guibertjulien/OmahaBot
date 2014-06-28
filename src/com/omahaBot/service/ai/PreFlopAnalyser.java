@@ -1,8 +1,9 @@
 package com.omahaBot.service.ai;
 
-
 import lombok.Data;
+
 import org.apache.log4j.Logger;
+
 import com.omahaBot.enums.BettingDecision;
 import com.omahaBot.model.hand.HandModel;
 import com.omahaBot.model.hand.HandPreFlopPower;
@@ -10,22 +11,36 @@ import com.omahaBot.model.hand.HandPreFlopPower;
 @Data
 public class PreFlopAnalyser {
 
-	 private static final Logger log = Logger.getLogger(PreFlopAnalyser.class);
-	
+	private static final Logger log = Logger.getLogger(PreFlopAnalyser.class);
+
 	private HandPreFlopPower handPreFlopPower;
 
 	public void analyseHand(HandModel handModel) {
-		System.out.println("===== ANALYSE PREFLOP =====");
-		
+
 		if (log.isDebugEnabled()) {
-			
+			log.debug(">> START analyseHand");
 		}
 
-		
+		System.out.println("############################################");
+		System.out.println(">> START analyseHand PREFLOP");
+		System.out.println(handModel.toString());
+		System.out.println("############################################");
+
 		handPreFlopPower = new HandPreFlopPower(handModel);
-		
-		handModel.displayOut();
-		handPreFlopPower.displayOut();
+
+		System.out.println("============================================");
+		if (handPreFlopPower.isTrashHand()) {
+			System.out.println("==> POUBELLE !");
+		}
+		else if (handPreFlopPower.isBestHand()) {
+			System.out.println("==> TOP 30: " + handPreFlopPower.getBestHandLevel());
+		}
+		System.out.println("- PAIR=" + handPreFlopPower.getPreFlopPairLevel());
+		System.out.println("- CONNECTED=" + handPreFlopPower.getPreFlopStraightLevel());
+		System.out.println("- SUITED=" + handPreFlopPower.getPreFlopSuitLevel());
+		System.out.println("==> POWER: " + handPreFlopPower.getPower());
+
+		System.out.println("============================================");
 	}
 
 	/**
@@ -39,8 +54,11 @@ public class PreFlopAnalyser {
 	 * @return
 	 */
 	public BettingDecision decide(HandModel handModel, boolean firstTurnBet) {
-		System.out.println("===== DECISION PREFLOP =====");
-		
+
+		if (log.isDebugEnabled()) {
+			log.debug(">> START decide PREFLOP");
+		}
+
 		BettingDecision bettingDecision = BettingDecision.CHECK_FOLD;
 
 		if (!firstTurnBet) {
@@ -74,7 +92,7 @@ public class PreFlopAnalyser {
 			// TODO à paramètrer
 			else {
 				if (handPreFlopPower.getPower() >= 20) {
-					bettingDecision = BettingDecision.randomBetween(BettingDecision.ALLIN, 
+					bettingDecision = BettingDecision.randomBetween(BettingDecision.ALLIN,
 							BettingDecision.BET_RAISE);
 				}
 				else if (handPreFlopPower.getPower() >= 10) {

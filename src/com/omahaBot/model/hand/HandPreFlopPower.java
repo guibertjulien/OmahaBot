@@ -13,7 +13,7 @@ import lombok.Data;
 
 import com.omahaBot.enums.Rank;
 import com.omahaBot.enums.Suit;
-import com.omahaBot.enums.preFlop.PreFlopRankLevel;
+import com.omahaBot.enums.preFlop.PreFlopPairLevel;
 import com.omahaBot.enums.preFlop.PreFlopStraightLevel;
 import com.omahaBot.enums.preFlop.PreFlopSuitLevel;
 import com.omahaBot.model.StringPattern;
@@ -29,7 +29,7 @@ public class HandPreFlopPower {
 
 	private ArrayList<HandSuit> suits = new ArrayList<HandSuit>();
 
-	private int level = -1;
+	private int bestHandLevel = -1;
 
 	private int power = -1;
 
@@ -37,7 +37,7 @@ public class HandPreFlopPower {
 
 	private PairType pairType;
 
-	private PreFlopRankLevel preFlopRankLevel = PreFlopRankLevel.NO_PAIR;
+	private PreFlopPairLevel preFlopPairLevel = PreFlopPairLevel.NO_PAIR;
 
 	private PreFlopSuitLevel preFlopSuitLevel = PreFlopSuitLevel.UNSUITED;
 
@@ -70,7 +70,7 @@ public class HandPreFlopPower {
 			checkIfBestHand();
 		}
 
-		power = preFlopRankLevel.getPowerPoint().getPoint() + preFlopSuitLevel.getPowerPoint().getPoint()
+		power = preFlopPairLevel.getPowerPoint().getPoint() + preFlopSuitLevel.getPowerPoint().getPoint()
 				+ preFlopStraightLevel.getPowerPoint().getPoint();
 	}
 
@@ -94,13 +94,13 @@ public class HandPreFlopPower {
 
 		if (pairs.size() == 2) {
 			pairType = PairType.DOUBLE_PAIR;
-			preFlopRankLevel = PreFlopRankLevel.fromTypeAndHand(pairType, handModel.toRankString());
+			preFlopPairLevel = PreFlopPairLevel.fromTypeAndHand(pairType, handModel.toRankString());
 		} else if (pairs.size() == 1) {
 			pairType = PairType.ONE_PAIR;
-			preFlopRankLevel = PreFlopRankLevel.fromTypeAndHand(pairType, handModel.toRankString());
+			preFlopPairLevel = PreFlopPairLevel.fromTypeAndHand(pairType, handModel.toRankString());
 		} else {
 			pairType = PairType.NO_PAIR;
-			preFlopRankLevel = PreFlopRankLevel.NO_PAIR;
+			preFlopPairLevel = PreFlopPairLevel.NO_PAIR;
 		}
 	}
 
@@ -114,7 +114,8 @@ public class HandPreFlopPower {
 			String group = matcher.group(0);
 			String drawString = handModel.toStringBySuit().substring(matcher.start(), matcher.end());
 
-			if (group.length() == 4) {
+			// TODO à tester
+			if (group.length() >= 4) {
 				Suit suit = Suit.fromShortName(group.charAt(1));
 				Rank kicker = Rank.fromShortName(drawString.charAt(2));
 				suits.add(new HandSuit(suit, kicker));
@@ -162,7 +163,7 @@ public class HandPreFlopPower {
 			if (handExist.isPresent()) {
 				for (int i = 0; i < bestHandsPattern.size(); i++) {
 					if (bestHandsPattern.get(i).equals(rankString)) {
-						level = i + 1;
+						bestHandLevel = i + 1;
 						break;
 					}
 				}
@@ -179,33 +180,19 @@ public class HandPreFlopPower {
 	 */
 	private void checkTrashHand() {
 		if ((handModel.isFourOfAKind() || handModel.isThreeOfAKind())
-				|| (preFlopRankLevel.equals(PreFlopRankLevel.NO_PAIR)
+				|| (preFlopPairLevel.equals(PreFlopPairLevel.NO_PAIR)
 						&& preFlopSuitLevel.equals(PreFlopSuitLevel.UNSUITED)
 						&& preFlopStraightLevel.equals(PreFlopStraightLevel.NO_CONNECTOR))) {
-			level = 0;
-		}
-	}
-	
-	public void displayOut() {
-		if (isTrashHand()) {
-			System.out.println("Moi: Ma main est une poubelle !");
-		} else if (isBestHand()) {
-			System.out.println("Moi: Ma main est dans le TOP 30 ("+ level +") !");
-			System.out.println("-suited: " + suitedType);		
-		} else {
-			System.out.println("-pairLevel: " + preFlopRankLevel);
-			System.out.println("-connectorLevel: " + preFlopStraightLevel);
-			System.out.println("-suitLevel: " + preFlopSuitLevel);
-			System.out.println("==>POWER: " + power);
+			bestHandLevel = 0;
 		}
 	}
 
 	public boolean isBestHand() {
-		return (level > 0);
+		return (bestHandLevel > 0);
 	}
 
 	public boolean isTrashHand() {
-		return (level == 0);
+		return (bestHandLevel == 0);
 	}
 
 	public boolean isDoubledSuited() {

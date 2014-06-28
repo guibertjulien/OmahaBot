@@ -14,16 +14,6 @@ public class CoupleCards {
 
 	private SortedSet<CardModel> sortedCards;
 
-//	public CoupleCards(CardModel card1, CardModel card2) {
-//		super();
-//		this.card1 = card1;
-//		this.card2 = card2;
-//
-//		this.sortedCards = new TreeSet<CardModel>();
-//		this.sortedCards.add(card1);
-//		this.sortedCards.add(card2);
-//	}
-
 	public CoupleCards(SortedSet<CardModel> sortedCards) {
 		super();
 		this.card1 = sortedCards.first();
@@ -35,7 +25,8 @@ public class CoupleCards {
 
 	@Override
 	public String toString() {
-		return String.join(", ", card1.toString(), card2.toString());
+		return sortedCards.toString();
+		// return String.join(", ", card1.toString(), card2.toString());
 	}
 
 	public boolean isEqualsKicker(CoupleCards other) {

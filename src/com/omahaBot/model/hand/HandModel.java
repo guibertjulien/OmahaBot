@@ -72,10 +72,6 @@ public class HandModel extends CardPackModel {
 		return "hand=" + sortedCards;
 	}
 
-	public void displayOut() {
-		System.out.println("Ma main: " + sortedCards);
-	}
-
 	/**
 	 * 
 	 * @return
@@ -101,7 +97,7 @@ public class HandModel extends CardPackModel {
 		for (List<CardModel> permutationHand : this.permutations()) {
 			for (List<CardModel> permutationBoard : boardModel.permutations(3)) {
 				CombinaisonModel combinaison = new CombinaisonModel(permutationHand, permutationBoard,
-						this.hasFlushDraw());
+						this.hasFlushDraw(), dealStep);
 				combinaisons.add(combinaison);
 			}
 		}
@@ -158,7 +154,6 @@ public class HandModel extends CardPackModel {
 	private void cleanDraws(SortedSet<DrawModel> handDrawsSorted) {
 		cleanRankDraws(handDrawsSorted);
 		cleanStraightDraws(handDrawsSorted);
-		cleanFlushDraws(handDrawsSorted);
 	}
 
 	/**
@@ -229,14 +224,5 @@ public class HandModel extends CardPackModel {
 		}
 
 		return straightDrawTypeMax;
-	}
-
-	private void cleanFlushDraws(SortedSet<DrawModel> handDrawsSorted) {
-
-		// suppression des FLUSH_DRAW si RIVER
-		if (dealStep.equals(DealStep.RIVER)) {
-			Predicate<? super DrawModel> filter_flushDraws = (d -> d.getHandCategory().equals(HandCategory.FLUSH_DRAW));
-			handDrawsSorted.removeIf(filter_flushDraws);
-		}
 	}
 }

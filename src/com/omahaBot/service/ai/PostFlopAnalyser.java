@@ -7,6 +7,8 @@ import java.util.stream.Collectors;
 
 import lombok.Data;
 
+import org.apache.log4j.Logger;
+
 import com.omahaBot.enums.BettingDecision;
 import com.omahaBot.enums.DealStep;
 import com.omahaBot.enums.HandCategory;
@@ -25,6 +27,8 @@ import com.omahaBot.model.hand.HandModel;
  */
 @Data
 public class PostFlopAnalyser {
+	
+	private static final Logger log = Logger.getLogger(PreFlopAnalyser.class);
 
 	// private TournamentModel tournamentModel;
 	//
@@ -59,6 +63,17 @@ public class PostFlopAnalyser {
 	}
 
 	public void analyseHand(HandModel handModel, BoardModel boardModel) {
+		
+		if (log.isDebugEnabled()) {
+			log.debug(">> START analyseHand");
+		}
+
+		System.out.println("############################################");
+		System.out.println(">> START analyseHand ");
+		System.out.println(handModel.toString());
+		System.out.println(boardModel.toString());
+		System.out.println("############################################");		
+		
 		handDrawsSorted = handModel.initCombinaisonDraws(boardModel);
 		
 		try {
@@ -75,6 +90,7 @@ public class PostFlopAnalyser {
 
 			handLevel = 0;
 			nutsForLevel = false;
+			boolean find = false;
 			boolean isFlushDraw = false;
 
 			for (DrawModel drawModelBoard : boardDrawsSorted) {
@@ -83,6 +99,7 @@ public class PostFlopAnalyser {
 					// same handCategory
 					if (bestPermutation.getHandCategory().equals(drawModelBoard.getHandCategory())) {
 						nutsForLevel = bestPermutation.isNuts(drawModelBoard);
+						find = true;
 						break;
 					}
 				}
@@ -94,8 +111,13 @@ public class PostFlopAnalyser {
 				
 				isFlushDraw = drawModelBoard.getHandCategory().equals(HandCategory.FLUSH_DRAW);
 			}
+			
+			if (!find) {
+				handLevel = 99;
+			}
+			
 		}
-
+		
 		System.out.println("--------------------------------------------");
 		System.out.println("- HAND DRAWS");
 		System.out.println("--------------------------------------------");
@@ -125,16 +147,22 @@ public class PostFlopAnalyser {
 			System.out.println("==> ANALYSE: NUTS !!!");	
 		}
 		else {
-			System.out.println("==> ANALYSE: LEVEL=" + handLevel + "NUTS for level=" + isNutsForLevel());
+			System.out.println("==> ANALYSE: LEVEL=" + handLevel + " / NUTS for level=" + isNutsForLevel());
 		}
 		System.out.println("============================================");
 	}
 
 	public BettingDecision decide(DealStep dealStep, HandModel myHand) {
 
-		System.out.println("===== DECISION " + dealStep + " =====");
+		if (log.isDebugEnabled()) {
+			log.debug(">> START decide " + dealStep);
+		}
+
+		System.out.println("############################################");
+		System.out.println(">> START decide " + dealStep);
+		System.out.println("############################################");		
 		
-		BettingDecision bettingDecision = BettingDecision.FOLD_ALWAYS;
+		BettingDecision bettingDecision = BettingDecision.CHECK_FOLD;
 
 		switch (dealStep) {
 		case FLOP:
@@ -150,6 +178,10 @@ public class PostFlopAnalyser {
 			break;
 		}
 
+		System.out.println("============================================");
+		System.out.println("==> Moi: Je " + bettingDecision);
+		System.out.println("============================================");
+		
 		return bettingDecision;
 	}
 
@@ -174,19 +206,19 @@ public class PostFlopAnalyser {
 			case FOUR_OF_A_KIND:
 			case FULL_HOUSE:
 				if (handLevel == 0) {
-					BettingDecision.randomBetween(BettingDecision.BET_RAISE, BettingDecision.CHECK_CALL);
+					bettingDecision = BettingDecision.randomBetween(BettingDecision.BET_RAISE, BettingDecision.CHECK_CALL);
 				}
 				else {
-					BettingDecision.randomBetween(BettingDecision.CHECK_CALL, BettingDecision.CHECK_FOLD);
+					bettingDecision = BettingDecision.randomBetween(BettingDecision.CHECK_CALL, BettingDecision.CHECK_FOLD);
 				}
 				break;
 			case FLUSH:
 			case FLUSH_DRAW:
 				if (handLevel == 0) {
-					BettingDecision.randomBetween(BettingDecision.BET_RAISE, BettingDecision.CHECK_CALL);
+					bettingDecision = BettingDecision.randomBetween(BettingDecision.BET_RAISE, BettingDecision.CHECK_CALL);
 				}
 				else {
-					BettingDecision.randomBetween(BettingDecision.CHECK_CALL, BettingDecision.CHECK_FOLD);
+					bettingDecision = BettingDecision.randomBetween(BettingDecision.CHECK_CALL, BettingDecision.CHECK_FOLD);
 				}
 				break;
 			case THREE_OF_A_KIND:
@@ -224,11 +256,11 @@ public class PostFlopAnalyser {
 		BettingDecision bettingDecision = BettingDecision.CHECK_FOLD;
 
 		if (handLevel == 0) {
-			BettingDecision.randomBetween(BettingDecision.ALLIN, BettingDecision.BET_RAISE);
+			bettingDecision = BettingDecision.randomBetween(BettingDecision.ALLIN, BettingDecision.BET_RAISE);
 		} else if (handLevel == 1) {
-			BettingDecision.randomBetween(BettingDecision.ALLIN, BettingDecision.BET_RAISE, BettingDecision.CHECK_CALL);
+			bettingDecision = BettingDecision.randomBetween(BettingDecision.ALLIN, BettingDecision.BET_RAISE, BettingDecision.CHECK_CALL);
 		} else if (handLevel == 2) {
-			BettingDecision.randomBetween(BettingDecision.CHECK_CALL, BettingDecision.CHECK_FOLD);
+			bettingDecision = BettingDecision.randomBetween(BettingDecision.CHECK_CALL, BettingDecision.CHECK_FOLD);
 		} else {
 			bettingDecision = BettingDecision.CHECK_FOLD;
 		}
@@ -237,6 +269,6 @@ public class PostFlopAnalyser {
 	}
 	
 	public boolean isNuts () {
-		return handLevel == 0;
+		return handLevel == 0 && nutsForLevel;
 	}
 }

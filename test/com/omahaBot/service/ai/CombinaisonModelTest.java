@@ -4,6 +4,7 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
+import com.omahaBot.enums.DealStep;
 import com.omahaBot.enums.Rank;
 import com.omahaBot.exception.CardPackNonValidException;
 import com.omahaBot.model.CardPackModel;
@@ -28,7 +29,7 @@ public class CombinaisonModelTest {
 		permutationHand = new CardPackModel("AdAh");
 		permutationBoard = new CardPackModel("AcAsKc");
 
-		combinaisonModel = new CombinaisonModel(permutationHand.getCards(), permutationBoard.getCards());
+		combinaisonModel = new CombinaisonModel(permutationHand.getCards(), permutationBoard.getCards(), DealStep.PRE_FLOP);
 		drawModel = combinaisonModel.searchBestRankDraw();
 		assertTrue(drawModel instanceof QuadsModel);
 		quadsModel = (QuadsModel) drawModel;
@@ -38,7 +39,7 @@ public class CombinaisonModelTest {
 		permutationHand = new CardPackModel("AdKh");
 		permutationBoard = new CardPackModel("KdKsKc");
 
-		combinaisonModel = new CombinaisonModel(permutationHand.getCards(), permutationBoard.getCards());
+		combinaisonModel = new CombinaisonModel(permutationHand.getCards(), permutationBoard.getCards(), DealStep.PRE_FLOP);
 		drawModel = combinaisonModel.searchBestRankDraw();
 		assertTrue(drawModel instanceof QuadsModel);
 		quadsModel = (QuadsModel) drawModel;
@@ -57,7 +58,7 @@ public class CombinaisonModelTest {
 		permutationHand = new CardPackModel("AdAs");
 		permutationBoard = new CardPackModel("KdKsKc");
 
-		combinaisonModel = new CombinaisonModel(permutationHand.getCards(), permutationBoard.getCards());
+		combinaisonModel = new CombinaisonModel(permutationHand.getCards(), permutationBoard.getCards(), DealStep.PRE_FLOP);
 		drawModel = combinaisonModel.searchBestRankDraw();
 		assertTrue(drawModel instanceof FullModel);
 		fullModel = (FullModel) drawModel;
@@ -68,7 +69,7 @@ public class CombinaisonModelTest {
 		permutationHand = new CardPackModel("KdKs");
 		permutationBoard = new CardPackModel("AdAsAc");
 
-		combinaisonModel = new CombinaisonModel(permutationHand.getCards(), permutationBoard.getCards());
+		combinaisonModel = new CombinaisonModel(permutationHand.getCards(), permutationBoard.getCards(), DealStep.PRE_FLOP);
 		drawModel = combinaisonModel.searchBestRankDraw();
 		assertTrue(drawModel instanceof FullModel);
 		fullModel = (FullModel) drawModel;
@@ -79,7 +80,7 @@ public class CombinaisonModelTest {
 		permutationHand = new CardPackModel("KdAs");
 		permutationBoard = new CardPackModel("AdKcKs");
 
-		combinaisonModel = new CombinaisonModel(permutationHand.getCards(), permutationBoard.getCards());
+		combinaisonModel = new CombinaisonModel(permutationHand.getCards(), permutationBoard.getCards(), DealStep.PRE_FLOP);
 		drawModel = combinaisonModel.searchBestRankDraw();
 		assertTrue(drawModel instanceof FullModel);
 		fullModel = (FullModel) drawModel;
@@ -90,7 +91,7 @@ public class CombinaisonModelTest {
 		permutationHand = new CardPackModel("KdAs");
 		permutationBoard = new CardPackModel("AdKcAc");
 
-		combinaisonModel = new CombinaisonModel(permutationHand.getCards(), permutationBoard.getCards());
+		combinaisonModel = new CombinaisonModel(permutationHand.getCards(), permutationBoard.getCards(), DealStep.PRE_FLOP);
 		drawModel = combinaisonModel.searchBestRankDraw();
 		assertTrue(drawModel instanceof FullModel);
 		fullModel = (FullModel) drawModel;
@@ -110,7 +111,7 @@ public class CombinaisonModelTest {
 		permutationHand = new CardPackModel("Ad2s");
 		permutationBoard = new CardPackModel("KdKsKc");
 
-		combinaisonModel = new CombinaisonModel(permutationHand.getCards(), permutationBoard.getCards());
+		combinaisonModel = new CombinaisonModel(permutationHand.getCards(), permutationBoard.getCards(), DealStep.PRE_FLOP);
 		drawModel = combinaisonModel.searchBestRankDraw();
 		assertTrue(drawModel instanceof SetModel);
 		setModel = (SetModel) drawModel;
@@ -120,7 +121,7 @@ public class CombinaisonModelTest {
 		permutationHand = new CardPackModel("Kd2s");
 		permutationBoard = new CardPackModel("AdAsAc");
 
-		combinaisonModel = new CombinaisonModel(permutationHand.getCards(), permutationBoard.getCards());
+		combinaisonModel = new CombinaisonModel(permutationHand.getCards(), permutationBoard.getCards(), DealStep.PRE_FLOP);
 		drawModel = combinaisonModel.searchBestRankDraw();
 		assertTrue(drawModel instanceof SetModel);
 		setModel = (SetModel) drawModel;
@@ -130,7 +131,7 @@ public class CombinaisonModelTest {
 		permutationHand = new CardPackModel("Kd2s");
 		permutationBoard = new CardPackModel("AdKcKs");
 
-		combinaisonModel = new CombinaisonModel(permutationHand.getCards(), permutationBoard.getCards());
+		combinaisonModel = new CombinaisonModel(permutationHand.getCards(), permutationBoard.getCards(), DealStep.PRE_FLOP);
 		drawModel = combinaisonModel.searchBestRankDraw();
 		assertTrue(drawModel instanceof SetModel);
 		setModel = (SetModel) drawModel;
@@ -140,7 +141,7 @@ public class CombinaisonModelTest {
 		permutationHand = new CardPackModel("2dAs");
 		permutationBoard = new CardPackModel("AdKcAc");
 
-		combinaisonModel = new CombinaisonModel(permutationHand.getCards(), permutationBoard.getCards());
+		combinaisonModel = new CombinaisonModel(permutationHand.getCards(), permutationBoard.getCards(), DealStep.PRE_FLOP);
 		drawModel = combinaisonModel.searchBestRankDraw();
 		assertTrue(drawModel instanceof SetModel);
 		setModel = (SetModel) drawModel;
@@ -159,7 +160,7 @@ public class CombinaisonModelTest {
 		permutationHand = new CardPackModel("Ad2s");
 		permutationBoard = new CardPackModel("As2dKc");
 
-		combinaisonModel = new CombinaisonModel(permutationHand.getCards(), permutationBoard.getCards());
+		combinaisonModel = new CombinaisonModel(permutationHand.getCards(), permutationBoard.getCards(), DealStep.PRE_FLOP);
 		drawModel = combinaisonModel.searchBestRankDraw();
 		assertTrue(drawModel instanceof TwoPairModel);
 		twoPairModel = (TwoPairModel) drawModel;
@@ -179,7 +180,7 @@ public class CombinaisonModelTest {
 		permutationHand = new CardPackModel("3d5s");
 		permutationBoard = new CardPackModel("4s6d7c");
 
-		combinaisonModel = new CombinaisonModel(permutationHand.getCards(), permutationBoard.getCards());
+		combinaisonModel = new CombinaisonModel(permutationHand.getCards(), permutationBoard.getCards(), DealStep.PRE_FLOP);
 		drawModel = combinaisonModel.searchStraight();
 		assertTrue(drawModel instanceof StraightModel);
 		straightModel = (StraightModel) drawModel;
@@ -189,7 +190,7 @@ public class CombinaisonModelTest {
 		permutationHand = new CardPackModel("3d5s");
 		permutationBoard = new CardPackModel("As4d2c");
 
-		combinaisonModel = new CombinaisonModel(permutationHand.getCards(), permutationBoard.getCards());
+		combinaisonModel = new CombinaisonModel(permutationHand.getCards(), permutationBoard.getCards(), DealStep.PRE_FLOP);
 		drawModel = combinaisonModel.searchStraight();
 		assertTrue(drawModel instanceof StraightModel);
 		straightModel = (StraightModel) drawModel;
@@ -199,7 +200,7 @@ public class CombinaisonModelTest {
 		permutationHand = new CardPackModel("3d8s");
 		permutationBoard = new CardPackModel("As4d2c");
 
-		combinaisonModel = new CombinaisonModel(permutationHand.getCards(), permutationBoard.getCards());
+		combinaisonModel = new CombinaisonModel(permutationHand.getCards(), permutationBoard.getCards(), DealStep.PRE_FLOP);
 		drawModel = combinaisonModel.searchStraight();
 		assertTrue(drawModel == null);
 	}

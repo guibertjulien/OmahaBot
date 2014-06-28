@@ -1,9 +1,13 @@
 package com.omahaBot.ui.form;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
+import java.util.Properties;
 
 import org.eclipse.core.databinding.observable.Realm;
 import org.eclipse.jface.databinding.swt.SWTObservables;
@@ -35,7 +39,6 @@ import com.omahaBot.model.hand.HandModel;
 import com.omahaBot.model.hand.HandPreFlopPower;
 import com.omahaBot.service.bot.ThreadDeal;
 import com.omahaBot.service.ocr.OcrServiceImpl;
-import com.omahaBot.utils.CustomOutputStream;
 
 /**
  * TODO BUILDER, HELPER...
@@ -43,8 +46,6 @@ import com.omahaBot.utils.CustomOutputStream;
  *
  */
 public class MainForm {
-
-	private final static Logger LOGGER = Logger.getLogger(MainForm.class.getName());
 
 	private OcrServiceImpl ocrService = OcrServiceImpl.getInstance();
 
@@ -221,20 +222,14 @@ public class MainForm {
 		playerBlockWidget_3 = new PlayerBlockWidget(grpTable, SWT.NONE, 3);
 
 		// styledText.setEditable(false);
-		PrintStream printStream = new PrintStream(new CustomOutputStream(styledText));
 		
 		tbtm3 = new TabItem(tabFolder, SWT.NONE);
 		tbtm3.setText("AI");
 		
 		analyseWidget = new AnalyseWidget(tabFolder, SWT.NONE);
-		tbtm3.setControl(analyseWidget);
-
-		// keeps reference of standard output stream
-		standardOut = System.out;
-
-		// re-assigns standard output stream and error output stream
-		System.setOut(printStream);
-		System.setErr(printStream);
+		tbtm3.setControl(analyseWidget);	
+		
+		redirectConsole();
 	}
 
 	public void initDealWidget(DealModel dealModel) {
@@ -273,5 +268,41 @@ public class MainForm {
 
 	public void initAnalyseWidget(HandModel myHand, HandPreFlopPower handPreFlopPower) {
 		analyseWidget.displayPreFlopAnalyse(myHand, handPreFlopPower);
+	}
+	
+	public void redirectConsole() {
+		
+//		PrintStream printStream = new PrintStream(new CustomOutputStream(styledText));
+//		
+//		// keeps reference of standard output stream
+//		standardOut = System.out;
+//
+//		// re-assigns standard output stream and error output stream
+//		System.setOut(printStream);
+//		System.setErr(printStream);
+		
+		Properties prop = new Properties();
+    	InputStream input = null;
+ 
+		String filename = "config.properties";
+		input = MainForm.class.getClassLoader().getResourceAsStream(filename);
+		if (input == null) {
+			System.out.println("Sorry, unable to find " + filename);
+			return;
+		}
+ 
+		// load a properties file from class path, inside static method
+		try {
+			prop.load(input);
+
+			File file = new File(prop.getProperty("sysout.file"));
+			FileOutputStream fos;
+
+			fos = new FileOutputStream(file);
+			PrintStream ps = new PrintStream(fos);
+			System.setOut(ps);
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
 	}
 }

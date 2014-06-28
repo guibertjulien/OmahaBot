@@ -9,6 +9,7 @@ import java.util.regex.Pattern;
 
 import lombok.Data;
 
+import com.omahaBot.enums.DealStep;
 import com.omahaBot.enums.HandCategory;
 import com.omahaBot.enums.Rank;
 import com.omahaBot.model.CardModel;
@@ -37,20 +38,25 @@ public class CombinaisonModel extends CardPackModel implements Comparable<Combin
 	private final SortedSet<CardModel> permutationBoard;
 
 	private boolean hasFlushDraw;
+	
+	// PREFLOP, FLOP, TURN ou RIVER
+	private final DealStep dealStep;
 
-	public CombinaisonModel(SortedSet<CardModel> permutationHand, SortedSet<CardModel> permutationBoard) {
+	public CombinaisonModel(SortedSet<CardModel> permutationHand, SortedSet<CardModel> permutationBoard, DealStep dealStep) {
 		this.permutationHand = permutationHand;
 		this.permutationBoard = permutationBoard;
-
+		this.dealStep = dealStep;
+		
 		sortedCards = new TreeSet<CardModel>();
 		sortedCards.addAll(permutationHand);
 		sortedCards.addAll(permutationBoard);
 	}
 
-	public CombinaisonModel(List<CardModel> permutationHand, List<CardModel> permutationBoard, boolean hasFlushDraw) {
+	public CombinaisonModel(List<CardModel> permutationHand, List<CardModel> permutationBoard, boolean hasFlushDraw, DealStep dealStep) {
 		this.permutationHand = new TreeSet<CardModel>(permutationHand);
 		this.permutationBoard = new TreeSet<CardModel>(permutationBoard);
 		this.hasFlushDraw = hasFlushDraw;
+		this.dealStep = dealStep;
 
 		sortedCards = new TreeSet<CardModel>();
 		sortedCards.addAll(permutationHand);
@@ -61,29 +67,34 @@ public class CombinaisonModel extends CardPackModel implements Comparable<Combin
 	 * TODO : best practices ?
 	 */
 	public ArrayList<DrawModel> initDraw() {
-		ArrayList<DrawModel> listDraw = new ArrayList<>();
+		ArrayList<DrawModel> draws = new ArrayList<>();
 
 		DrawModel drawModel = null;
 
 		if (!sortedCards.isEmpty()) {
 			if (hasFlushDraw) {
-				listDraw.addAll(searchFlushDraw(4, 5, permutationHand));
+				if (dealStep.equals(DealStep.FLOP) || dealStep.equals(DealStep.TURN)) {
+					draws.addAll(searchFlushDraw(4, 5, permutationHand));
+				}
+				else if (dealStep.equals(DealStep.RIVER)) {
+					draws.addAll(searchFlushDraw(5, 5, permutationHand));
+				}
 			}
 
 			drawModel = searchBestRankDraw();
 
 			if (drawModel != null) {
-				listDraw.add(drawModel);
+				draws.add(drawModel);
 			}
 
 			drawModel = searchStraight();
 
 			if (drawModel != null) {
-				listDraw.add(drawModel);
+				draws.add(drawModel);
 			}
 		}
 
-		return listDraw;
+		return draws;
 	}
 
 	public DrawModel searchBestRankDraw() {

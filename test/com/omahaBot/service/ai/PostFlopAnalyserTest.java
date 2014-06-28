@@ -50,38 +50,40 @@ public class PostFlopAnalyserTest {
 	@Test
 	public final void testAnalyseHand() throws CardPackNonValidException {
 
-		// FLUSH_DRAW
-		DealStep dealStep = DealStep.TURN;
-		HandModel handModel = new HandModel("TcJc2h3s", dealStep);
-		BoardModel boardModel = new BoardModel("Ac9cKhQd", dealStep);
-		
+		DealStep dealStep;
+		HandModel handModel;
+		BoardModel boardModel;
 		PostFlopAnalyser postFlopAnalyser = new PostFlopAnalyser();
+		
+		// FLUSH_DRAW
+		dealStep = DealStep.TURN;
+		handModel = new HandModel("TcJc2h3s", dealStep);
+		boardModel = new BoardModel("Ac9cKhQd", dealStep);
 		postFlopAnalyser.analyseHand(handModel, boardModel);
-		
-		System.out.println(postFlopAnalyser);
-		
-		Assert.assertTrue(postFlopAnalyser.isNuts());
-		
-		// TODO : no nuts !!!!
+		Assert.assertTrue(!postFlopAnalyser.isNuts());
 		
 		// NO FLUSH_DRAW because RIVER
-		 dealStep = DealStep.RIVER;
+		dealStep = DealStep.RIVER;
 		handModel = new HandModel("TcJc2h3s", dealStep);
 		boardModel = new BoardModel("Ac9cKhQd6h", dealStep);
-		
 		postFlopAnalyser.analyseHand(handModel, boardModel);
-		
-		System.out.println(postFlopAnalyser);
-		
 		Assert.assertTrue(postFlopAnalyser.isNuts());
 		
-		// FLUSH
-		handModel = new HandModel("TcJc2h3s");
-		boardModel = new BoardModel("Ac9cKhQd6c", DealStep.RIVER);
-		
+		// FLUSH NO NUTS
+		dealStep = DealStep.RIVER;
+		handModel = new HandModel("TcJc2h3s", dealStep);
+		boardModel = new BoardModel("Ac9cKhQd6c", dealStep);
 		postFlopAnalyser.analyseHand(handModel, boardModel);
+		Assert.assertTrue(postFlopAnalyser.getHandLevel() == 0);
+		Assert.assertTrue(!postFlopAnalyser.isNuts());
 		
-		System.out.println(postFlopAnalyser);
+		// FLUSH NUTS (KICKER)
+		dealStep = DealStep.RIVER;
+		handModel = new HandModel("4cKc2h3s", dealStep);
+		boardModel = new BoardModel("Ac9cKhQd6c", dealStep);
+		postFlopAnalyser.analyseHand(handModel, boardModel);
+		Assert.assertTrue(postFlopAnalyser.getHandLevel() == 0);
+		Assert.assertTrue(postFlopAnalyser.isNuts());		
 	}
 
 	@Test
