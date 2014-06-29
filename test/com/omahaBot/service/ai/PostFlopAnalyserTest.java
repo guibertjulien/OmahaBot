@@ -83,7 +83,14 @@ public class PostFlopAnalyserTest {
 		boardModel = new BoardModel("Ac9cKhQd6c", dealStep);
 		postFlopAnalyser.analyseHand(handModel, boardModel);
 		Assert.assertTrue(postFlopAnalyser.getHandLevel() == 0);
-		Assert.assertTrue(postFlopAnalyser.isNuts());		
+		Assert.assertTrue(postFlopAnalyser.isNuts());	
+		
+		//
+		dealStep = DealStep.FLOP;
+		handModel = new HandModel("2h6h6dKd", dealStep);
+		boardModel = new BoardModel("KsKhKc", dealStep);
+		postFlopAnalyser.analyseHand(handModel, boardModel);
+		Assert.assertTrue(postFlopAnalyser.isNuts());	
 	}
 
 	@Test

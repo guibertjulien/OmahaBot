@@ -90,4 +90,9 @@ public enum PreFlopStraightLevel {
 		}
 		return value;
 	}
+	
+	@Override
+    public String toString() {
+		return this.name().concat("(" + this.getPowerPoint().getPoint() + ")");
+	}
 }

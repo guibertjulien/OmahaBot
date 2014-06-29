@@ -84,14 +84,20 @@ public @Data class QuadsModel extends DrawModel {
 	@Override
 	public boolean isNuts(Object obj) {
 		QuadsModel other = (QuadsModel) obj;
-
+		
 		if (!this.equals(obj))
 			return false;
-		if (!nutsOrHoleCards.getSortedCards().first().getRank()
-				.equals(other.nutsOrHoleCards.getSortedCards().first().getRank()))
+		
+		System.out.println("1 : " + this.nutsOrHoleCards.getSortedCards());
+		System.out.println("2 : " + other.nutsOrHoleCards.getSortedCards());
+		
+		if (!(nutsOrHoleCards.getSortedCards().first().getRank()
+				.equals(other.nutsOrHoleCards.getSortedCards().first().getRank())
+				|| other.nutsOrHoleCards.getSortedCards().first().getRank().equals(Rank.UNKNOWN)))
 			return false;
-		if (!nutsOrHoleCards.getSortedCards().last().getRank()
-				.equals(other.nutsOrHoleCards.getSortedCards().last().getRank()))
+		if (!(nutsOrHoleCards.getSortedCards().last().getRank()
+				.equals(other.nutsOrHoleCards.getSortedCards().last().getRank())
+				|| other.nutsOrHoleCards.getSortedCards().last().getRank().equals(Rank.UNKNOWN)))
 			return false;
 		return true;
 	}
@@ -101,7 +107,7 @@ public @Data class QuadsModel extends DrawModel {
 
 		if (o instanceof QuadsModel) {
 			QuadsModel drawCompare = (QuadsModel) o;
-
+			
 			// compare rank
 			if (this.rank.ordinal() > drawCompare.rank.ordinal()) {
 				return -1;

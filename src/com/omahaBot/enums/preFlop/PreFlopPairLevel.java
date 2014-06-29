@@ -121,4 +121,9 @@ public enum PreFlopPairLevel {
 		}
 		return value;
 	}
+	
+	@Override
+    public String toString() {
+		return this.name().concat("(" + this.getPowerPoint().getPoint() + ")");
+	}
 }

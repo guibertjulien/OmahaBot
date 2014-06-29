@@ -79,4 +79,9 @@ public enum PreFlopSuitLevel {
 		return UNSUITED;
 		// throw new IllegalArgumentException();
 	}
+	
+	@Override
+    public String toString() {
+		return this.name().concat("(" + this.getPowerPoint().getPoint() + ")");
+	}
 }

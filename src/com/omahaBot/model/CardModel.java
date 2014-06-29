@@ -14,7 +14,7 @@ public class CardModel implements Comparable<CardModel> {
 		this.rank = rank;
 		this.suit = suit;
 	}
-	
+
 	public CardModel(Rank rank) {
 		super();
 		this.rank = rank;
@@ -50,8 +50,11 @@ public class CardModel implements Comparable<CardModel> {
 
 	@Override
 	public int compareTo(CardModel o) {
+
 		// compare rank
-		if (this.rank.ordinal() > o.rank.ordinal()) {
+		if (this.rank.equals(Rank.UNKNOWN)) {
+			return -1;
+		} else if (this.rank.ordinal() > o.rank.ordinal()) {
 			return 1;
 		}
 		else if (this.rank.ordinal() < o.rank.ordinal()) {

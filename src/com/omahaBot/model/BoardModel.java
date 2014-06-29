@@ -225,11 +225,11 @@ public class BoardModel extends CardPackModel {
 
 			rankGroup = Rank.fromShortName(group.charAt(0));
 
-			// test if handModel has a same rank card
-			if (handModel != null && !handModel.hasOnlyOneRankCard(rankGroup)) {
+//			// test if handModel has a same rank card
+//			if (handModel != null && !handModel.hasOnlyOneRankCard(rankGroup)) {
 				QuadsModel quadsModel = new QuadsModel(rankGroup, boardCategory);
 				listDraw.add(quadsModel);
-			}
+//			}
 		}
 
 		return listDraw;
@@ -267,21 +267,21 @@ public class BoardModel extends CardPackModel {
 		return twoPairModel;
 	}
 
-	/**
-	 * 
-	 * @return
-	 */
-	public DrawModel searchBestOnePairDraw() {
-
-		ArrayList<CardModel> listCards = new ArrayList<>(sortedCards);
-		Collections.reverse(listCards);
-
-		CardModel topPair = listCards.get(0);
-
-		OnePairModel onePairModel = new OnePairModel(topPair.getRank());
-
-		return onePairModel;
-	}
+//	/**
+//	 * 
+//	 * @return
+//	 */
+//	public DrawModel searchBestOnePairDraw() {
+//
+//		ArrayList<CardModel> listCards = new ArrayList<>(sortedCards);
+//		Collections.reverse(listCards);
+//
+//		CardModel topPair = listCards.get(0);
+//
+//		OnePairModel onePairModel = new OnePairModel(topPair.getRank());
+//
+//		return onePairModel;
+//	}
 
 	/**
 	 * 
@@ -411,10 +411,10 @@ public class BoardModel extends CardPackModel {
 				draws.add(drawModel);
 			}
 			
-			drawModel = searchBestOnePairDraw();
-			if (drawModel != null) {
-				draws.add(drawModel);
-			}
+//			drawModel = searchBestOnePairDraw();
+//			if (drawModel != null) {
+//				draws.add(drawModel);
+//			}
 		}
 
 		// tri

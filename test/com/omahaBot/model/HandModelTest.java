@@ -262,6 +262,19 @@ public class HandModelTest {
 		quadsModel = (QuadsModel) listDraw.get(0);
 		assertTrue(quadsModel.getRank().equals(Rank.THREE));
 		assertTrue(quadsModel.getBoardCategory().equals(BoardCategory.THREE_OF_A_KIND));
+		
+		listDraw.clear();
+		handModel = new HandModel("2h6h6dKd");
+		boardModel = new BoardModel("KsKhKc", DealStep.FLOP);
+		listDraw.addAll(handModel.initCombinaisonDraws(boardModel));
+		System.out.println(handModel);
+		System.out.println(boardModel);
+		System.out.println(listDraw);
+		assertTrue(listDraw.size() == 1);
+		assertTrue(listDraw.get(0).getHandCategory().equals(HandCategory.FOUR_OF_A_KIND));
+		quadsModel = (QuadsModel) listDraw.get(0);
+		assertTrue(quadsModel.getRank().equals(Rank.KING));
+		assertTrue(quadsModel.getBoardCategory().equals(BoardCategory.THREE_OF_A_KIND));
 	}
 	
     // =========================================================================

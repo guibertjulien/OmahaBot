@@ -233,7 +233,7 @@ public class AnalyseWidget extends Composite {
 		table_hand.removeAll();
 		
 		if (myHand == null) {
-//			lbl_handDrawValue.setText("");
+			lbl_handDrawValue.setText("");
 		}
 		else {
 			lbl_handDrawValue.setText("[" + myHand.toStringByRank() + "][" + board.toStringByRank() + "]");
@@ -251,12 +251,12 @@ public class AnalyseWidget extends Composite {
 		init();
 		
 		if (myHand == null) {
-//			lbl_handValue.setText("");
-//			lbl_pairLevelValue.setText("");
-//			lbl_suitLevelValue.setText("");
-//			lbl_connectorLevelValue.setText("");
-//			lbl_powerValue.setText("");
-//			lbl_infos.setText("");
+			lbl_handValue.setText("");
+			lbl_pairLevelValue.setText("");
+			lbl_suitLevelValue.setText("");
+			lbl_connectorLevelValue.setText("");
+			lbl_powerValue.setText("");
+			lbl_infos.setText("");
 		} else {
 			lbl_handValue.setText(myHand.toStringByRank());
 			lbl_pairLevelValue.setText(handPreFlopPower.getPreFlopPairLevel().toString());

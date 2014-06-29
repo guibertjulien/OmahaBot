@@ -116,6 +116,17 @@ public class PostFlopAnalyser {
 				handLevel = 99;
 			}
 			
+			System.out.println(bestPermutation);
+			System.out.println(boardDrawsSorted.first());
+			System.out.println(bestPermutation.compareTo(boardDrawsSorted.first()));
+			
+			if (bestPermutation.compareTo(boardDrawsSorted.first()) < 0) {
+				handLevel = 0;
+				nutsForLevel = true;
+				System.out.println("==> BUG !!!");
+				log.error("==> BUG !!!");
+			}
+			
 		}
 		
 		System.out.println("--------------------------------------------");

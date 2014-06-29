@@ -41,14 +41,17 @@ public @Data abstract class DrawModel implements Comparable<DrawModel>, DrawAnal
 		nutsOrHoleCards = new CoupleCards(permutationHand);
 	}
 
+	/**
+	 * do not modify
+	 */
 	@Override
 	public int compareTo(DrawModel o) {
 		// compare drawType
-		if (this.handCategory.ordinal() < o.handCategory.ordinal()) {
-			return 1;
+		if (this.handCategory.ordinal() > o.handCategory.ordinal()) {
+			return -1;
 		}
 		else {
-			return -1;
+			return 1;
 		}
 	}
 

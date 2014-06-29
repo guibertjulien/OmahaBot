@@ -26,7 +26,7 @@ public enum Rank {
 	KING("K"),
 	ACE("A"),
 	UNKNOWN("?");
-
+	
 	public static String TEN_SCANED = "10";
 
 	private static final Map<String, Rank> map = new
@@ -51,17 +51,6 @@ public enum Rank {
 
 	public void setShortName(String shortName) {
 		this.shortName = shortName;
-	}
-
-	// récupération de l'instance
-	@Deprecated
-	public static Rank fromShortName(String shortName) {
-		final Rank value = map.get(shortName);
-		if (value != null) {
-			return value;
-		}
-
-		throw new IllegalArgumentException();
 	}
 
 	// récupération de l'instance
