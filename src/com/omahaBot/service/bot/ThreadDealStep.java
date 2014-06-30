@@ -61,9 +61,11 @@ public class ThreadDealStep extends MyThread {
 			// scan du dealStep toutes les 1s
 			currentDealStep = initDealStep();// critère de rupture
 
-			if (!oldDealStep.equals(currentDealStep)) {
+			boolean isChangeDealStep = !oldDealStep.equals(currentDealStep);
+			
+			if (isChangeDealStep) {
 				log.debug("NEW DEAL STEP : " + currentDealStep);
-
+				
 				oldDealStep = currentDealStep;
 
 				initBoardCard();

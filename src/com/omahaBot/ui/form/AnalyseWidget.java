@@ -20,6 +20,7 @@ import com.omahaBot.model.BoardModel;
 import com.omahaBot.model.draw.DrawModel;
 import com.omahaBot.model.hand.HandModel;
 import com.omahaBot.model.hand.HandPreFlopPower;
+import com.omahaBot.service.ai.PostFlopAnalyser;
 
 public class AnalyseWidget extends Composite {
 	private Table table_boardDraw;
@@ -32,6 +33,8 @@ public class AnalyseWidget extends Composite {
 	private Label lbl_connectorLevelValue;
 	private Label lbl_powerValue;
 	private Label lbl_infos;
+	private Label lbl_straightDrawTypeValue;
+	private Label lbl_nuts;
 
 	/**
 	 * Create the composite.
@@ -57,7 +60,6 @@ public class AnalyseWidget extends Composite {
 		GridData gd_lbl_handValue = new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1);
 		gd_lbl_handValue.widthHint = 150;
 		lbl_handValue.setLayoutData(gd_lbl_handValue);
-		lbl_handValue.setText("{}");
 
 		Label lbl_pairLevel = new Label(grpPreflopAnalyse, SWT.NONE);
 		lbl_pairLevel.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
@@ -67,7 +69,6 @@ public class AnalyseWidget extends Composite {
 		GridData gd_lbl_rankPowerValue = new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1);
 		gd_lbl_rankPowerValue.widthHint = 150;
 		lbl_pairLevelValue.setLayoutData(gd_lbl_rankPowerValue);
-		lbl_pairLevelValue.setText("{}");
 
 		Label lbl_suitLevel = new Label(grpPreflopAnalyse, SWT.NONE);
 		lbl_suitLevel.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
@@ -77,7 +78,6 @@ public class AnalyseWidget extends Composite {
 		GridData gd_lbl_suitPowerValue = new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1);
 		gd_lbl_suitPowerValue.widthHint = 150;
 		lbl_suitLevelValue.setLayoutData(gd_lbl_suitPowerValue);
-		lbl_suitLevelValue.setText("{}");
 		
 		Label lbl_connectorLevel = new Label(grpPreflopAnalyse, SWT.NONE);
 		lbl_connectorLevel.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
@@ -87,7 +87,6 @@ public class AnalyseWidget extends Composite {
 		GridData gd_lbl_connectorLevelValue = new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1);
 		gd_lbl_connectorLevelValue.widthHint = 150;
 		lbl_connectorLevelValue.setLayoutData(gd_lbl_connectorLevelValue);
-		lbl_connectorLevelValue.setText("{}");
 		
 		Label lbl_power = new Label(grpPreflopAnalyse, SWT.NONE);
 		lbl_power.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
@@ -119,10 +118,9 @@ public class AnalyseWidget extends Composite {
 		lbl_board.setText("BoardDraws for :");
 
 		lbl_boardDrawValue = new Label(composite, SWT.NONE);
-		GridData gd_lbl_boardDrawValue = new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1);
+		GridData gd_lbl_boardDrawValue = new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1);
 		gd_lbl_boardDrawValue.widthHint = 150;
 		lbl_boardDrawValue.setLayoutData(gd_lbl_boardDrawValue);
-		lbl_boardDrawValue.setText("{}");
 
 		TableViewer tableViewer = new TableViewer(this, SWT.BORDER | SWT.FULL_SELECTION);
 		table_boardDraw = tableViewer.getTable();
@@ -136,20 +134,8 @@ public class AnalyseWidget extends Composite {
 
 		TableViewerColumn tableViewerColumn_4 = new TableViewerColumn(tableViewer, SWT.NONE);
 		TableColumn tblclmnDrawType = tableViewerColumn_4.getColumn();
-		tblclmnDrawType.setWidth(120);
-		tblclmnDrawType.setText("Type");
-
-		TableViewerColumn tableViewerColumn_1 = new TableViewerColumn(tableViewer, SWT.NONE);
-		TableColumn tblclmnDraw = tableViewerColumn_1.getColumn();
-		tblclmnDraw.setResizable(false);
-		tblclmnDraw.setWidth(80);
-		tblclmnDraw.setText("Draws");
-
-		TableViewerColumn tableViewerColumn_3 = new TableViewerColumn(tableViewer, SWT.NONE);
-		TableColumn tblclmnBestHand = tableViewerColumn_3.getColumn();
-		tblclmnBestHand.setToolTipText("");
-		tblclmnBestHand.setWidth(50);
-		tblclmnBestHand.setText("Nuts");
+		tblclmnDrawType.setWidth(250);
+		tblclmnDrawType.setText("Draw");
 
 		TableViewerColumn tableViewerColumn_2 = new TableViewerColumn(tableViewer, SWT.NONE);
 		TableColumn tblclmnOuts = tableViewerColumn_2.getColumn();
@@ -168,20 +154,27 @@ public class AnalyseWidget extends Composite {
 		composite_1.setLayout(new GridLayout(2, false));
 
 		Label lbl_hand = new Label(composite_1, SWT.NONE);
+		lbl_hand.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
 		lbl_hand.setFont(SWTResourceManager.getFont("Segoe UI", 9, SWT.BOLD));
 		lbl_hand.setText("HandDraws for :");
 
 		lbl_handDrawValue = new Label(composite_1, SWT.NONE);
-		GridData gd_lbl_handDrawValue = new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1);
+		GridData gd_lbl_handDrawValue = new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1);
 		gd_lbl_handDrawValue.widthHint = 150;
 		lbl_handDrawValue.setLayoutData(gd_lbl_handDrawValue);
-		lbl_handDrawValue.setText("{}");
+		
+		Label lbl_straightDrawType = new Label(composite_1, SWT.NONE);
+		lbl_straightDrawType.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
+		lbl_straightDrawType.setText("StraightDrawType:");
+		
+		lbl_straightDrawTypeValue = new Label(composite_1, SWT.NONE);
+		lbl_straightDrawTypeValue.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 
 		TableViewer tableViewer_1 = new TableViewer(this, SWT.BORDER | SWT.FULL_SELECTION);
 		table_hand = tableViewer_1.getTable();
 		table_hand.setFont(SWTResourceManager.getFont("Segoe UI", 8, SWT.NORMAL));
 		GridData gd_table_hand = new GridData(SWT.FILL, SWT.TOP, true, false, 1, 1);
-		gd_table_hand.heightHint = 150;
+		gd_table_hand.heightHint = 100;
 		table_hand.setLayoutData(gd_table_hand);
 		table_hand.setLinesVisible(true);
 		table_hand.setSize(new Point(0, 200));
@@ -203,6 +196,19 @@ public class AnalyseWidget extends Composite {
 		tableColumn_4.setWidth(30);
 		tableColumn_4.setText("%");
 		tableColumn_4.setResizable(false);
+		
+		Group grpPostflopanalyse = new Group(this, SWT.NONE);
+		grpPostflopanalyse.setFont(SWTResourceManager.getFont("Segoe UI", 9, SWT.BOLD));
+		grpPostflopanalyse.setText("PostFlopAnalyse");
+		grpPostflopanalyse.setLayout(new GridLayout(1, false));
+		grpPostflopanalyse.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
+		
+		lbl_nuts = new Label(grpPostflopanalyse, SWT.NONE);
+		lbl_nuts.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		lbl_nuts.setAlignment(SWT.CENTER);
+		lbl_nuts.setBackground(SWTResourceManager.getColor(SWT.COLOR_WHITE));
+		lbl_nuts.setFont(SWTResourceManager.getFont("Segoe UI", 12, SWT.BOLD));
+		lbl_nuts.setForeground(SWTResourceManager.getColor(SWT.COLOR_RED));
 
 	}
 
@@ -211,7 +217,7 @@ public class AnalyseWidget extends Composite {
 		// Disable the check that prevents subclassing of SWT components
 	}
 
-	public void displayBoardDraw(BoardModel boardModel) {
+	public void displayBoardDraw(BoardModel boardModel, ArrayList<DrawModel> boardDraws) {
 		table_boardDraw.removeAll();
 
 		if (boardModel == null) {
@@ -219,31 +225,41 @@ public class AnalyseWidget extends Composite {
 		}
 		else {
 			lbl_boardDrawValue.setText(boardModel.toStringByRank());
-
-//			for (DrawModel drawModel : boardModel.initDraw()) {
-//				TableItem item1 = new TableItem(table_boardDraw, SWT.NONE);
-//				item1.setText(new String[] { drawModel.getType().name(), drawModel.getDrawString(),
-//						drawModel.displayNuts(), String.valueOf(drawModel.getNbOut()),
-//						String.valueOf(drawModel.getPercent()) });
-//			}
+			
+			for (DrawModel drawModel : boardDraws) {
+				if (drawModel != null) {
+					TableItem item1 = new TableItem(table_boardDraw, SWT.NONE);
+					item1.setText(new String[] { drawModel.toString(), "", "" });
+				}
+			}
 		}
 	}
 
-	public void displayHandDraws(HandModel myHand, BoardModel board, ArrayList<DrawModel> handDraws) {
+	public void displayHandDraws(HandModel myHand, BoardModel board, ArrayList<DrawModel> handDraws, PostFlopAnalyser postFlopAnalyser) {
 		table_hand.removeAll();
-		
+
 		if (myHand == null) {
 			lbl_handDrawValue.setText("");
+			lbl_straightDrawTypeValue.setText("");
+			lbl_nuts.setText("");
 		}
 		else {
 			lbl_handDrawValue.setText("[" + myHand.toStringByRank() + "][" + board.toStringByRank() + "]");
-
-				for (DrawModel drawModel : handDraws) {
-					if (drawModel != null) {
-						TableItem item1 = new TableItem(table_hand, SWT.NONE);
-						item1.setText(new String[] { drawModel.toString(), "", "" });
-					}
+			lbl_straightDrawTypeValue.setText(postFlopAnalyser.getStraightDrawType().toString());
+			
+			for (DrawModel drawModel : handDraws) {
+				if (drawModel != null) {
+					TableItem item1 = new TableItem(table_hand, SWT.NONE);
+					item1.setText(new String[] { drawModel.toString(), "", "" });
 				}
+			}
+			
+			if (postFlopAnalyser.isNuts()) {
+				lbl_nuts.setText("NUTS !!!");
+			}
+			else {
+				lbl_nuts.setText("HandLevel=" + postFlopAnalyser.getHandLevel() + "(nuts for level ? " + postFlopAnalyser.isNutsForLevel() + ")");
+			}
 		}
 	}
 

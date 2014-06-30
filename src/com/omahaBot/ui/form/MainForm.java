@@ -37,6 +37,7 @@ import com.omahaBot.model.PlayerModel;
 import com.omahaBot.model.draw.DrawModel;
 import com.omahaBot.model.hand.HandModel;
 import com.omahaBot.model.hand.HandPreFlopPower;
+import com.omahaBot.service.ai.PostFlopAnalyser;
 import com.omahaBot.service.bot.ThreadDeal;
 import com.omahaBot.service.ocr.OcrServiceImpl;
 
@@ -258,12 +259,12 @@ public class MainForm {
 		actionBlockWidget.setActionModel(actionModel);
 	}
 	
-	public void initAnalyseWidget(BoardModel boardModel) {
-		analyseWidget.displayBoardDraw(boardModel);
+	public void initAnalyseWidget(BoardModel boardModel, ArrayList<DrawModel> boardDraws) {
+		analyseWidget.displayBoardDraw(boardModel, boardDraws);
 	}
 	
-	public void initAnalyseWidget(HandModel myHand, BoardModel board, ArrayList<DrawModel> handDraws) {
-		analyseWidget.displayHandDraws(myHand, board, handDraws);
+	public void initAnalyseWidget(HandModel myHand, BoardModel board, ArrayList<DrawModel> handDraws, PostFlopAnalyser postFlopAnalyser) {
+		analyseWidget.displayHandDraws(myHand, board, handDraws, postFlopAnalyser);
 	}
 
 	public void initAnalyseWidget(HandModel myHand, HandPreFlopPower handPreFlopPower) {

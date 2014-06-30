@@ -55,15 +55,21 @@ public class ThreadAction extends MyThread {
 
 	private HandModel myHand;
 
+	private boolean firstTurnBet = true;
+
+	private boolean firstAction = true;
+
 	private ArrayList<DrawModel> handDraws = new ArrayList<DrawModel>();
 
-	private boolean firstTurnBet = true;
+	private ArrayList<DrawModel> boardDraws = new ArrayList<DrawModel>();
 
 	public ThreadAction(MainForm mainForm, DealStep dealStep, BoardModel board) {
 		super();
 		this.mainForm = mainForm;
 		this.dealStep = dealStep;
 		this.board = board;
+
+		firstAction = true;
 
 		try {
 			robot = new Robot();
@@ -111,28 +117,38 @@ public class ThreadAction extends MyThread {
 
 				oldPot = currentPot;
 
-				if (Consts.register && positionPlayerTurnPlay == Consts.MY_TABLEPOSITION) {
+				System.out.println("-->test1");
+
+				if (Consts.register) {
 					handDraws.clear();
+					boardDraws.clear();
 
-					if (myHand == null) {
-						initMyHand();
-					}
+					System.out.println("-->test2 : " + dealStep + " " + firstAction);
 
-					switch (dealStep) {
-					case PRE_FLOP:
+					if (positionPlayerTurnPlay == Consts.MY_TABLEPOSITION && dealStep.equals(DealStep.PRE_FLOP)) {
+						if (myHand == null) {
+							initMyHand();
+						}
+
+						System.out.println("-->test3 : preFlopAnalyser.analyseHand(myHand);");
+
 						preFlopAnalyser.analyseHand(myHand);
-						break;
-					case FLOP:
-					case TURN:
-					case RIVER:
+					}
+					else if (firstAction && dealStep.ordinal() > DealStep.PRE_FLOP.ordinal()) {
+						if (myHand == null) {
+							initMyHand();
+						}
+
+						System.out.println("-->test4 : postFlopAnalyser.analyseHand(myHand);");
+						
 						postFlopAnalyser.analyseHand(myHand, board);
 						handDraws.addAll(postFlopAnalyser.getHandDrawsSorted());
-						break;
-					default:
-						break;
+						boardDraws.addAll(postFlopAnalyser.getBoardDrawsSorted());
 					}
 
-					play();
+					if (positionPlayerTurnPlay == Consts.MY_TABLEPOSITION) {
+						play();
+					}
 				}
 
 				positionPlayerTurnPlayOld = positionPlayerTurnPlay;
@@ -143,18 +159,13 @@ public class ThreadAction extends MyThread {
 						mainForm.initActionWidget(actionModel);
 						mainForm.initPlayerWidget(listCurrentPlayer);
 
-						switch (dealStep) {
-						case PRE_FLOP:
-							mainForm.initAnalyseWidget(myHand, preFlopAnalyser.getHandPreFlopPower());
-							break;
-						case FLOP:
-						case TURN:
-						case RIVER:
-							mainForm.initAnalyseWidget(board);
-							mainForm.initAnalyseWidget(myHand, board, handDraws);
-							break;
-						default:
-							break;
+						if (myHand != null) {
+							if (positionPlayerTurnPlay == Consts.MY_TABLEPOSITION && dealStep.equals(DealStep.PRE_FLOP)) {
+								mainForm.initAnalyseWidget(myHand, preFlopAnalyser.getHandPreFlopPower());
+							} else if (firstAction && dealStep.ordinal() > DealStep.PRE_FLOP.ordinal()) {
+								mainForm.initAnalyseWidget(board, boardDraws);
+								mainForm.initAnalyseWidget(myHand, board, handDraws, postFlopAnalyser);
+							}
 						}
 					}
 				});
@@ -166,6 +177,8 @@ public class ThreadAction extends MyThread {
 				// TODO Auto-generated catch block
 				ex.printStackTrace();
 			}
+
+			firstAction = false;
 		}
 
 		log.debug("<< STOP ThreadAction: " + this.getId());
@@ -177,11 +190,13 @@ public class ThreadAction extends MyThread {
 
 		switch (dealStep) {
 		case PRE_FLOP:
+			System.out.println("play PRE");
 			bettingDecision = preFlopAnalyser.decide(myHand, firstTurnBet);
 			break;
 		case FLOP:
 		case TURN:
 		case RIVER:
+			System.out.println("play POST");
 			bettingDecision = postFlopAnalyser.decide(dealStep, myHand);
 			break;
 		default:

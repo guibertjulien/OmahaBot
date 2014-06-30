@@ -42,6 +42,7 @@ public class PostFlopAnalyser {
 
 	private int handLevel;
 	private boolean nutsForLevel;
+	private StraightDrawType straightDrawType = StraightDrawType.NO_DRAW;
 
 	public PostFlopAnalyser() {
 	}
@@ -135,7 +136,7 @@ public class PostFlopAnalyser {
 		
 		// analyse de STRAIGHT DRAWS TYPE si pas de STRAIGHT
 		if (!handModel.isStraight(handDrawsSorted)) {
-			StraightDrawType straightDrawType = handModel.searchStraightDrawType(boardModel);
+			straightDrawType = handModel.searchStraightDrawType(boardModel);
 			System.out.println("straightDrawType=" + straightDrawType);			
 		}
 

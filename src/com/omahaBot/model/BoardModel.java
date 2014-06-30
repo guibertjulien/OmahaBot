@@ -20,7 +20,6 @@ import com.omahaBot.exception.StraightInitializeException;
 import com.omahaBot.model.comparator.RankAceLowComparator;
 import com.omahaBot.model.draw.DrawModel;
 import com.omahaBot.model.draw.FullModel;
-import com.omahaBot.model.draw.OnePairModel;
 import com.omahaBot.model.draw.QuadsModel;
 import com.omahaBot.model.draw.SetModel;
 import com.omahaBot.model.draw.StraightModel;

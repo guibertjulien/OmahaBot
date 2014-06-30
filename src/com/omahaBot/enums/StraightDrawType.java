@@ -19,4 +19,9 @@ public enum StraightDrawType {
 	public int getOuts() {
 		return outs;
 	}
+	
+	@Override
+    public String toString() {
+		return this.name().concat("; outs: " + this.getOuts());
+	}
 }

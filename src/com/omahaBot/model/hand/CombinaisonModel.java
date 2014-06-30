@@ -36,11 +36,11 @@ public class CombinaisonModel extends CardPackModel implements Comparable<Combin
 	private final SortedSet<CardModel> permutationHand;
 
 	private final SortedSet<CardModel> permutationBoard;
-
-	private boolean hasFlushDraw;
 	
 	// PREFLOP, FLOP, TURN ou RIVER
 	private final DealStep dealStep;
+	
+	private boolean hasFlushDraw = false;
 
 	public CombinaisonModel(SortedSet<CardModel> permutationHand, SortedSet<CardModel> permutationBoard, DealStep dealStep) {
 		this.permutationHand = permutationHand;
@@ -72,7 +72,7 @@ public class CombinaisonModel extends CardPackModel implements Comparable<Combin
 		DrawModel drawModel = null;
 
 		if (!sortedCards.isEmpty()) {
-			if (hasFlushDraw) {
+			if (hasFlushDraw && iSPermutationsHandSuited()) {
 				if (dealStep.equals(DealStep.FLOP) || dealStep.equals(DealStep.TURN)) {
 					draws.addAll(searchFlushDraw(4, 5, permutationHand));
 				}
@@ -168,6 +168,17 @@ public class CombinaisonModel extends CardPackModel implements Comparable<Combin
 		return straightModel;
 	}
 
+	/**
+	 * 
+	 * @return
+	 */
+	public boolean iSPermutationsHandSuited() {
+		CardModel cardModel1 = permutationHand.first();
+		CardModel cardModel2 = permutationHand.last();
+		
+		return cardModel1.getSuit().equals(cardModel2.getSuit());
+	}
+	
 	@Override
 	public int compareTo(CombinaisonModel o) {
 		return 1;
