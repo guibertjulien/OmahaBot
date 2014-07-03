@@ -39,6 +39,7 @@ import com.omahaBot.model.hand.HandModel;
 import com.omahaBot.model.hand.HandPreFlopPower;
 import com.omahaBot.service.ai.PostFlopAnalyser;
 import com.omahaBot.service.bot.ThreadDeal;
+import com.omahaBot.service.bot.ThreadTable;
 import com.omahaBot.service.ocr.OcrServiceImpl;
 
 /**
@@ -161,7 +162,7 @@ public class MainForm {
 		btnNewButton_1 = new Button(grpActions, SWT.TOGGLE);
 		btnNewButton_1.setText("In play");
 		btnNewButton.addSelectionListener(new SelectionAdapter() {
-			private ThreadDeal threadDeal;
+			private ThreadTable threadDeal;
 
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -177,7 +178,7 @@ public class MainForm {
 				else {
 					start = true;
 					btnNewButton.setText("STOP BOT");
-					threadDeal = new ThreadDeal(mainForm);
+					threadDeal = new ThreadTable(mainForm);
 					threadDeal.start();
 				}
 			}

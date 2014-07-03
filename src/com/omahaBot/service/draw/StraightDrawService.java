@@ -25,15 +25,20 @@ public class StraightDrawService {
 		
 		this.combinaisonCards = new ArrayList<CardModel>(combinaisonCardsSortedSet);
 		this.boardModel = boardModel;
+		/// TODO
+		try {
+			this.card1 = this.combinaisonCards.get(0);
+			this.card2 = this.combinaisonCards.get(1);
+			this.card3 = this.combinaisonCards.get(2);
+			this.card4 = this.combinaisonCards.get(3);
+			this.card5 = this.combinaisonCards.get(4);
+			this.card6 = this.combinaisonCards.get(5);
+
+			initConnectors();
+		} catch (Exception exception) {
+			System.out.println("--> BUG : " + combinaisonCards);
+		}
 		
-		this.card1 = this.combinaisonCards.get(0);
-		this.card2 = this.combinaisonCards.get(1);
-		this.card3 = this.combinaisonCards.get(2);
-		this.card4 = this.combinaisonCards.get(3);
-		this.card5 = this.combinaisonCards.get(4);
-		this.card6 = this.combinaisonCards.get(5);
-		
-		initConnectors();
 	}
 	
 	public StraightDrawService(ArrayList<CardModel> combinaisonCardsSortedByAceLow, BoardModel boardModel) {

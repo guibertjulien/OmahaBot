@@ -181,10 +181,10 @@ public class PostFlopAnalyser {
 			bettingDecision = decideFlop();
 			break;
 		case TURN:
-			bettingDecision = decideRiver();
+			bettingDecision = decideTurn();
 			break;
 		case RIVER:
-			bettingDecision = decideTurn();
+			bettingDecision = decideRiver();
 			break;
 		default:
 			break;
@@ -226,6 +226,15 @@ public class PostFlopAnalyser {
 				break;
 			case FLUSH:
 			case FLUSH_DRAW:
+				if (handLevel == 0) {
+					bettingDecision = BettingDecision.randomBetween(BettingDecision.BET_RAISE, BettingDecision.CHECK_CALL);
+				}
+				else {
+					bettingDecision = BettingDecision.randomBetween(BettingDecision.CHECK_CALL, BettingDecision.CHECK_FOLD);
+				}
+				break;
+			case STRAIGHT:
+			case STRAIGHT_ACE_LOW:
 				if (handLevel == 0) {
 					bettingDecision = BettingDecision.randomBetween(BettingDecision.BET_RAISE, BettingDecision.CHECK_CALL);
 				}
