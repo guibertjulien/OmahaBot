@@ -26,7 +26,7 @@ public class ThreadDealStep extends MyThread {
 
 	private List<CardModel> listBoardCard = new ArrayList<CardModel>();
 
-	private DealStep oldDealStep = DealStep.UNKNOW, currentDealStep;
+	private DealStep oldDealStep = DealStep.UNKNOWN, currentDealStep;
 
 	private DealStepModel dealStepModel;
 

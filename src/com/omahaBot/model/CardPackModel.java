@@ -2,17 +2,19 @@ package com.omahaBot.model;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import com.omahaBot.enums.HandCategory;
 import com.omahaBot.enums.Rank;
 import com.omahaBot.enums.Suit;
-import com.omahaBot.exception.CardPackNonValidException;
+import com.omahaBot.exception.CardPackNoValidException;
 import com.omahaBot.model.comparator.RankAceLowComparator;
 import com.omahaBot.model.comparator.SuitComparator;
 import com.omahaBot.model.draw.DrawModel;
@@ -29,20 +31,20 @@ public class CardPackModel {
 		this.sortedCards = setCards;
 	}
 
-	public CardPackModel(String cardPackString) throws CardPackNonValidException {
+	public CardPackModel(String cardPackString) throws CardPackNoValidException {
 		super();
 
 		sortedCards = new TreeSet<CardModel>();
-		
+
 		String s = cardPackString;
 
 		while (s.length() > 0) {
 			sortedCards.add(new CardModel(s.substring(0, 2)));
 			s = s.substring(2);
 		}
-		
+
 		if (sortedCards.size() != cardPackString.length() / 2) {
-			throw new CardPackNonValidException("same cards");
+			throw new CardPackNoValidException("same cards");
 		}
 	}
 
@@ -313,6 +315,7 @@ public class CardPackModel {
 	}
 
 	public ArrayList<FlushModel> searchFlushDraw(int min, int max, SortedSet<CardModel> permutationHand) {
+
 		ArrayList<FlushModel> listDraw = new ArrayList<>();
 
 		String whithoutRank = this.toStringBySuit().replaceAll("[^shdc]", ".");
@@ -398,9 +401,10 @@ public class CardPackModel {
 	public String toString() {
 		return "CardPackModel [setCards=" + sortedCards + "]";
 	}
-	
+
 	/**
-	 * return best STARIGHT DRAW
+	 * return best STRAIGHT DRAW
+	 * 
 	 * @param handDrawsSorted
 	 */
 	protected void cleanStraightDraws(SortedSet<DrawModel> handDrawsSorted) {
@@ -419,6 +423,28 @@ public class CardPackModel {
 			handDrawsSorted.add(bestRankDraw.get());
 		}
 	}
-	
-	
+
+	/**
+	 * return best FLUSH DRAW for SUIT TYPE
+	 * 
+	 * @param handDrawsSorted
+	 */
+	protected void cleanFlushDraws(SortedSet<DrawModel> handDrawsSorted) {
+		Predicate<? super DrawModel> filter_rankDraws = (d -> d.getHandCategory().equals(HandCategory.FLUSH_DRAW));
+
+		List<DrawModel> find = handDrawsSorted.stream()
+				.filter(filter_rankDraws)
+				.collect(Collectors.toList());
+
+		handDrawsSorted.removeIf(filter_rankDraws);
+
+		Suit suitOld = Suit.UNKNOW;
+		for (DrawModel drawModel : find) {
+			FlushModel flushModel = (FlushModel) drawModel;
+			if (!suitOld.equals(flushModel.getSuit())) {
+				handDrawsSorted.add(flushModel);
+				suitOld = flushModel.getSuit();
+			}
+		}
+	}
 }

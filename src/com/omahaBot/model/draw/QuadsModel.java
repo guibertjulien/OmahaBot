@@ -13,7 +13,8 @@ import com.omahaBot.model.CardModel;
 import com.omahaBot.model.CoupleCards;
 import com.omahaBot.utils.CardUtils;
 
-public @Data class QuadsModel extends DrawModel {
+@Data 
+public class QuadsModel extends DrawModel {
 
 	private final Rank rank;
 
@@ -87,10 +88,6 @@ public @Data class QuadsModel extends DrawModel {
 		
 		if (!this.equals(obj))
 			return false;
-		
-		System.out.println("1 : " + this.nutsOrHoleCards.getSortedCards());
-		System.out.println("2 : " + other.nutsOrHoleCards.getSortedCards());
-		
 		if (!(nutsOrHoleCards.getSortedCards().first().getRank()
 				.equals(other.nutsOrHoleCards.getSortedCards().first().getRank())
 				|| other.nutsOrHoleCards.getSortedCards().first().getRank().equals(Rank.UNKNOWN)))

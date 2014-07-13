@@ -1,29 +1,29 @@
 package com.omahaBot.exception;
 
-public class CardPackNonValidException extends Exception {
+public class StrategyUnknownException extends Exception {
 
-	public CardPackNonValidException() {
+	public StrategyUnknownException() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
 
-	public CardPackNonValidException(String message, Throwable cause, boolean enableSuppression,
+	public StrategyUnknownException(String message, Throwable cause, boolean enableSuppression,
 			boolean writableStackTrace) {
 		super(message, cause, enableSuppression, writableStackTrace);
 		// TODO Auto-generated constructor stub
 	}
 
-	public CardPackNonValidException(String message, Throwable cause) {
+	public StrategyUnknownException(String message, Throwable cause) {
 		super(message, cause);
 		// TODO Auto-generated constructor stub
 	}
 
-	public CardPackNonValidException(String message) {
+	public StrategyUnknownException(String message) {
 		super(message);
 		// TODO Auto-generated constructor stub
 	}
 
-	public CardPackNonValidException(Throwable cause) {
+	public StrategyUnknownException(Throwable cause) {
 		super(cause);
 		// TODO Auto-generated constructor stub
 	}

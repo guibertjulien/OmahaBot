@@ -7,7 +7,7 @@ import org.junit.Test;
 
 import com.omahaBot.enums.Rank;
 import com.omahaBot.enums.Suit;
-import com.omahaBot.exception.CardPackNonValidException;
+import com.omahaBot.exception.CardPackNoValidException;
 import com.omahaBot.model.CardModel;
 import com.omahaBot.model.hand.HandModel;
 
@@ -103,7 +103,7 @@ public class handAnalyserServiceImplTest {
 	}
 
 	@Test
-	public void test5() throws CardPackNonValidException {
+	public void test5() throws CardPackNoValidException {
 		HandModel handModel = new HandModel("AsKsAhKh");
 		handModel.permutations();
 

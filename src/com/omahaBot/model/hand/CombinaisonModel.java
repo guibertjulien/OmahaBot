@@ -67,6 +67,7 @@ public class CombinaisonModel extends CardPackModel implements Comparable<Combin
 	 * TODO : best practices ?
 	 */
 	public ArrayList<DrawModel> initDraw() {
+		
 		ArrayList<DrawModel> draws = new ArrayList<>();
 
 		DrawModel drawModel = null;

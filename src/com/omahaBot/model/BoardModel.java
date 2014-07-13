@@ -20,6 +20,7 @@ import com.omahaBot.exception.StraightInitializeException;
 import com.omahaBot.model.comparator.RankAceLowComparator;
 import com.omahaBot.model.draw.DrawModel;
 import com.omahaBot.model.draw.FullModel;
+import com.omahaBot.model.draw.OnePairModel;
 import com.omahaBot.model.draw.QuadsModel;
 import com.omahaBot.model.draw.SetModel;
 import com.omahaBot.model.draw.StraightModel;
@@ -266,21 +267,21 @@ public class BoardModel extends CardPackModel {
 		return twoPairModel;
 	}
 
-//	/**
-//	 * 
-//	 * @return
-//	 */
-//	public DrawModel searchBestOnePairDraw() {
-//
-//		ArrayList<CardModel> listCards = new ArrayList<>(sortedCards);
-//		Collections.reverse(listCards);
-//
-//		CardModel topPair = listCards.get(0);
-//
-//		OnePairModel onePairModel = new OnePairModel(topPair.getRank());
-//
-//		return onePairModel;
-//	}
+	/**
+	 * 
+	 * @return
+	 */
+	public DrawModel searchBestOnePairDraw() {
+
+		ArrayList<CardModel> listCards = new ArrayList<>(sortedCards);
+		Collections.reverse(listCards);
+
+		CardModel topPair = listCards.get(0);
+
+		OnePairModel onePairModel = new OnePairModel(topPair.getRank());
+
+		return onePairModel;
+	}
 
 	/**
 	 * 
@@ -410,10 +411,10 @@ public class BoardModel extends CardPackModel {
 				draws.add(drawModel);
 			}
 			
-//			drawModel = searchBestOnePairDraw();
-//			if (drawModel != null) {
-//				draws.add(drawModel);
-//			}
+			drawModel = searchBestOnePairDraw();
+			if (drawModel != null) {
+				draws.add(drawModel);
+			}
 		}
 
 		// tri

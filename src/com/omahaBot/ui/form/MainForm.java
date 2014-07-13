@@ -1,13 +1,8 @@
 package com.omahaBot.ui.form;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
 
 import org.eclipse.core.databinding.observable.Realm;
 import org.eclipse.jface.databinding.swt.SWTObservables;
@@ -38,9 +33,9 @@ import com.omahaBot.model.draw.DrawModel;
 import com.omahaBot.model.hand.HandModel;
 import com.omahaBot.model.hand.HandPreFlopPower;
 import com.omahaBot.service.ai.PostFlopAnalyser;
-import com.omahaBot.service.bot.ThreadDeal;
 import com.omahaBot.service.bot.ThreadTable;
 import com.omahaBot.service.ocr.OcrServiceImpl;
+import com.omahaBot.utils.CustomOutputStream;
 
 /**
  * TODO BUILDER, HELPER...
@@ -269,42 +264,43 @@ public class MainForm {
 	}
 
 	public void initAnalyseWidget(HandModel myHand, HandPreFlopPower handPreFlopPower) {
+		analyseWidget.init();
 		analyseWidget.displayPreFlopAnalyse(myHand, handPreFlopPower);
 	}
 	
 	public void redirectConsole() {
 		
-//		PrintStream printStream = new PrintStream(new CustomOutputStream(styledText));
-//		
-//		// keeps reference of standard output stream
-//		standardOut = System.out;
-//
-//		// re-assigns standard output stream and error output stream
-//		System.setOut(printStream);
-//		System.setErr(printStream);
+		PrintStream printStream = new PrintStream(new CustomOutputStream(styledText));
 		
-		Properties prop = new Properties();
-    	InputStream input = null;
- 
-		String filename = "config.properties";
-		input = MainForm.class.getClassLoader().getResourceAsStream(filename);
-		if (input == null) {
-			System.out.println("Sorry, unable to find " + filename);
-			return;
-		}
- 
-		// load a properties file from class path, inside static method
-		try {
-			prop.load(input);
+		// keeps reference of standard output stream
+		standardOut = System.out;
 
-			File file = new File(prop.getProperty("sysout.file"));
-			FileOutputStream fos;
-
-			fos = new FileOutputStream(file);
-			PrintStream ps = new PrintStream(fos);
-			System.setOut(ps);
-		} catch (IOException e1) {
-			e1.printStackTrace();
-		}
+		// re-assigns standard output stream and error output stream
+		System.setOut(printStream);
+		System.setErr(printStream);
+		
+//		Properties prop = new Properties();
+//    	InputStream input = null;
+// 
+//		String filename = "config.properties";
+//		input = MainForm.class.getClassLoader().getResourceAsStream(filename);
+//		if (input == null) {
+//			System.out.println("Sorry, unable to find " + filename);
+//			return;
+//		}
+// 
+//		// load a properties file from class path, inside static method
+//		try {
+//			prop.load(input);
+//
+//			File file = new File(prop.getProperty("sysout.file"));
+//			FileOutputStream fos;
+//
+//			fos = new FileOutputStream(file);
+//			PrintStream ps = new PrintStream(fos);
+//			System.setOut(ps);
+//		} catch (IOException e1) {
+//			e1.printStackTrace();
+//		}
 	}
 }

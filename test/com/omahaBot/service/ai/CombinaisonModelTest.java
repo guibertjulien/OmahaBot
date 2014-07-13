@@ -6,7 +6,7 @@ import org.junit.Test;
 
 import com.omahaBot.enums.DealStep;
 import com.omahaBot.enums.Rank;
-import com.omahaBot.exception.CardPackNonValidException;
+import com.omahaBot.exception.CardPackNoValidException;
 import com.omahaBot.model.CardPackModel;
 import com.omahaBot.model.draw.DrawModel;
 import com.omahaBot.model.draw.FullModel;
@@ -19,7 +19,7 @@ import com.omahaBot.model.hand.CombinaisonModel;
 public class CombinaisonModelTest {
 
 	@Test
-	public void testFindFourOfAKind() throws CardPackNonValidException {
+	public void testFindFourOfAKind() throws CardPackNoValidException {
 		CombinaisonModel combinaisonModel;
 		DrawModel drawModel;
 		QuadsModel quadsModel;
@@ -48,7 +48,7 @@ public class CombinaisonModelTest {
 	}
 
 	@Test
-	public void testFindFull() throws CardPackNonValidException {
+	public void testFindFull() throws CardPackNoValidException {
 		CombinaisonModel combinaisonModel;
 		DrawModel drawModel;
 		FullModel fullModel;
@@ -101,7 +101,7 @@ public class CombinaisonModelTest {
 	}
 
 	@Test
-	public void testFindThreeOfAKind() throws CardPackNonValidException {
+	public void testFindThreeOfAKind() throws CardPackNoValidException {
 		CombinaisonModel combinaisonModel;
 		DrawModel drawModel;
 		SetModel setModel;
@@ -150,7 +150,7 @@ public class CombinaisonModelTest {
 	}
 	
 	@Test
-	public void testFindTwoPair() throws CardPackNonValidException {
+	public void testFindTwoPair() throws CardPackNoValidException {
 		CombinaisonModel combinaisonModel;
 		DrawModel drawModel;
 		TwoPairModel twoPairModel;
@@ -170,7 +170,7 @@ public class CombinaisonModelTest {
 	}
 	
 	@Test
-	public void testFindStraight() throws CardPackNonValidException {
+	public void testFindStraight() throws CardPackNoValidException {
 		CombinaisonModel combinaisonModel;
 		DrawModel drawModel;
 		StraightModel straightModel;

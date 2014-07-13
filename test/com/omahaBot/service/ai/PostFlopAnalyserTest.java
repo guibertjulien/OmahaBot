@@ -8,7 +8,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.omahaBot.enums.DealStep;
-import com.omahaBot.exception.CardPackNonValidException;
+import com.omahaBot.exception.CardPackNoValidException;
 import com.omahaBot.model.BoardModel;
 import com.omahaBot.model.hand.HandModel;
 
@@ -48,26 +48,40 @@ public class PostFlopAnalyserTest {
 	}
 
 	@Test
-	public final void testAnalyseHand() throws CardPackNonValidException {
+	public final void testAnalyseHand() throws CardPackNoValidException {
 
 		DealStep dealStep;
 		HandModel handModel;
 		BoardModel boardModel;
 		PostFlopAnalyser postFlopAnalyser = new PostFlopAnalyser();
+
+		//
+		dealStep = DealStep.FLOP;
+		handModel = new HandModel("2d9cAd9d", dealStep);
+		boardModel = new BoardModel("4d3d6s", dealStep);
+		postFlopAnalyser.analyseHand(handModel, boardModel);
+		Assert.assertTrue(postFlopAnalyser.ihaveNuts());
+		
+		// FLUSH_DRAW
+		dealStep = DealStep.FLOP;
+		handModel = new HandModel("6s7s8c9c", dealStep);
+		boardModel = new BoardModel("2s7hTs", dealStep);
+		postFlopAnalyser.analyseHand(handModel, boardModel);
+		//Assert.assertTrue(!postFlopAnalyser.ihaveNuts());
 		
 		// FLUSH_DRAW
 		dealStep = DealStep.TURN;
 		handModel = new HandModel("TcJc2h3s", dealStep);
 		boardModel = new BoardModel("Ac9cKhQd", dealStep);
 		postFlopAnalyser.analyseHand(handModel, boardModel);
-		Assert.assertTrue(!postFlopAnalyser.isNuts());
+		Assert.assertTrue(!postFlopAnalyser.ihaveNuts());
 		
 		// NO FLUSH_DRAW because RIVER
 		dealStep = DealStep.RIVER;
 		handModel = new HandModel("TcJc2h3s", dealStep);
 		boardModel = new BoardModel("Ac9cKhQd6h", dealStep);
 		postFlopAnalyser.analyseHand(handModel, boardModel);
-		Assert.assertTrue(postFlopAnalyser.isNuts());
+		Assert.assertTrue(postFlopAnalyser.ihaveNuts());
 		
 		// FLUSH NO NUTS
 		dealStep = DealStep.RIVER;
@@ -75,7 +89,7 @@ public class PostFlopAnalyserTest {
 		boardModel = new BoardModel("Ac9cKhQd6c", dealStep);
 		postFlopAnalyser.analyseHand(handModel, boardModel);
 		Assert.assertTrue(postFlopAnalyser.getHandLevel() == 0);
-		Assert.assertTrue(!postFlopAnalyser.isNuts());
+		Assert.assertTrue(!postFlopAnalyser.ihaveNuts());
 		
 		// FLUSH NUTS (KICKER)
 		dealStep = DealStep.RIVER;
@@ -83,21 +97,21 @@ public class PostFlopAnalyserTest {
 		boardModel = new BoardModel("Ac9cKhQd6c", dealStep);
 		postFlopAnalyser.analyseHand(handModel, boardModel);
 		Assert.assertTrue(postFlopAnalyser.getHandLevel() == 0);
-		Assert.assertTrue(postFlopAnalyser.isNuts());	
+		Assert.assertTrue(postFlopAnalyser.ihaveNuts());	
 		
 		//
 		dealStep = DealStep.FLOP;
 		handModel = new HandModel("2h6h6dKd", dealStep);
 		boardModel = new BoardModel("KsKhKc", dealStep);
 		postFlopAnalyser.analyseHand(handModel, boardModel);
-		Assert.assertTrue(postFlopAnalyser.isNuts());
+		Assert.assertTrue(postFlopAnalyser.ihaveNuts());
 		
 		//
 		dealStep = DealStep.TURN;
 		handModel = new HandModel("5d6h7hKh", dealStep);
 		boardModel = new BoardModel("4sTdJdKd", dealStep);
 		postFlopAnalyser.analyseHand(handModel, boardModel);
-		Assert.assertTrue(!postFlopAnalyser.isNuts());
+		Assert.assertTrue(!postFlopAnalyser.ihaveNuts());
 	}
 
 	@Test

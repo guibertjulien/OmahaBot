@@ -5,6 +5,7 @@ import lombok.Data;
 import org.apache.log4j.Logger;
 
 import com.omahaBot.enums.BettingDecision;
+import com.omahaBot.exception.HandNoValidException;
 import com.omahaBot.model.hand.HandModel;
 import com.omahaBot.model.hand.HandPreFlopPower;
 
@@ -15,32 +16,36 @@ public class PreFlopAnalyser {
 
 	private HandPreFlopPower handPreFlopPower;
 
-	public void analyseHand(HandModel handModel) {
+	private int nbTurnToBet = 1;
+
+	public void analyseHand(HandModel handModel) throws HandNoValidException {
 
 		if (log.isDebugEnabled()) {
 			log.debug(">> START analyseHand");
 		}
 
-		System.out.println("############################################");
-		System.out.println(">> START analyseHand PREFLOP");
-		System.out.println(handModel.toString());
-		System.out.println("############################################");
+		if (handModel.getCards().size() != 4) {
+			throw new HandNoValidException("no valid hand");
+		}
+
+		System.out.println("----------------------------------------------------------------");
+		System.out.println(" ANALYSE PREFLOP : " + handModel);
 
 		handPreFlopPower = new HandPreFlopPower(handModel);
 
-		System.out.println("============================================");
 		if (handPreFlopPower.isTrashHand()) {
-			System.out.println("==> POUBELLE !");
+			System.out.println(">>>> My hand is TRASH !");
 		}
 		else if (handPreFlopPower.isBestHand()) {
-			System.out.println("==> TOP 30: " + handPreFlopPower.getBestHandLevel());
+			System.out.println(">>>> My hand is TOP 30 ! " + handPreFlopPower.getBestHandLevel());
 		}
-		System.out.println("- PAIR=" + handPreFlopPower.getPreFlopPairLevel());
-		System.out.println("- CONNECTED=" + handPreFlopPower.getPreFlopStraightLevel());
-		System.out.println("- SUITED=" + handPreFlopPower.getPreFlopSuitLevel());
-		System.out.println("==> POWER: " + handPreFlopPower.getPower());
 
-		System.out.println("============================================");
+		System.out.println(" - PAIR=" + handPreFlopPower.getPreFlopPairLevel());
+		System.out.println(" - CONNECTED=" + handPreFlopPower.getPreFlopStraightLevel());
+		System.out.println(" - SUITED=" + handPreFlopPower.getPreFlopSuitLevel());
+
+		System.out.println(">>>> My POWER hand : " + handPreFlopPower.getPower());
+		System.out.println("----------------------------------------------------------------");
 	}
 
 	/**
@@ -53,7 +58,7 @@ public class PreFlopAnalyser {
 	 * @param firstTurnBet
 	 * @return
 	 */
-	public BettingDecision decide(HandModel handModel, boolean firstTurnBet) {
+	public BettingDecision decide(HandModel handModel, int nbTurnToBet) {
 
 		if (log.isDebugEnabled()) {
 			log.debug(">> START decide PREFLOP");
@@ -61,8 +66,10 @@ public class PreFlopAnalyser {
 
 		BettingDecision bettingDecision = BettingDecision.CHECK_FOLD;
 
-		if (!firstTurnBet) {
-			bettingDecision = BettingDecision.CHECK_CALL;
+		if (nbTurnToBet > 1) {
+			if (handPreFlopPower.getPower() < 10) {
+				bettingDecision = BettingDecision.CHECK_FOLD;		
+			}
 		}
 
 		if (canBluff()) {
@@ -80,7 +87,7 @@ public class PreFlopAnalyser {
 					bettingDecision = BettingDecision.ALLIN;
 					break;
 				case ONE_SUIT:
-					bettingDecision = BettingDecision.BET_RAISE;
+					bettingDecision = BettingDecision.BET_RAISE_MIN;
 					break;
 				case UNSUITED:
 					bettingDecision = BettingDecision.CHECK_CALL;
@@ -93,10 +100,11 @@ public class PreFlopAnalyser {
 			else {
 				if (handPreFlopPower.getPower() >= 20) {
 					bettingDecision = BettingDecision.randomBetween(BettingDecision.ALLIN,
-							BettingDecision.BET_RAISE);
+							BettingDecision.BET_RAISE_75);
 				}
 				else if (handPreFlopPower.getPower() >= 10) {
-					bettingDecision = BettingDecision.randomBetween(BettingDecision.BET_RAISE,
+					bettingDecision = BettingDecision.randomBetween(BettingDecision.BET_RAISE_50,
+							BettingDecision.BET_RAISE_75,
 							BettingDecision.CHECK_CALL);
 				}
 				else if (handPreFlopPower.getPower() >= 5) {
@@ -107,6 +115,9 @@ public class PreFlopAnalyser {
 				}
 			}
 		}
+
+		System.out.println(">>>> I " + bettingDecision + " at PREFLOP (" + nbTurnToBet + ")");
+		System.out.println("----------------------------------------------------------------");
 
 		return bettingDecision;
 	}

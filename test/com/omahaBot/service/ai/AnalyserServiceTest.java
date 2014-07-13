@@ -4,7 +4,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.omahaBot.enums.DealStep;
-import com.omahaBot.exception.CardPackNonValidException;
+import com.omahaBot.exception.CardPackNoValidException;
 import com.omahaBot.model.BoardModel;
 import com.omahaBot.model.hand.HandModel;
 
@@ -32,7 +32,7 @@ public class AnalyserServiceTest {
 //		System.out.println(boardModel);
 //
 //		analyserService.analyseHand(handModel, boardModel);
-//		analyserService.decideFlop();
+//		analyserService.decide();
 //
 //		System.out.println("#######################################################");
 //
@@ -44,7 +44,7 @@ public class AnalyserServiceTest {
 //		System.out.println(boardModel);
 //
 //		analyserService.analyseHand(handModel, boardModel);
-//		analyserService.decideFlop();
+//		analyserService.decide();
 //
 //		System.out.println("#######################################################");
 //
@@ -56,7 +56,7 @@ public class AnalyserServiceTest {
 //		System.out.println(boardModel);
 //
 //		analyserService.analyseHand(handModel, boardModel);
-//		analyserService.decideFlop();
+//		analyserService.decide();
 //
 //		System.out.println("#######################################################");
 //
@@ -68,7 +68,7 @@ public class AnalyserServiceTest {
 //		System.out.println(boardModel);
 //
 //		analyserService.analyseHand(handModel, boardModel);
-//		analyserService.decideFlop();
+//		analyserService.decide();
 //
 //		System.out.println("#######################################################");
 //		
@@ -80,7 +80,7 @@ public class AnalyserServiceTest {
 //		System.out.println(boardModel);
 //
 //		analyserService.analyseHand(handModel, boardModel);
-//		analyserService.decideFlop();
+//		analyserService.decide();
 //
 //		System.out.println("#######################################################");
 //		
@@ -92,7 +92,7 @@ public class AnalyserServiceTest {
 //		System.out.println(boardModel);
 //
 //		analyserService.analyseHand(handModel, boardModel);
-//		analyserService.decideFlop();
+//		analyserService.decide();
 //
 //		System.out.println("#######################################################");
 //		
@@ -104,7 +104,7 @@ public class AnalyserServiceTest {
 //		System.out.println(boardModel);
 //
 //		analyserService.analyseHand(handModel, boardModel);
-//		analyserService.decideFlop();
+//		analyserService.decide();
 //
 //		System.out.println("#######################################################");
 //		
@@ -116,13 +116,13 @@ public class AnalyserServiceTest {
 //		System.out.println(boardModel);
 //
 //		analyserService.analyseHand(handModel, boardModel);
-//		analyserService.decideFlop();
+//		analyserService.decide();
 //
 //		System.out.println("#######################################################");
 	}
 	
 	@Test
-	public void analyseStraightPostFlop() throws CardPackNonValidException {
+	public void analyseStraightPostFlop() throws CardPackNoValidException {
 
 		HandModel handModel;
 		BoardModel boardModel;
@@ -136,7 +136,7 @@ public class AnalyserServiceTest {
 		System.out.println(boardModel);
 
 		analyserService.analyseHand(handModel, boardModel);
-		analyserService.decideFlop();
+		analyserService.decide(dealStep, handModel, 1);
 
 		System.out.println("#######################################################");
 		
@@ -148,7 +148,7 @@ public class AnalyserServiceTest {
 		System.out.println(boardModel);
 
 		analyserService.analyseHand(handModel, boardModel);
-		analyserService.decideFlop();
+		analyserService.decide(dealStep, handModel, 1);
 
 		System.out.println("#######################################################");
 		
@@ -160,7 +160,7 @@ public class AnalyserServiceTest {
 		System.out.println(boardModel);
 		
 		analyserService.analyseHand(handModel, boardModel);
-		analyserService.decideFlop();
+		analyserService.decide(dealStep, handModel, 1);
 		
 		System.out.println("#######################################################");
 		
@@ -172,7 +172,7 @@ public class AnalyserServiceTest {
 		System.out.println(boardModel);
 		
 		analyserService.analyseHand(handModel, boardModel);
-		analyserService.decideFlop();
+		analyserService.decide(dealStep, handModel, 1);
 		
 		System.out.println("#######################################################");
 		
@@ -184,7 +184,7 @@ public class AnalyserServiceTest {
 		System.out.println(boardModel);
 		
 		analyserService.analyseHand(handModel, boardModel);
-		analyserService.decideFlop();
+		analyserService.decide(dealStep, handModel, 1);
 
 		System.out.println("#######################################################");
 		
@@ -196,7 +196,7 @@ public class AnalyserServiceTest {
 		System.out.println(boardModel);
 //
 //		analyserService.analyseHand(handModel, boardModel);
-//		analyserService.decideFlop();
+//		analyserService.decide();
 //
 //		System.out.println("#######################################################");
 //		
@@ -208,7 +208,7 @@ public class AnalyserServiceTest {
 //		System.out.println(boardModel);
 //
 //		analyserService.analyseHand(handModel, boardModel);
-//		analyserService.decideFlop();
+//		analyserService.decide();
 //
 //		System.out.println("#######################################################");
 		

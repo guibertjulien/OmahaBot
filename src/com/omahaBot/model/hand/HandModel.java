@@ -15,7 +15,7 @@ import com.omahaBot.enums.HandCategory;
 import com.omahaBot.enums.Rank;
 import com.omahaBot.enums.StraightDrawType;
 import com.omahaBot.enums.Suit;
-import com.omahaBot.exception.CardPackNonValidException;
+import com.omahaBot.exception.CardPackNoValidException;
 import com.omahaBot.model.BoardModel;
 import com.omahaBot.model.CardModel;
 import com.omahaBot.model.CardPackModel;
@@ -47,7 +47,7 @@ public class HandModel extends CardPackModel {
 		this.dealStep = DealStep.PRE_FLOP;
 	}
 
-	public HandModel(String cardPackString) throws CardPackNonValidException {
+	public HandModel(String cardPackString) throws CardPackNoValidException {
 		super(cardPackString);
 		this.dealStep = DealStep.PRE_FLOP;
 	}
@@ -62,7 +62,7 @@ public class HandModel extends CardPackModel {
 		this.dealStep = dealStep;
 	}
 
-	public HandModel(String cardPackString, DealStep dealStep) throws CardPackNonValidException {
+	public HandModel(String cardPackString, DealStep dealStep) throws CardPackNoValidException {
 		super(cardPackString);
 		this.dealStep = dealStep;
 	}
@@ -154,6 +154,7 @@ public class HandModel extends CardPackModel {
 	private void cleanDraws(SortedSet<DrawModel> handDrawsSorted) {
 		cleanRankDraws(handDrawsSorted);
 		cleanStraightDraws(handDrawsSorted);
+		cleanFlushDraws(handDrawsSorted);
 	}
 
 	/**

@@ -78,9 +78,9 @@ public @Data class OnePairModel extends DrawModel {
 
 		if (!this.equals(obj))
 			return false;
-		if (other.nutsOrHoleCards.getCard1().getRank().equals(rank))
+		if (other.nutsOrHoleCards.getCard1().getRank().ordinal() >= rank.ordinal())
 			return true;
-		if (other.nutsOrHoleCards.getCard2().getRank().equals(rank))
+		if (other.nutsOrHoleCards.getCard1().getRank().ordinal() >= rank.ordinal())
 			return true;
 		return false;
 	}

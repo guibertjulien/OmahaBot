@@ -13,8 +13,8 @@ public class MyRobot extends Robot {
 
 	private static final Logger log = Logger.getLogger(PreFlopAnalyser.class);
 
-	public static final int MIN = 1000;
-	public static final int MAX = 5000;
+	public static final int MIN = 500;
+	public static final int MAX = 2000;
 
 	public MyRobot() throws AWTException {
 		super();

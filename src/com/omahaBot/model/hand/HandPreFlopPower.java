@@ -114,10 +114,9 @@ public class HandPreFlopPower {
 			String group = matcher.group(0);
 			String drawString = handModel.toStringBySuit().substring(matcher.start(), matcher.end());
 
-			// TODO à tester
 			if (group.length() >= 4) {
 				Suit suit = Suit.fromShortName(group.charAt(1));
-				Rank kicker = Rank.fromShortName(drawString.charAt(2));
+				Rank kicker = Rank.fromShortName(drawString.charAt(drawString.length()-2));
 				suits.add(new HandSuit(suit, kicker));
 			}
 			else {

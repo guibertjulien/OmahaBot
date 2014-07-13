@@ -1,14 +1,24 @@
 package com.omahaBot.service.ai;
 
+import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Test;
+
+import com.omahaBot.enums.DealStep;
+import com.omahaBot.enums.preFlop.PreFlopSuitLevel;
+import com.omahaBot.exception.CardPackNoValidException;
+import com.omahaBot.exception.HandNoValidException;
+import com.omahaBot.model.BoardModel;
+import com.omahaBot.model.hand.HandModel;
+import com.omahaBot.model.hand.HandPreFlopPower.SuitedType;
 
 public class PreFlopServiceImplTest {
 
-	private PreFlopAnalyser preFlopAnalyserServiceImpl;
+	private PreFlopAnalyser preFlopAnalyser;
 	
 	@Before
 	public void before() {
-		preFlopAnalyserServiceImpl = new PreFlopAnalyser();
+		preFlopAnalyser = new PreFlopAnalyser();
 	}
 	
 //	@Test
@@ -112,4 +122,31 @@ public class PreFlopServiceImplTest {
 //		PreFlopPower preFlopPower = preFlopAnalyserServiceImpl.analyseHand(handModel);
 //		assertTrue(preFlopPower.getPreFlopSuit().equals(PreFlopSuit.NO_COLOR));
 //	}
+
+	@Test
+	public void testOneSuit() throws HandNoValidException, CardPackNoValidException {
+		DealStep dealStep;
+		HandModel handModel;
+
+		// ONE_SUIT_A
+		dealStep = DealStep.FLOP;
+		handModel = new HandModel("2d9cAd9s", dealStep);
+		preFlopAnalyser.analyseHand(handModel);
+		
+		Assert.assertTrue(preFlopAnalyser.getHandPreFlopPower().getPreFlopSuitLevel().equals(PreFlopSuitLevel.ONE_SUIT_A));
+		
+		// ONE_SUIT_A (3 cards suited)
+		dealStep = DealStep.FLOP;
+		handModel = new HandModel("2d9cAd9d", dealStep);
+		preFlopAnalyser.analyseHand(handModel);
+		
+		Assert.assertTrue(preFlopAnalyser.getHandPreFlopPower().getPreFlopSuitLevel().equals(PreFlopSuitLevel.ONE_SUIT_A));
+		
+		// ONE_SUIT_A (4 cards suited)
+		dealStep = DealStep.FLOP;
+		handModel = new HandModel("2d8dAd9d", dealStep);
+		preFlopAnalyser.analyseHand(handModel);
+		
+		Assert.assertTrue(preFlopAnalyser.getHandPreFlopPower().getPreFlopSuitLevel().equals(PreFlopSuitLevel.ONE_SUIT_A));
+	}
 }

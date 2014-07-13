@@ -12,7 +12,7 @@ import com.google.common.collect.Lists;
 import com.omahaBot.enums.HandCategory;
 import com.omahaBot.enums.Rank;
 import com.omahaBot.enums.Suit;
-import com.omahaBot.exception.CardPackNonValidException;
+import com.omahaBot.exception.CardPackNoValidException;
 import com.omahaBot.model.CardModel;
 import com.omahaBot.model.CardPackModel;
 import com.omahaBot.model.CoupleCards;
@@ -37,10 +37,12 @@ public @Data class FlushModel extends DrawModel {
 		super(handCategory);
 		this.suit = suit;
 
-		initRankAndNuts(drawString);
-
 		if (permutationHand != null) {
 			initHoleCards(permutationHand);
+			rank = permutationHand.last().getRank();
+		}
+		else {
+			initRankAndNuts(drawString);			
 		}
 	}
 
@@ -92,7 +94,7 @@ public @Data class FlushModel extends DrawModel {
 			if (coupleCards.size() == 2) {
 				nutsOrHoleCards = new CoupleCards(new TreeSet<CardModel>(coupleCards));
 			}
-		} catch (CardPackNonValidException e) {
+		} catch (CardPackNoValidException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -103,6 +105,33 @@ public @Data class FlushModel extends DrawModel {
 		FlushModel other = (FlushModel) obj;
 
 		return suit.equals(other.suit);
+	}
+
+	@Override
+	public int compareTo(DrawModel o) {
+
+		if (o instanceof FlushModel) {
+			FlushModel drawCompare = (FlushModel) o;
+
+			// compare HandCategory
+			if (this.handCategory.ordinal() > drawCompare.handCategory.ordinal()) {
+				return -1;
+			}
+			// compare Kicker
+			else {
+				if (this.rank.ordinal() > drawCompare.rank.ordinal()) {
+					return -1;
+				}
+				else if (this.rank.ordinal() < drawCompare.rank.ordinal()) {
+					return 1;
+				} else {
+					return 0;
+				}
+			}
+		}
+		else {
+			return super.compareTo(o);
+		}
 	}
 
 	@Override

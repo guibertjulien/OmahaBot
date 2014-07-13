@@ -19,7 +19,7 @@ public abstract class MyThread extends Thread implements IThread{
 	
 	protected Robot robot;
 
-	protected static int REFRESH = 1000;
+	protected static int REFRESH = 100;
 	
 	protected MainForm mainForm;
 	

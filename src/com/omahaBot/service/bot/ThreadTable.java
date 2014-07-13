@@ -19,6 +19,7 @@ import com.omahaBot.enums.DealStep;
 import com.omahaBot.enums.PlayerAction;
 import com.omahaBot.enums.PlayerBlock;
 import com.omahaBot.enums.Suit;
+import com.omahaBot.exception.HandNoValidException;
 import com.omahaBot.model.ActionModel;
 import com.omahaBot.model.BoardModel;
 import com.omahaBot.model.CardModel;
@@ -39,7 +40,7 @@ public class ThreadTable extends MyThread {
 
 	private String dealIdCurrent, dealIdOld = "0";
 
-	private DealStep dealStepCurrent, dealStepOld = DealStep.UNKNOW;
+	private DealStep dealStepCurrent, dealStepOld = DealStep.UNKNOWN;
 
 	private int positionTurnToPlayCurrent, positionTurnToPlayOld = 0;
 
@@ -61,10 +62,6 @@ public class ThreadTable extends MyThread {
 
 	private HandModel handModel;
 
-	private boolean firstTurnBet = true;
-
-	private boolean firstAction = true;
-
 	private ArrayList<DrawModel> handDraws = new ArrayList<DrawModel>();
 
 	private ArrayList<DrawModel> boardDraws = new ArrayList<DrawModel>();
@@ -75,9 +72,15 @@ public class ThreadTable extends MyThread {
 
 	private boolean firstLoop = true;
 
+	private boolean initAnalyseWidgetPreFlopDone = false;
+
 	private PlayerAction lastActionOld = PlayerAction.UNKNOW, lastActionCurrent = PlayerAction.UNKNOW;
 
 	private Double lastBet = 0.0;
+	
+	private int nbTurnToBet = 1;
+	
+	private int nbMoveAction = 1;
 
 	// TODO Contexte
 
@@ -102,12 +105,12 @@ public class ThreadTable extends MyThread {
 		initialize();
 
 		while (running) {
-			
+
 			if (isDealIdChange()) {
-				
+
 				listCurrentPlayerBlock = new ArrayList<PlayerBlock>(EnumSet.allOf(PlayerBlock.class));
 				listCurrentPlayer = new ArrayList<PlayerModel>();
-				
+
 				goDealId();
 			}
 			else if (isDealStepChange()) {
@@ -119,7 +122,7 @@ public class ThreadTable extends MyThread {
 
 			try {
 				// pause
-				sleep(100);
+				sleep(500);
 			} catch (InterruptedException ex) {
 				// TODO Auto-generated catch block
 				ex.printStackTrace();
@@ -129,127 +132,22 @@ public class ThreadTable extends MyThread {
 		log.debug("<< STOP ThreadTable : " + this.getId());
 	}
 
-	private void goAction() {
-		log.debug("NEW PLAYER ACTION : " + positionTurnToPlayCurrent);
-		
-		potCurrent = ocrService.scanPot();
-
-		nbPlayerCurrent = nbPlayerActive();
-
-		initListCurrentPlayer();
-		// initLastActionPlayer(positionPlayerTurnPlayOld);
-
-		actionModel = new ActionModel();
-		actionModel.setPositionPlayerTurnPlay(positionTurnToPlayCurrent);
-
-		actionModel.setNbPlayer(nbPlayerCurrent);
-		actionModel.setListPlayer(listCurrentPlayer);
-		actionModel.setPlayerAction(lastActionCurrent);
-		actionModel.setLastBet(lastBet);
-
-		nbPlayerOld = nbPlayerCurrent;
-
-		potOld = potCurrent;
-
-		if (Consts.register) {
-			handDraws.clear();
-			boardDraws.clear();
-
-			if (positionTurnToPlayCurrent == Consts.MY_TABLEPOSITION) {
-				
-				if (handModel == null) {
-					initHandCard();
-				}
-				
-				if (dealStepCurrent.equals(DealStep.PRE_FLOP)) {
-					preFlopAnalyser.analyseHand(handModel);
-				} else if (dealStepCurrent.ordinal() > DealStep.PRE_FLOP.ordinal()) {
-					preFlopAnalyser.analyseHand(handModel);					
-				}
-			}
-			else if (firstAction && dealStepCurrent.ordinal() > DealStep.PRE_FLOP.ordinal()) {
-				if (handModel == null) {
-					initHandCard();
-				}
-
-				System.out.println("-->test4 : postFlopAnalyser.analyseHand(myHand);");
-
-				postFlopAnalyser.analyseHand(handModel, boardModel);
-				handDraws.addAll(postFlopAnalyser.getHandDrawsSorted());
-				boardDraws.addAll(postFlopAnalyser.getBoardDrawsSorted());
-			}
-
-			if (positionTurnToPlayCurrent == Consts.MY_TABLEPOSITION) {
-				play();
-			}
-		}
-
-		positionTurnToPlayOld = positionTurnToPlayCurrent;
-
-		Display.getDefault().syncExec(new Runnable() {
-			public void run() {
-				mainForm.initPotWidget(potCurrent);
-				mainForm.initActionWidget(actionModel);
-				mainForm.initPlayerWidget(listCurrentPlayer);
-
-				if (handModel != null) {
-					
-					if (dealStepCurrent.equals(DealStep.PRE_FLOP)) {
-						mainForm.initAnalyseWidget(handModel, preFlopAnalyser.getHandPreFlopPower());
-					} else if (dealStepCurrent.ordinal() > DealStep.PRE_FLOP.ordinal()) {
-						mainForm.initAnalyseWidget(boardModel, boardDraws);
-						mainForm.initAnalyseWidget(handModel, boardModel, handDraws, postFlopAnalyser);			
-					}
-				}
-			}
-		});
-	}
-
-	private void goDealStep() {
-		log.debug("NEW DEALSTEP : " + dealStepCurrent);
-
-		// START - intialize
-		firstTurnBet = true;
-		firstAction = true;
-		handDraws.clear();
-		boardDraws.clear();
-		potOld = 0.0;
-		nbPlayerOld = 0;
-		nbPlayerCurrent = 0;
-		firstLoop = true;
-		lastActionOld = PlayerAction.UNKNOW;
-		lastActionCurrent = PlayerAction.UNKNOW;
-		lastBet = 0.0;
-		// END - intialize
-		
-		dealStepOld = dealStepCurrent;
-
-		initBoardCard();
-
-		dealStepModel = new DealStepModel();
-		dealStepModel.setDealStep(dealStepCurrent);
-		dealStepModel.setListBoardCard(listBoardCard);
-
-		Display.getDefault().syncExec(new Runnable() {
-			public void run() {
-				mainForm.initBoardWidget(dealStepModel);
-			}
-		});
-	}
-
 	private void goDealId() {
 		// initDealContexte()
-		log.debug("__________________________________________________________________");
 		log.debug("NEW DEAL : " + dealIdCurrent);
+
+		System.out.println("_______________________________________________________________");
+		System.out.println("NEW DEAL : " + dealIdCurrent);
 
 		// START - intialize
 		handModel = null;
 		boardModel = null;
-		dealStepOld = DealStep.UNKNOW;
+		dealStepOld = DealStep.UNKNOWN;
 		listBoardCard.clear();
 		positionTurnToPlayOld = 0;
+		initAnalyseWidgetPreFlopDone = false;
 		// END - intialize
-		
+
 		dealIdOld = dealIdCurrent;
 
 		dealModel = new DealModel();
@@ -266,6 +164,125 @@ public class ThreadTable extends MyThread {
 				mainForm.initActionWidget(actionModel);
 			}
 		});
+	}
+
+	private void goDealStep() {
+		log.debug("NEW STEP : " + dealStepCurrent);
+
+		System.out.println("--> NEW STEP : " + dealStepCurrent);
+
+		// START - intialize
+		handDraws.clear();
+		boardDraws.clear();
+		potOld = 0.0;
+		nbPlayerOld = 0;
+		nbPlayerCurrent = 0;
+		firstLoop = true;
+		lastActionOld = PlayerAction.UNKNOW;
+		lastActionCurrent = PlayerAction.UNKNOW;
+		lastBet = 0.0;
+		positionTurnToPlayOld = 0;
+		nbTurnToBet = 1;
+		nbMoveAction = 0;
+		// END - intialize
+
+		dealStepOld = dealStepCurrent;
+
+		initBoardCard();
+
+		dealStepModel = new DealStepModel();
+		dealStepModel.setDealStep(dealStepCurrent);
+		dealStepModel.setListBoardCard(listBoardCard);
+
+		if (iAmInDeal() && dealStepCurrent.ordinal() > DealStep.PRE_FLOP.ordinal()) {
+			// TODO à suppr ?
+			initHandCard();
+
+			postFlopAnalyser.analyseHand(handModel, boardModel);
+			handDraws.addAll(postFlopAnalyser.getHandDrawsSorted());
+			boardDraws.addAll(postFlopAnalyser.getBoardDrawsSorted());
+		}
+
+		Display.getDefault().syncExec(new Runnable() {
+			public void run() {
+				mainForm.initBoardWidget(dealStepModel);
+
+				if (iAmInDeal() && dealStepCurrent.ordinal() > DealStep.PRE_FLOP.ordinal()) {
+					mainForm.initAnalyseWidget(boardModel, boardDraws);
+					mainForm.initAnalyseWidget(handModel, boardModel, handDraws, postFlopAnalyser);
+				}
+			}
+		});
+	}
+
+	private void goAction() {
+		log.debug("TURN TO PLAY : " + positionTurnToPlayCurrent);
+
+		if (positionTurnToPlayCurrent == Consts.MY_TABLEPOSITION) {
+			System.out.println("----> TURN TO PLAY : ME");
+		}
+		else {
+			System.out.println("----> TURN TO PLAY : " + positionTurnToPlayCurrent);	
+		}
+		
+		nbMoveAction++;
+		
+		try {
+			potCurrent = ocrService.scanPot();
+
+			nbPlayerCurrent = nbPlayerActive();
+
+			initListCurrentPlayer();
+			// initLastActionPlayer(positionPlayerTurnPlayOld);
+
+			actionModel = new ActionModel();
+			actionModel.setPositionPlayerTurnPlay(positionTurnToPlayCurrent);
+
+			actionModel.setNbPlayer(nbPlayerCurrent);
+			actionModel.setListPlayer(listCurrentPlayer);
+			actionModel.setPlayerAction(lastActionCurrent);
+			actionModel.setLastBet(lastBet);
+
+			nbPlayerOld = nbPlayerCurrent;
+
+			potOld = potCurrent;
+
+			if (Consts.register) {
+				handDraws.clear();
+				boardDraws.clear();
+
+				if (!initAnalyseWidgetPreFlopDone && positionTurnToPlayCurrent == Consts.MY_TABLEPOSITION
+						&& dealStepCurrent.equals(DealStep.PRE_FLOP)) {
+					initHandCard();
+					preFlopAnalyser.analyseHand(handModel);
+				}
+
+				if (iAmInDeal() && positionTurnToPlayCurrent == Consts.MY_TABLEPOSITION) {
+					play();
+				}
+
+			}
+
+			Display.getDefault().syncExec(new Runnable() {
+				public void run() {
+					mainForm.initPotWidget(potCurrent);
+					mainForm.initActionWidget(actionModel);
+					mainForm.initPlayerWidget(listCurrentPlayer);
+
+					if (handModel != null) {
+						if (!initAnalyseWidgetPreFlopDone && iAmInDeal() && dealStepCurrent.equals(DealStep.PRE_FLOP)) {
+							mainForm.initAnalyseWidget(handModel, preFlopAnalyser.getHandPreFlopPower());
+							initAnalyseWidgetPreFlopDone = true;
+						}
+					}
+				}
+			});
+
+		} catch (HandNoValidException e) {
+			log.warn(e.getMessage());
+		} finally {
+			positionTurnToPlayOld = positionTurnToPlayCurrent;
+		}
 	}
 
 	@Override
@@ -391,20 +408,19 @@ public class ThreadTable extends MyThread {
 
 		switch (dealStepCurrent) {
 		case PRE_FLOP:
-			System.out.println("play PRE");
-			bettingDecision = preFlopAnalyser.decide(handModel, firstTurnBet);
+			bettingDecision = preFlopAnalyser.decide(handModel, nbTurnToBet);
 			break;
 		case FLOP:
 		case TURN:
 		case RIVER:
-			System.out.println("play POST");
-			bettingDecision = postFlopAnalyser.decide(dealStepCurrent, handModel);
+			postFlopAnalyser.analyseMyPosition(nbTurnToBet, nbMoveAction);
+			bettingDecision = postFlopAnalyser.decide(dealStepCurrent, handModel, nbTurnToBet);
 			break;
 		default:
 			break;
 		}
-
-		firstTurnBet = false;
+		
+		nbTurnToBet++;
 
 		try {
 			MyRobot robot = new MyRobot();
@@ -465,4 +481,9 @@ public class ThreadTable extends MyThread {
 
 	}
 
+	private boolean iAmInDeal() {
+		PlayerBlock playerBlock = PlayerBlock.PLAYER_4;
+		Color colorScanedActive = robot.getPixelColor(playerBlock.getActive().x, playerBlock.getActive().y);
+		return playerBlock.isActivePlayer(colorScanedActive);
+	}
 }

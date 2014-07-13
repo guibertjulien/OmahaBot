@@ -17,6 +17,8 @@ import com.omahaBot.exception.StraightInitializeException;
 import com.omahaBot.model.BoardModel;
 import com.omahaBot.model.draw.DrawModel;
 import com.omahaBot.model.hand.HandModel;
+import com.omahaBot.strategy.AbstractStrategy;
+import com.omahaBot.strategy.StrategyFactory;
 
 /**
  * TODO continuation BET SLOW_PLAY DEAD_CARD POSITION BLUFF CAPACITY OUT STACK 2
@@ -27,13 +29,10 @@ import com.omahaBot.model.hand.HandModel;
  */
 @Data
 public class PostFlopAnalyser {
-	
+
 	private static final Logger log = Logger.getLogger(PreFlopAnalyser.class);
 
 	// private TournamentModel tournamentModel;
-	//
-	// private int nbBetTurn = 1;
-	//
 	// private double pot = 0.0;
 
 	// draws triés
@@ -43,6 +42,7 @@ public class PostFlopAnalyser {
 	private int handLevel;
 	private boolean nutsForLevel;
 	private StraightDrawType straightDrawType = StraightDrawType.NO_DRAW;
+	private boolean imFirstToMove;
 
 	public PostFlopAnalyser() {
 	}
@@ -59,24 +59,28 @@ public class PostFlopAnalyser {
 		// TODO
 	}
 
-	public void analyseMyPosition() {
-		// TODO
+	public void analyseMyPosition(int nbTurnToBet, int nbAction) {
+		if (nbTurnToBet == 1 && nbAction == 1) {
+			System.out.println(">>>> I'm first to move");
+			imFirstToMove = true;
+		}
+		else {
+			imFirstToMove = false;
+		}
 	}
 
 	public void analyseHand(HandModel handModel, BoardModel boardModel) {
-		
+
 		if (log.isDebugEnabled()) {
 			log.debug(">> START analyseHand");
 		}
 
-		System.out.println("############################################");
-		System.out.println(">> START analyseHand ");
-		System.out.println(handModel.toString());
-		System.out.println(boardModel.toString());
-		System.out.println("############################################");		
-		
+		System.out.println("----------------------------------------------------------------");
+		System.out.println(" ANALYSE POSTFLOP : " + handModel + " / " + boardModel);
+
+		handLevel = 99;
 		handDrawsSorted = handModel.initCombinaisonDraws(boardModel);
-		
+
 		try {
 			boardDrawsSorted = boardModel.initDraws(handModel);
 		} catch (StraightInitializeException e) {
@@ -107,99 +111,69 @@ public class PostFlopAnalyser {
 
 				// don't update level if 2 flushDraw
 				if (!(isFlushDraw && drawModelBoard.getHandCategory().equals(HandCategory.FLUSH_DRAW))) {
-					handLevel++;	
-				}	
-				
+					handLevel++;
+				}
+
 				isFlushDraw = drawModelBoard.getHandCategory().equals(HandCategory.FLUSH_DRAW);
 			}
-			
+
 			if (!find) {
 				handLevel = 99;
 			}
-			
-			System.out.println(bestPermutation);
-			System.out.println(boardDrawsSorted.first());
-			System.out.println(bestPermutation.compareTo(boardDrawsSorted.first()));
-			
+
 			if (bestPermutation.compareTo(boardDrawsSorted.first()) < 0) {
 				handLevel = 0;
 				nutsForLevel = true;
 				System.out.println("==> BUG !!!");
 				log.error("==> BUG !!!");
 			}
-			
+
 		}
-		
-		System.out.println("--------------------------------------------");
-		System.out.println("- HAND DRAWS");
-		System.out.println("--------------------------------------------");
-		
+
+		System.out.println(" - HAND DRAWS :");
+
 		// analyse de STRAIGHT DRAWS TYPE si pas de STRAIGHT
 		if (!handModel.isStraight(handDrawsSorted)) {
 			straightDrawType = handModel.searchStraightDrawType(boardModel);
-			System.out.println("straightDrawType=" + straightDrawType);			
+			System.out.println(" straightDrawType=" + straightDrawType);
 		}
 
-		for (DrawModel drawModel : handDrawsSorted) {
-			System.out.println(drawModel);
-		}
-
-		System.out.println("--------------------------------------------");
-		System.out.println("- BOARD DRAWS");
-		System.out.println("--------------------------------------------");
-		
 		int level = 0;
-		for (DrawModel drawModel : boardDrawsSorted) {
- 			System.out.println("#" + level + ": " + drawModel);
+		for (DrawModel drawModel : handDrawsSorted) {
+			System.out.println("  #" + level + ": " + drawModel);
 			level++;
 		}
 
-		System.out.println("============================================");
-		if (isNuts()) {
-			System.out.println("==> ANALYSE: NUTS !!!");	
+		System.out.println(" - BOARD DRAWS :");
+
+		level = 0;
+		for (DrawModel drawModel : boardDrawsSorted) {
+			System.out.println("  #" + level + ": " + drawModel);
+			level++;
+		}
+
+		if (ihaveNuts()) {
+			System.out.println(">>>> I have NUTS !");
 		}
 		else {
-			System.out.println("==> ANALYSE: LEVEL=" + handLevel + " / NUTS for level=" + isNutsForLevel());
+			System.out.println(">>>> LEVEL=" + handLevel + " / NUTS=" + isNutsForLevel());
 		}
-		System.out.println("============================================");
+
+		System.out.println("----------------------------------------------------------------");
 	}
 
-	public BettingDecision decide(DealStep dealStep, HandModel myHand) {
+	public BettingDecision decide(DealStep dealStep, HandModel myHand, int nbTurnToBet) {
 
 		if (log.isDebugEnabled()) {
 			log.debug(">> START decide " + dealStep);
 		}
 
-		System.out.println("############################################");
-		System.out.println(">> START decide " + dealStep);
-		System.out.println("############################################");		
-		
+		System.out.println("----------------------------------------------------------------");
+		System.out.println(" DECIDE : " + dealStep);
+
 		BettingDecision bettingDecision = BettingDecision.CHECK_FOLD;
 
-		switch (dealStep) {
-		case FLOP:
-			bettingDecision = decideFlop();
-			break;
-		case TURN:
-			bettingDecision = decideTurn();
-			break;
-		case RIVER:
-			bettingDecision = decideRiver();
-			break;
-		default:
-			break;
-		}
-
-		System.out.println("============================================");
-		System.out.println("==> Moi: Je " + bettingDecision);
-		System.out.println("============================================");
-		
-		return bettingDecision;
-	}
-
-	public BettingDecision decideFlop() {
-		BettingDecision bettingDecision = BettingDecision.CHECK_FOLD;
-
+		// TODO better : caution straightDrawType
 		if (!handDrawsSorted.isEmpty()) {
 
 			DrawModel bestPermutation = handDrawsSorted.first();
@@ -214,82 +188,34 @@ public class PostFlopAnalyser {
 						.collect(Collectors.toList());
 			}
 
-			switch (bestPermutation.getHandCategory()) {
-			case FOUR_OF_A_KIND:
-			case FULL_HOUSE:
-				if (handLevel == 0) {
-					bettingDecision = BettingDecision.randomBetween(BettingDecision.BET_RAISE, BettingDecision.CHECK_CALL);
-				}
-				else {
-					bettingDecision = BettingDecision.randomBetween(BettingDecision.CHECK_CALL, BettingDecision.CHECK_FOLD);
-				}
+			AbstractStrategy strategyFactory = StrategyFactory.getStrategy(bestPermutation.getHandCategory(),
+					nbTurnToBet, imFirstToMove);
+
+			switch (dealStep) {
+			case FLOP:
+				bettingDecision = strategyFactory.decideAtFlop(bestPermutation, ihaveNuts(),
+						boardDraws,	nutsForLevel, straightDrawType);
 				break;
-			case FLUSH:
-			case FLUSH_DRAW:
-				if (handLevel == 0) {
-					bettingDecision = BettingDecision.randomBetween(BettingDecision.BET_RAISE, BettingDecision.CHECK_CALL);
-				}
-				else {
-					bettingDecision = BettingDecision.randomBetween(BettingDecision.CHECK_CALL, BettingDecision.CHECK_FOLD);
-				}
+			case TURN:
+				bettingDecision = strategyFactory.decideAtTurn(bestPermutation, ihaveNuts(),
+						boardDraws, nutsForLevel, straightDrawType);
 				break;
-			case STRAIGHT:
-			case STRAIGHT_ACE_LOW:
-				if (handLevel == 0) {
-					bettingDecision = BettingDecision.randomBetween(BettingDecision.BET_RAISE, BettingDecision.CHECK_CALL);
-				}
-				else {
-					bettingDecision = BettingDecision.randomBetween(BettingDecision.CHECK_CALL, BettingDecision.CHECK_FOLD);
-				}
-				break;
-			case THREE_OF_A_KIND:
-				if (boardflushDraws.isEmpty()) {
-					bettingDecision = BettingDecision.ALLIN;
-				}
-				else {
-					if (boardflushDraws.get(0).getHandCategory().equals(HandCategory.FLUSH)) {
-						bettingDecision = BettingDecision.CHECK_FOLD;
-					}
-					else {
-						bettingDecision = BettingDecision.CHECK_CALL;
-					}
-				}
-				break;
-			case TWO_PAIR:
-			case ONE_PAIR:
-				bettingDecision = BettingDecision.CHECK_FOLD;
+			case RIVER:
+				bettingDecision = strategyFactory.decideAtRiver(bestPermutation, ihaveNuts(),
+						boardDraws, nutsForLevel, straightDrawType);
 				break;
 			default:
-				bettingDecision = BettingDecision.CHECK_FOLD;
 				break;
 			}
 		}
 
-		return bettingDecision;
-	}
-
-	public BettingDecision decideTurn() {
-		return decideFlop();
-	}
-	
-
-	public BettingDecision decideRiver() {
-		BettingDecision bettingDecision = BettingDecision.CHECK_FOLD;
-
-		if (handLevel == 0) {
-			bettingDecision = BettingDecision.randomBetween(BettingDecision.ALLIN, BettingDecision.BET_RAISE);
-		} else if (handLevel == 1) {
-			bettingDecision = BettingDecision.randomBetween(BettingDecision.ALLIN, BettingDecision.BET_RAISE, BettingDecision.CHECK_CALL);
-		} else if (handLevel == 2) {
-			bettingDecision = BettingDecision.randomBetween(BettingDecision.CHECK_CALL, BettingDecision.CHECK_FOLD);
-		} else {
-			bettingDecision = BettingDecision.CHECK_FOLD;
-		}
+		System.out.println(">>>> I " + bettingDecision + " at " + dealStep + " (" + nbTurnToBet + ")");
+		System.out.println("----------------------------------------------------------------");
 
 		return bettingDecision;
 	}
-	
-	public boolean isNuts () {
+
+	public boolean ihaveNuts() {
 		return handLevel == 0 && nutsForLevel;
 	}
 }

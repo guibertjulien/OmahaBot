@@ -15,6 +15,7 @@ import com.omahaBot.enums.BettingDecision;
 import com.omahaBot.enums.DealStep;
 import com.omahaBot.enums.PlayerAction;
 import com.omahaBot.enums.PlayerBlock;
+import com.omahaBot.exception.HandNoValidException;
 import com.omahaBot.model.ActionModel;
 import com.omahaBot.model.BoardModel;
 import com.omahaBot.model.CardModel;
@@ -132,7 +133,12 @@ public class ThreadAction extends MyThread {
 
 						System.out.println("-->test3 : preFlopAnalyser.analyseHand(myHand);");
 
-						preFlopAnalyser.analyseHand(myHand);
+						try {
+							preFlopAnalyser.analyseHand(myHand);
+						} catch (HandNoValidException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
 					}
 					else if (firstAction && dealStep.ordinal() > DealStep.PRE_FLOP.ordinal()) {
 						if (myHand == null) {
@@ -186,32 +192,32 @@ public class ThreadAction extends MyThread {
 
 	private void play() {
 
-		BettingDecision bettingDecision = BettingDecision.CHECK_FOLD;
-
-		switch (dealStep) {
-		case PRE_FLOP:
-			System.out.println("play PRE");
-			bettingDecision = preFlopAnalyser.decide(myHand, firstTurnBet);
-			break;
-		case FLOP:
-		case TURN:
-		case RIVER:
-			System.out.println("play POST");
-			bettingDecision = postFlopAnalyser.decide(dealStep, myHand);
-			break;
-		default:
-			break;
-		}
-
-		firstTurnBet = false;
-
-		try {
-			MyRobot robot = new MyRobot();
-			robot.clickAction(bettingDecision, this.getId());
-		} catch (AWTException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+//		BettingDecision bettingDecision = BettingDecision.CHECK_FOLD;
+//
+//		switch (dealStep) {
+//		case PRE_FLOP:
+//			System.out.println("play PRE");
+//			bettingDecision = preFlopAnalyser.decide(myHand, firstTurnBet);
+//			break;
+//		case FLOP:
+//		case TURN:
+//		case RIVER:
+//			System.out.println("play POST");
+//			bettingDecision = postFlopAnalyser.decide(dealStep, myHand);
+//			break;
+//		default:
+//			break;
+//		}
+//
+//		firstTurnBet = false;
+//
+//		try {
+//			MyRobot robot = new MyRobot();
+//			robot.clickAction(bettingDecision, this.getId());
+//		} catch (AWTException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 	}
 
 	@Override

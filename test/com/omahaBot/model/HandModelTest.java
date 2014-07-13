@@ -20,8 +20,9 @@ import com.omahaBot.enums.HandCategory;
 import com.omahaBot.enums.Rank;
 import com.omahaBot.enums.StraightDrawType;
 import com.omahaBot.enums.preFlop.PreFlopStraightLevel;
-import com.omahaBot.exception.CardPackNonValidException;
+import com.omahaBot.exception.CardPackNoValidException;
 import com.omahaBot.model.draw.DrawModel;
+import com.omahaBot.model.draw.FlushModel;
 import com.omahaBot.model.draw.FullModel;
 import com.omahaBot.model.draw.OnePairModel;
 import com.omahaBot.model.draw.QuadsModel;
@@ -43,20 +44,20 @@ public class HandModelTest {
 	public void tearDown() throws Exception {
 	}
 
-	@Test(expected = CardPackNonValidException.class)
-	public final void testHandModelifSameCards() throws CardPackNonValidException {
+	@Test(expected = CardPackNoValidException.class)
+	public final void testHandModelifSameCards() throws CardPackNoValidException {
 		HandModel handModel = new HandModel("2s2s4s5s");
 		System.out.println(handModel);
 	}
 
 	@Test
-	public final void testHandModel() throws CardPackNonValidException {
+	public final void testHandModel() throws CardPackNoValidException {
 		HandModel handModel = new HandModel("2s3s4s5s");
 		System.out.println(handModel);
 	}
 
 	@Test
-	public final void testPermutations() throws CardPackNonValidException {
+	public final void testPermutations() throws CardPackNoValidException {
 		HandModel handModel;
 		List<List<CardModel>> permutations;
 
@@ -67,12 +68,12 @@ public class HandModelTest {
 		assertTrue(permutations.size() == 6);
 	}
 
-    // =========================================================================
-    // RANK DRAWS
-    // =========================================================================
-	
+	// =========================================================================
+	// RANK DRAWS
+	// =========================================================================
+
 	@Test
-	public final void testInitCombinaisonDrawsOfRank() throws CardPackNonValidException {
+	public final void testInitCombinaisonDrawsOfRank() throws CardPackNoValidException {
 		HandModel handModel;
 		BoardModel boardModel;
 		ArrayList<DrawModel> listDraw = new ArrayList<>();
@@ -82,10 +83,10 @@ public class HandModelTest {
 		FullModel fullModel;
 		QuadsModel quadsModel;
 
-	    // =========================================================================
-	    // ONE_PAIR
-	    // =========================================================================
-		
+		// =========================================================================
+		// ONE_PAIR
+		// =========================================================================
+
 		// ONE_PAIR with one hand card and one board card
 		listDraw.clear();
 		handModel = new HandModel("2s3sTsJs");
@@ -98,7 +99,7 @@ public class HandModelTest {
 		assertTrue(listDraw.get(0).getHandCategory().equals(HandCategory.ONE_PAIR));
 		onePairModel = (OnePairModel) listDraw.get(0);
 		assertTrue(onePairModel.getRank().equals(Rank.THREE));
-		
+
 		// ONE_PAIR in hand
 		listDraw.clear();
 		handModel = new HandModel("2s2cTsJs");
@@ -111,7 +112,7 @@ public class HandModelTest {
 		assertTrue(listDraw.get(0).getHandCategory().equals(HandCategory.ONE_PAIR));
 		onePairModel = (OnePairModel) listDraw.get(0);
 		assertTrue(onePairModel.getRank().equals(Rank.TWO));
-		
+
 		// ONE_PAIR in board
 		listDraw.clear();
 		handModel = new HandModel("2s3cTsJs");
@@ -125,10 +126,10 @@ public class HandModelTest {
 		onePairModel = (OnePairModel) listDraw.get(0);
 		assertTrue(onePairModel.getRank().equals(Rank.SIX));
 
-	    // =========================================================================
-	    // TWO_PAIR
-	    // =========================================================================
-		
+		// =========================================================================
+		// TWO_PAIR
+		// =========================================================================
+
 		// TWO_PAIR
 		listDraw.clear();
 		handModel = new HandModel("2s3sTsJs");
@@ -142,7 +143,7 @@ public class HandModelTest {
 		twoPairModel = (TwoPairModel) listDraw.get(0);
 		assertTrue(twoPairModel.getRankPair1().equals(Rank.JACK));
 		assertTrue(twoPairModel.getRankPair2().equals(Rank.TWO));
-		
+
 		// TWO_PAIR : one pair in hand and one pair in board
 		listDraw.clear();
 		handModel = new HandModel("2s3sTsTd");
@@ -156,8 +157,9 @@ public class HandModelTest {
 		twoPairModel = (TwoPairModel) listDraw.get(0);
 		assertTrue(twoPairModel.getRankPair1().equals(Rank.TEN));
 		assertTrue(twoPairModel.getRankPair2().equals(Rank.SIX));
-		
-		// TWO_PAIR : one pair in hand and one pair in board, pair of TEN is cleaned by pair of ACE
+
+		// TWO_PAIR : one pair in hand and one pair in board, pair of TEN is
+		// cleaned by pair of ACE
 		listDraw.clear();
 		handModel = new HandModel("AdAsTsTd");
 		boardModel = new BoardModel("4d6c6hJhQc", DealStep.RIVER);
@@ -170,10 +172,10 @@ public class HandModelTest {
 		twoPairModel = (TwoPairModel) listDraw.get(0);
 		assertTrue(twoPairModel.getRankPair1().equals(Rank.ACE));
 		assertTrue(twoPairModel.getRankPair2().equals(Rank.SIX));
-		
-	    // =========================================================================
-	    // THREE_OF_A_KIND
-	    // =========================================================================
+
+		// =========================================================================
+		// THREE_OF_A_KIND
+		// =========================================================================
 
 		// pair on board
 		listDraw.clear();
@@ -187,7 +189,7 @@ public class HandModelTest {
 		assertTrue(listDraw.get(0).getHandCategory().equals(HandCategory.THREE_OF_A_KIND));
 		setModel = (SetModel) listDraw.get(0);
 		assertTrue(setModel.getRank().equals(Rank.THREE));
-		
+
 		// pair on hand
 		listDraw.clear();
 		handModel = new HandModel("2s3sTs3d");
@@ -200,10 +202,10 @@ public class HandModelTest {
 		assertTrue(listDraw.get(0).getHandCategory().equals(HandCategory.THREE_OF_A_KIND));
 		setModel = (SetModel) listDraw.get(0);
 		assertTrue(setModel.getRank().equals(Rank.THREE));
-		
-	    // =========================================================================
-	    // FULL_HOUSE
-	    // =========================================================================
+
+		// =========================================================================
+		// FULL_HOUSE
+		// =========================================================================
 
 		listDraw.clear();
 		handModel = new HandModel("2s2cTsTd");
@@ -218,7 +220,7 @@ public class HandModelTest {
 		assertTrue(fullModel.getRankPair().equals(Rank.TEN));
 		assertTrue(fullModel.getRankThree().equals(Rank.THREE));
 		assertTrue(fullModel.getBoardCategory().equals(BoardCategory.THREE_OF_A_KIND));
-		
+
 		listDraw.clear();
 		handModel = new HandModel("2s2cTs3c");
 		boardModel = new BoardModel("3dTc3h", DealStep.FLOP);
@@ -232,10 +234,10 @@ public class HandModelTest {
 		assertTrue(fullModel.getRankPair().equals(Rank.TEN));
 		assertTrue(fullModel.getRankThree().equals(Rank.THREE));
 		assertTrue(fullModel.getBoardCategory().equals(BoardCategory.ONE_PAIR));
-		
-	    // =========================================================================
-	    // FOUR_OF_A_KIND
-	    // =========================================================================
+
+		// =========================================================================
+		// FOUR_OF_A_KIND
+		// =========================================================================
 
 		listDraw.clear();
 		handModel = new HandModel("2s3sTs3c");
@@ -262,7 +264,7 @@ public class HandModelTest {
 		quadsModel = (QuadsModel) listDraw.get(0);
 		assertTrue(quadsModel.getRank().equals(Rank.THREE));
 		assertTrue(quadsModel.getBoardCategory().equals(BoardCategory.THREE_OF_A_KIND));
-		
+
 		listDraw.clear();
 		handModel = new HandModel("2h6h6dKd");
 		boardModel = new BoardModel("KsKhKc", DealStep.FLOP);
@@ -276,39 +278,78 @@ public class HandModelTest {
 		assertTrue(quadsModel.getRank().equals(Rank.KING));
 		assertTrue(quadsModel.getBoardCategory().equals(BoardCategory.THREE_OF_A_KIND));
 	}
-	
-    // =========================================================================
-    // RANK DRAWS
-    // =========================================================================
-	
-    // =========================================================================
-    // RANK DRAWS
-    // =========================================================================
-	
+
+	// =========================================================================
+	// Flush DRAWS
+	// =========================================================================
+
 	@Test
-	public final void testIsStraight() throws CardPackNonValidException {
+	public final void testInitCombinaisonDrawsOfFlush() throws CardPackNoValidException {
+		HandModel handModel;
+		BoardModel boardModel;
+		ArrayList<DrawModel> listDraw = new ArrayList<>();
+		FlushModel flushModel;
+		DealStep dealStep;
+
+		// =========================================================================
+		// FLUSH_DRAW
+		// =========================================================================
+
+		dealStep = DealStep.TURN;
+		listDraw.clear();
+		handModel = new HandModel("7sJsQcKs", dealStep);
+		boardModel = new BoardModel("2s6sJhJd", dealStep);
+		listDraw.addAll(handModel.initCombinaisonDraws(boardModel));
+		System.out.println(handModel);
+		System.out.println(boardModel);
+		System.out.println(listDraw);
+		assertTrue(listDraw.size() == 2);// just one FLUSH DRAW
+		assertTrue(listDraw.get(0).getHandCategory().equals(HandCategory.FLUSH_DRAW));
+		flushModel = (FlushModel) listDraw.get(0);
+		assertTrue(flushModel.getRank().equals(Rank.KING));
+		
+		// =========================================================================
+		// FLUSH_DRAW
+		// =========================================================================
+
+		dealStep = DealStep.FLOP;
+		listDraw.clear();
+		handModel = new HandModel("8cTcQsKc", dealStep);
+		boardModel = new BoardModel("3dQcAc", dealStep);
+		listDraw.addAll(handModel.initCombinaisonDraws(boardModel));
+		System.out.println(handModel);
+		System.out.println(boardModel);
+		System.out.println(listDraw);
+		assertTrue(listDraw.size() == 2);// just one FLUSH DRAW
+		assertTrue(listDraw.get(0).getHandCategory().equals(HandCategory.FLUSH_DRAW));
+		flushModel = (FlushModel) listDraw.get(0);
+		assertTrue(flushModel.getRank().equals(Rank.KING));
+	}
+
+	@Test
+	public final void testIsStraight() throws CardPackNoValidException {
 		HandModel handModel;
 		BoardModel boardModel;
 		TreeSet<DrawModel> draws;
-		
+
 		// STRAIGHT
 		handModel = new HandModel("2s3sTsJs");
 		boardModel = new BoardModel("4d5c6h", DealStep.FLOP);
 		draws = handModel.initCombinaisonDraws(boardModel);
 		assertTrue(handModel.isStraight(draws));
-		
+
 		// STRAIGHT_ACE_LOW
 		handModel = new HandModel("As2sTsJs");
 		boardModel = new BoardModel("4d5cJh3c", DealStep.TURN);
 		draws = handModel.initCombinaisonDraws(boardModel);
 		assertTrue(handModel.isStraight(draws));
-		
+
 		// no STRAIGHT
 		handModel = new HandModel("2s5sTsJs");
 		boardModel = new BoardModel("4d5c6h", DealStep.FLOP);
 		draws = handModel.initCombinaisonDraws(boardModel);
 		assertFalse(handModel.isStraight(draws));
-		
+
 		handModel = new HandModel("2s3s4sJs");
 		boardModel = new BoardModel("Qd5c6h", DealStep.FLOP);
 		draws = handModel.initCombinaisonDraws(boardModel);
@@ -320,7 +361,7 @@ public class HandModelTest {
 	// =========================================================================
 
 	@Test
-	public final void testHasFlushDraw() throws CardPackNonValidException {
+	public final void testHasFlushDraw() throws CardPackNoValidException {
 		HandModel handModel;
 
 		handModel = new HandModel("As2d3h4c");
@@ -340,7 +381,7 @@ public class HandModelTest {
 	}
 
 	@Test
-	public final void testSearchStraightDrawType() throws CardPackNonValidException {
+	public final void testSearchStraightDrawType() throws CardPackNoValidException {
 		HandModel handModel;
 		BoardModel boardModel;
 		StraightDrawType straightDrawType;
@@ -379,14 +420,14 @@ public class HandModelTest {
 		straightDrawType = handModel.searchStraightDrawType(boardModel);
 		System.out.println(straightDrawType);
 		assertTrue(straightDrawType.equals(StraightDrawType.OPEN_ENDED));
-		
+
 		// test if Inside Broadway
 		handModel = new HandModel("KsJsTs5s");
 		boardModel = new BoardModel("AsQs7s", DealStep.FLOP);
 		straightDrawType = handModel.searchStraightDrawType(boardModel);
 		System.out.println(straightDrawType);
 		assertTrue(straightDrawType.equals(StraightDrawType.INSIDE_BROADWAY));
-		
+
 		// test if 12 outs Straight Draw
 		handModel = new HandModel("QsJs9s7s");
 		boardModel = new BoardModel("Ts8s2s", DealStep.FLOP);
@@ -417,7 +458,7 @@ public class HandModelTest {
 	}
 
 	@Test
-	public void testHandPreFlopPowerTest() throws IOException, CardPackNonValidException {
+	public void testHandPreFlopPowerTest() throws IOException, CardPackNoValidException {
 
 		Properties properties = new Properties();
 		properties.load(this.getClass().getClassLoader().getResourceAsStream(PROPERTY_FILE_NAME));
@@ -475,12 +516,12 @@ public class HandModelTest {
 		assertTrue(!handPreFlopPower.isDoubledSuited());
 		System.out.println(handPreFlopPower.toString());
 	}
-	
+
 	@Test
-	public void testBug1() throws CardPackNonValidException {
-		// - Ma main est une poubelle !	[hand=[Td, Qh, Ks, Ac] : 
+	public void testBug1() throws CardPackNoValidException {
+		// - Ma main est une poubelle ! [hand=[Td, Qh, Ks, Ac] :
 		// => CONNECTOR3_INSIDE(PreFlopPowerPoint.LOW, "AKQ", "23.A"),
-		
+
 		HandModel handModel = new HandModel("TsKcAcQd");
 		PreFlopStraightLevel preFlopStraightLevel = PreFlopStraightLevel.fromTypeAndHand(handModel.toRankString());
 		assertTrue(preFlopStraightLevel.equals(PreFlopStraightLevel.CONNECTOR3_INSIDE));

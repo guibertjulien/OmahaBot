@@ -20,13 +20,12 @@ public enum PokerPosition {
 	private static final Map<Integer, PokerPosition> map = new
 			HashMap<Integer, PokerPosition>();
 
-	// map permettant de récupérer ke power avec une hand
 	static {
 		for (PokerPosition pokerPosition : values()) {
 			map.put(pokerPosition.getValueDiff(), pokerPosition);
 		}
 	}
-	
+
 	// récupération de l'instance
 	public static PokerPosition fromValueDiff(int valueDiff) {
 		final PokerPosition pokerPosition = map.get(valueDiff);
@@ -45,6 +44,5 @@ public enum PokerPosition {
 	public void setValueDiff(int valueDiff) {
 		this.valueDiff = valueDiff;
 	}
-	
-	
+
 }
