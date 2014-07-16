@@ -1,6 +1,6 @@
 package com.omahaBot.strategy;
 
-import java.util.ArrayList;
+import java.util.SortedSet;
 
 import com.omahaBot.enums.BettingDecision;
 import com.omahaBot.enums.StraightDrawType;
@@ -8,51 +8,42 @@ import com.omahaBot.model.draw.DrawModel;
 
 public class QuadsStategy extends AbstractStrategy {
 
-	public QuadsStategy(int nbTurnOfBet, boolean imFirstToMove) {
-		super(nbTurnOfBet, imFirstToMove);
+	private static String Quads_10 = "Quads_10 : I have NUTS";
+	
+	public QuadsStategy(StrategyTurnContext context) {
+		super(context);
 		System.out.println("--> QuadsStategy");
 	}
 
 	@Override
-	public BettingDecision decideAtFlop(DrawModel drawModel, boolean iHaveNuts,
-			ArrayList<DrawModel> boardDraws, boolean nutsForLevel, StraightDrawType straightDrawType) {
+	public BettingDecision decideAtFlop(SortedSet<DrawModel> handDrawsSorted, SortedSet<DrawModel> boardDrawsSorted,
+			boolean iHaveNuts, boolean nutsForLevel, StraightDrawType straightDrawType) {
 		BettingDecision bettingDecision = BettingDecision.CHECK_FOLD;
 
 		if (iHaveNuts) {
-			if (nbTurnOfBet == 1) {
-				bettingDecision = slowPlay();
-			}
-			else {
-				bettingDecision = betBig();
-			}
+			System.out.println(Quads_10);
+			bettingDecision = checkRaise_withNuts();
 		}
 
 		return bettingDecision;
 	}
 
 	@Override
-	public BettingDecision decideAtTurn(DrawModel drawModel, boolean iHaveNuts,
-			ArrayList<DrawModel> boardDraws, boolean nutsForLevel, StraightDrawType straightDrawType) {
-		return decideAtFlop(drawModel, iHaveNuts, boardDraws, nutsForLevel, straightDrawType);
+	public BettingDecision decideAtTurn(SortedSet<DrawModel> handDrawsSorted, SortedSet<DrawModel> boardDrawsSorted,
+			boolean iHaveNuts, boolean nutsForLevel, StraightDrawType straightDrawType) {
+		return decideAtFlop(handDrawsSorted, boardDrawsSorted, iHaveNuts, nutsForLevel, straightDrawType);
 	}
 
 	@Override
-	public BettingDecision decideAtRiver(DrawModel drawModel, boolean iHaveNuts,
-			ArrayList<DrawModel> boardDraws, boolean nutsForLevel, StraightDrawType straightDrawType) {
+	public BettingDecision decideAtRiver(SortedSet<DrawModel> handDrawsSorted, SortedSet<DrawModel> boardDrawsSorted,
+			boolean iHaveNuts, boolean nutsForLevel, StraightDrawType straightDrawType) {
 		BettingDecision bettingDecision = BettingDecision.CHECK_FOLD;
 
 		if (iHaveNuts) {
-			if (nbTurnOfBet == 1) {
-				bettingDecision = betSmall();
-			}
-			else {
-				bettingDecision = betMax();
-			}
+			System.out.println(Quads_10);
+			bettingDecision = betPot();
 		}
-		else {
-			// TODO Bluff ?
-		}
-
+		
 		return bettingDecision;
 	}
 }

@@ -4,26 +4,26 @@ import com.omahaBot.enums.HandCategory;
 
 public class StrategyFactory {
 
-	public static AbstractStrategy getStrategy(HandCategory handCategory, int nbTurnOfBet, boolean imFirstToMove) {
+	public static AbstractStrategy getStrategy(HandCategory handCategory, StrategyTurnContext actionContext) {
 		switch (handCategory) {
 		case FOUR_OF_A_KIND:
-			return new QuadsStategy(nbTurnOfBet, imFirstToMove);
+			return new QuadsStategy(actionContext);
 		case FULL_HOUSE:
-			return new FullStrategy(nbTurnOfBet, imFirstToMove);
+			return new FullStrategy(actionContext);
 		case FLUSH:
-			return new FlushStrategy(nbTurnOfBet, imFirstToMove);
+			return new FlushStrategy(actionContext);
 		case FLUSH_DRAW:
-			return new FlushDrawStrategy(nbTurnOfBet, imFirstToMove);
+			return new FlushDrawStrategy(actionContext);
 		case STRAIGHT:
-			return new StraightStrategy(nbTurnOfBet, imFirstToMove);
+			return new StraightStrategy(actionContext);
 		case THREE_OF_A_KIND:
-			return new SetStrategy(nbTurnOfBet, imFirstToMove);
+			return new SetStrategy(actionContext);
 		case TWO_PAIR:
-			return new TwoPairStrategy(nbTurnOfBet, imFirstToMove);
+			return new TwoPairStrategy(actionContext);
 		case ONE_PAIR:
-			return new OnePairStrategy(nbTurnOfBet, imFirstToMove);
+			return new OnePairStrategy(actionContext);
 		default:
-			return new BluffStrategy(nbTurnOfBet, imFirstToMove);
+			return new BluffStrategy(actionContext);
 		}
 	}
 }

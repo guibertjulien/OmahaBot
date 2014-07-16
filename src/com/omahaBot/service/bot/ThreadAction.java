@@ -11,7 +11,6 @@ import org.apache.log4j.Logger;
 import org.eclipse.swt.widgets.Display;
 
 import com.omahaBot.consts.Consts;
-import com.omahaBot.enums.BettingDecision;
 import com.omahaBot.enums.DealStep;
 import com.omahaBot.enums.PlayerAction;
 import com.omahaBot.enums.PlayerBlock;

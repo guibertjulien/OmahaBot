@@ -1,6 +1,6 @@
 package com.omahaBot.strategy;
 
-import java.util.ArrayList;
+import java.util.SortedSet;
 
 import com.omahaBot.enums.BettingDecision;
 import com.omahaBot.enums.StraightDrawType;
@@ -8,26 +8,30 @@ import com.omahaBot.model.draw.DrawModel;
 
 public class FullStrategy extends AbstractStrategy {
 
-	public FullStrategy(int nbTurnOfBet, boolean imFirstToMove) {
-		super(nbTurnOfBet, imFirstToMove);
+	private static String Full_10 = "Full_10 : I have NUTS";
+	private static String Full_20 = "Full_20 : FULL but QUADS_DRAW in board";
+	private static String Full_30 = "Full_30 : FOLD at RIVER";
+
+	public FullStrategy(StrategyTurnContext context) {
+		super(context);
 		System.out.println("--> FullStrategy");
 	}
 
 	@Override
-	public BettingDecision decideAtFlop(DrawModel drawModel, boolean iHaveNuts,
-			ArrayList<DrawModel> boardDraws, boolean nutsForLevel, StraightDrawType straightDrawType) {
+	public BettingDecision decideAtFlop(SortedSet<DrawModel> handDrawsSorted, SortedSet<DrawModel> boardDrawsSorted,
+			boolean iHaveNuts, boolean nutsForLevel, StraightDrawType straightDrawType) {
 		BettingDecision bettingDecision = BettingDecision.CHECK_FOLD;
 
 		if (iHaveNuts) {
-			bettingDecision = slowPlay();
+			System.out.println(Full_10);
+			bettingDecision = checkRaise_withNuts();
 		}
 		else {
 			// test bordDraw level 0
-			switch (boardDraws.get(0).getHandCategory()) {
+			switch (boardDrawsSorted.first().getHandCategory()) {
 			case FOUR_OF_A_KIND:
-				if (nbTurnOfBet == 1) {
-					bettingDecision = callSmallBet();
-				}
+				System.out.println(Full_20);
+				bettingDecision = betOrFold_fold(BetType.SMALL);
 			default:
 				// TODO exception : impossible
 				break;
@@ -38,29 +42,24 @@ public class FullStrategy extends AbstractStrategy {
 	}
 
 	@Override
-	public BettingDecision decideAtTurn(DrawModel drawModel, boolean iHaveNuts,
-			ArrayList<DrawModel> boardDraws, boolean nutsForLevel, StraightDrawType straightDrawType) {
-		return decideAtFlop(drawModel, iHaveNuts, boardDraws, nutsForLevel, straightDrawType);
+	public BettingDecision decideAtTurn(SortedSet<DrawModel> handDrawsSorted, SortedSet<DrawModel> boardDrawsSorted,
+			boolean iHaveNuts, boolean nutsForLevel, StraightDrawType straightDrawType) {
+		return decideAtFlop(handDrawsSorted, boardDrawsSorted, iHaveNuts, nutsForLevel, straightDrawType);
 	}
 
 	@Override
-	public BettingDecision decideAtRiver(DrawModel drawModel, boolean iHaveNuts,
-			ArrayList<DrawModel> boardDraws, boolean nutsForLevel, StraightDrawType straightDrawType) {
+	public BettingDecision decideAtRiver(SortedSet<DrawModel> handDrawsSorted, SortedSet<DrawModel> boardDrawsSorted,
+			boolean iHaveNuts, boolean nutsForLevel, StraightDrawType straightDrawType) {
 		BettingDecision bettingDecision = BettingDecision.CHECK_FOLD;
 
 		if (iHaveNuts) {
-			if (nbTurnOfBet == 1) {
-				bettingDecision = betSmall();
-			}
-			else {
-				bettingDecision = betMax();
-			}
+			System.out.println(Full_10);
+			bettingDecision = betPot();
 		}
 		else {
-			bettingDecision = callAllBet();
+			System.out.println(Full_30);
 		}
 
 		return bettingDecision;
-
 	}
 }

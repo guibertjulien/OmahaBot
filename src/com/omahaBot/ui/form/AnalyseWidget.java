@@ -255,7 +255,7 @@ public class AnalyseWidget extends Composite {
 				}
 			}
 
-			if (postFlopAnalyser.ihaveNuts()) {
+			if (postFlopAnalyser.iHaveNuts()) {
 				lbl_nuts.setText("NUTS !!!");
 			}
 			else {

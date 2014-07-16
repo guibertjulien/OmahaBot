@@ -7,6 +7,7 @@ import com.omahaBot.enums.DealStep;
 import com.omahaBot.exception.CardPackNoValidException;
 import com.omahaBot.model.BoardModel;
 import com.omahaBot.model.hand.HandModel;
+import com.omahaBot.strategy.StrategyTurnContext;
 
 public class AnalyserServiceTest {
 
@@ -127,16 +128,18 @@ public class AnalyserServiceTest {
 		HandModel handModel;
 		BoardModel boardModel;
 		DealStep dealStep;
+		StrategyTurnContext context;
 		
 		dealStep = DealStep.FLOP;
 		handModel = new HandModel("Tc3d4c5d");
 		boardModel = new BoardModel("6h5h2s", dealStep);
-
+		context = new StrategyTurnContext(1, 6, 1);
+		
 		System.out.println(handModel);
 		System.out.println(boardModel);
 
 		analyserService.analyseHand(handModel, boardModel);
-		analyserService.decide(dealStep, handModel, 1);
+		analyserService.decide(dealStep, handModel, context);
 
 		System.out.println("#######################################################");
 		
@@ -148,7 +151,7 @@ public class AnalyserServiceTest {
 		System.out.println(boardModel);
 
 		analyserService.analyseHand(handModel, boardModel);
-		analyserService.decide(dealStep, handModel, 1);
+		analyserService.decide(dealStep, handModel, context);
 
 		System.out.println("#######################################################");
 		
@@ -160,7 +163,7 @@ public class AnalyserServiceTest {
 		System.out.println(boardModel);
 		
 		analyserService.analyseHand(handModel, boardModel);
-		analyserService.decide(dealStep, handModel, 1);
+		analyserService.decide(dealStep, handModel, context);
 		
 		System.out.println("#######################################################");
 		
@@ -172,7 +175,7 @@ public class AnalyserServiceTest {
 		System.out.println(boardModel);
 		
 		analyserService.analyseHand(handModel, boardModel);
-		analyserService.decide(dealStep, handModel, 1);
+		analyserService.decide(dealStep, handModel, context);
 		
 		System.out.println("#######################################################");
 		
@@ -184,7 +187,7 @@ public class AnalyserServiceTest {
 		System.out.println(boardModel);
 		
 		analyserService.analyseHand(handModel, boardModel);
-		analyserService.decide(dealStep, handModel, 1);
+		analyserService.decide(dealStep, handModel, context);
 
 		System.out.println("#######################################################");
 		

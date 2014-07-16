@@ -37,12 +37,11 @@ public @Data class FlushModel extends DrawModel {
 		super(handCategory);
 		this.suit = suit;
 
+		initRankAndNuts(drawString);	
+		
 		if (permutationHand != null) {
 			initHoleCards(permutationHand);
 			rank = permutationHand.last().getRank();
-		}
-		else {
-			initRankAndNuts(drawString);			
 		}
 	}
 
@@ -117,12 +116,12 @@ public @Data class FlushModel extends DrawModel {
 			if (this.handCategory.ordinal() > drawCompare.handCategory.ordinal()) {
 				return -1;
 			}
-			// compare Kicker
+			// compare nutsOrHoleCards
 			else {
-				if (this.rank.ordinal() > drawCompare.rank.ordinal()) {
+				if (this.nutsOrHoleCards.getCard2().ordinal() > drawCompare.nutsOrHoleCards.getCard2().ordinal()) {
 					return -1;
 				}
-				else if (this.rank.ordinal() < drawCompare.rank.ordinal()) {
+				else if (this.nutsOrHoleCards.getCard2().ordinal() < drawCompare.nutsOrHoleCards.getCard2().ordinal()) {
 					return 1;
 				} else {
 					return 0;

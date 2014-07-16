@@ -1,35 +1,41 @@
 package com.omahaBot.strategy;
 
-import java.util.ArrayList;
+import java.util.SortedSet;
 
 import com.omahaBot.enums.BettingDecision;
 import com.omahaBot.enums.StraightDrawType;
 import com.omahaBot.model.draw.DrawModel;
 
+/**
+ * TODO
+ * 
+ * @author Julien
+ *
+ */
 public class BluffStrategy extends AbstractStrategy {
 
-	public BluffStrategy(int nbTurnOfBet, boolean imFirstToMove) {
-		super(nbTurnOfBet, imFirstToMove);
+	public BluffStrategy(StrategyTurnContext context) {
+		super(context);
 		System.out.println("--> BluffStrategy");
 	}
 
 	@Override
-	public BettingDecision decideAtFlop(DrawModel drawModel, boolean iHaveNuts,
-			ArrayList<DrawModel> boardDraws, boolean nutsForLevel, StraightDrawType straightDrawType) {
+	public BettingDecision decideAtFlop(SortedSet<DrawModel> handDrawsSorted, SortedSet<DrawModel> boardDrawsSorted,
+			boolean iHaveNuts, boolean nutsForLevel, StraightDrawType straightDrawType) {
 		BettingDecision bettingDecision = BettingDecision.CHECK_FOLD;
 		return bettingDecision;
 	}
 
 	@Override
-	public BettingDecision decideAtTurn(DrawModel drawModel, boolean iHaveNuts,
-			ArrayList<DrawModel> boardDraws, boolean nutsForLevel, StraightDrawType straightDrawType) {
+	public BettingDecision decideAtTurn(SortedSet<DrawModel> handDrawsSorted, SortedSet<DrawModel> boardDrawsSorted,
+			boolean iHaveNuts, boolean nutsForLevel, StraightDrawType straightDrawType) {
 		BettingDecision bettingDecision = BettingDecision.CHECK_FOLD;
 		return bettingDecision;
 	}
 
 	@Override
-	public BettingDecision decideAtRiver(DrawModel drawModel, boolean iHaveNuts,
-			ArrayList<DrawModel> boardDraws, boolean nutsForLevel, StraightDrawType straightDrawType) {
+	public BettingDecision decideAtRiver(SortedSet<DrawModel> handDrawsSorted, SortedSet<DrawModel> boardDrawsSorted,
+			boolean iHaveNuts, boolean nutsForLevel, StraightDrawType straightDrawType) {
 		BettingDecision bettingDecision = BettingDecision.CHECK_FOLD;
 		return bettingDecision;
 	}

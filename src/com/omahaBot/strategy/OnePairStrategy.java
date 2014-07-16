@@ -1,6 +1,6 @@
 package com.omahaBot.strategy;
 
-import java.util.ArrayList;
+import java.util.SortedSet;
 
 import com.omahaBot.enums.BettingDecision;
 import com.omahaBot.enums.StraightDrawType;
@@ -8,45 +8,43 @@ import com.omahaBot.model.draw.DrawModel;
 
 public class OnePairStrategy extends AbstractStrategy {
 
-	private static String CASE_1 = "CASE 1 : NO first turn of bet";
-	private static String CASE_2 = "CASE 2 : CAUTION PAIR or FLUSH in board !!!";
-	private static String CASE_3 = "CASE 3 : STRAIGHT out are GOOD";
-	private static String CASE_4 = "CASE 4 : CHECK_CALL if first turn of bet";
-	private static String CASE_5 = "CASE 5 : CHECK_FOLD";
+	// private static String OnePair_10 = "OnePair_10 : NO FIRST TURN OF BET";
+	private static String OnePair_20 = "OnePair_20 : TOP PAIR but PAIR or FLUSH/DRAW in board";
+	private static String OnePair_30 = "OnePair_30 : TOP PAIR and good STRAIGHT outs";
+	private static String OnePair_31 = "OnePair_30 : TOP PAIR and bad STRAIGHT outs";
+	private static String OnePair_50 = "OnePair_50 : NO TOP PAIR";
+	private static String OnePair_60 = "OnePair_50 : FOLD at RIVER";
 
-	public OnePairStrategy(int nbTurnOfBet, boolean imFirstToMove) {
-		super(nbTurnOfBet, imFirstToMove);
+	public OnePairStrategy(StrategyTurnContext context) {
+		super(context);
 		System.out.println("--> OnePairStrategy");
 	}
 
 	@Override
-	public BettingDecision decideAtFlop(DrawModel drawModel, boolean iHaveNuts,
-			ArrayList<DrawModel> boardDraws, boolean nutsForLevel, StraightDrawType straightDrawType) {
+	public BettingDecision decideAtFlop(SortedSet<DrawModel> handDrawsSorted, SortedSet<DrawModel> boardDrawsSorted,
+			boolean iHaveNuts, boolean nutsForLevel, StraightDrawType straightDrawType) {
 
 		BettingDecision bettingDecision = BettingDecision.CHECK_FOLD;
 
-		if (nbTurnOfBet > 1) {
-			System.out.println(CASE_1);
-		}
-		// i have top PAIR ?
-		else if (nutsForLevel) {
+		// TOP PAIR ?
+		if (nutsForLevel) {
 			// test bordDraw level 0
-			switch (boardDraws.get(0).getHandCategory()) {
+			switch (boardDrawsSorted.first().getHandCategory()) {
 			case FOUR_OF_A_KIND:
 			case FULL_HOUSE:
 			case FLUSH:
-				System.out.println(CASE_2);
+				System.out.println(OnePair_20);
 				break;
 			case FLUSH_DRAW:
 			case STRAIGHT:
 			case STRAIGHT_ACE_LOW:
-				if (straightDrawType.getOuts() > STRAIGHT_OUTS_MIN) {
-					System.out.println(CASE_3);
-					bettingDecision = betBig();
+				if (straightDrawType.getOuts() > StrategyTurnContext.STRAIGHT_OUTS_MIN) {
+					System.out.println(OnePair_30);
+					bettingDecision = betOrCall_fold(BetType.SMALL);
 				}
 				else {
-					System.out.println(CASE_4);
-					bettingDecision = betSmall();
+					System.out.println(OnePair_31);
+					bettingDecision = betOrFold_fold(BetType.SMALL);
 				}
 				break;
 			default:
@@ -54,21 +52,24 @@ public class OnePairStrategy extends AbstractStrategy {
 			}
 		}
 		else {
-			System.out.println(CASE_5);
+			System.out.println(OnePair_50);
 		}
 
 		return bettingDecision;
 	}
 
 	@Override
-	public BettingDecision decideAtTurn(DrawModel drawModel, boolean iHaveNuts,
-			ArrayList<DrawModel> boardDraws, boolean nutsForLevel, StraightDrawType straightDrawType) {
-		return decideAtFlop(drawModel, iHaveNuts, boardDraws, nutsForLevel, straightDrawType);
+	public BettingDecision decideAtTurn(SortedSet<DrawModel> handDrawsSorted, SortedSet<DrawModel> boardDrawsSorted,
+			boolean iHaveNuts, boolean nutsForLevel, StraightDrawType straightDrawType) {
+
+		return decideAtFlop(handDrawsSorted, boardDrawsSorted, iHaveNuts, nutsForLevel, straightDrawType);
 	}
 
 	@Override
-	public BettingDecision decideAtRiver(DrawModel drawModel, boolean iHaveNuts,
-			ArrayList<DrawModel> boardDraws, boolean nutsForLevel, StraightDrawType straightDrawType) {
+	public BettingDecision decideAtRiver(SortedSet<DrawModel> handDrawsSorted, SortedSet<DrawModel> boardDrawsSorted,
+			boolean iHaveNuts, boolean nutsForLevel, StraightDrawType straightDrawType) {
+
+		System.out.println(OnePair_60);
 		return BettingDecision.CHECK_FOLD;
 	}
 }

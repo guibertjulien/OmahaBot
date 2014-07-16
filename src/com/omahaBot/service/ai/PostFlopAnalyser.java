@@ -1,9 +1,6 @@
 package com.omahaBot.service.ai;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.SortedSet;
-import java.util.stream.Collectors;
 
 import lombok.Data;
 
@@ -19,6 +16,7 @@ import com.omahaBot.model.draw.DrawModel;
 import com.omahaBot.model.hand.HandModel;
 import com.omahaBot.strategy.AbstractStrategy;
 import com.omahaBot.strategy.StrategyFactory;
+import com.omahaBot.strategy.StrategyTurnContext;
 
 /**
  * TODO continuation BET SLOW_PLAY DEAD_CARD POSITION BLUFF CAPACITY OUT STACK 2
@@ -42,7 +40,6 @@ public class PostFlopAnalyser {
 	private int handLevel;
 	private boolean nutsForLevel;
 	private StraightDrawType straightDrawType = StraightDrawType.NO_DRAW;
-	private boolean imFirstToMove;
 
 	public PostFlopAnalyser() {
 	}
@@ -60,13 +57,7 @@ public class PostFlopAnalyser {
 	}
 
 	public void analyseMyPosition(int nbTurnToBet, int nbAction) {
-		if (nbTurnToBet == 1 && nbAction == 1) {
-			System.out.println(">>>> I'm first to move");
-			imFirstToMove = true;
-		}
-		else {
-			imFirstToMove = false;
-		}
+		// TODO
 	}
 
 	public void analyseHand(HandModel handModel, BoardModel boardModel) {
@@ -152,7 +143,7 @@ public class PostFlopAnalyser {
 			level++;
 		}
 
-		if (ihaveNuts()) {
+		if (iHaveNuts()) {
 			System.out.println(">>>> I have NUTS !");
 		}
 		else {
@@ -162,7 +153,7 @@ public class PostFlopAnalyser {
 		System.out.println("----------------------------------------------------------------");
 	}
 
-	public BettingDecision decide(DealStep dealStep, HandModel myHand, int nbTurnToBet) {
+	public BettingDecision decide(DealStep dealStep, HandModel myHand, StrategyTurnContext context) {
 
 		if (log.isDebugEnabled()) {
 			log.debug(">> START decide " + dealStep);
@@ -171,51 +162,55 @@ public class PostFlopAnalyser {
 		System.out.println("----------------------------------------------------------------");
 		System.out.println(" DECIDE : " + dealStep);
 
+		System.out.println(context);
+
 		BettingDecision bettingDecision = BettingDecision.CHECK_FOLD;
 
 		// TODO better : caution straightDrawType
 		if (!handDrawsSorted.isEmpty()) {
 
 			DrawModel bestPermutation = handDrawsSorted.first();
-			ArrayList<DrawModel> boardDraws = new ArrayList<DrawModel>(boardDrawsSorted);
-
-			List<DrawModel> boardflushDraws = boardDraws.stream()
-					.filter(d -> d.getHandCategory().equals(HandCategory.FLUSH))
-					.collect(Collectors.toList());
-
-			if (boardflushDraws.isEmpty()) {
-				boardflushDraws = boardDraws.stream().filter(d -> d.getHandCategory().equals(HandCategory.FLUSH_DRAW))
-						.collect(Collectors.toList());
-			}
+			// ArrayList<DrawModel> boardDraws = new
+			// ArrayList<DrawModel>(boardDrawsSorted);
+			//
+			// List<DrawModel> boardflushDraws = boardDraws.stream()
+			// .filter(d -> d.getHandCategory().equals(HandCategory.FLUSH))
+			// .collect(Collectors.toList());
+			//
+			// if (boardflushDraws.isEmpty()) {
+			// boardflushDraws = boardDraws.stream().filter(d ->
+			// d.getHandCategory().equals(HandCategory.FLUSH_DRAW))
+			// .collect(Collectors.toList());
+			// }
 
 			AbstractStrategy strategyFactory = StrategyFactory.getStrategy(bestPermutation.getHandCategory(),
-					nbTurnToBet, imFirstToMove);
+					context);
 
 			switch (dealStep) {
 			case FLOP:
-				bettingDecision = strategyFactory.decideAtFlop(bestPermutation, ihaveNuts(),
-						boardDraws,	nutsForLevel, straightDrawType);
+				bettingDecision = strategyFactory.decideAtFlop(handDrawsSorted, boardDrawsSorted, iHaveNuts(),
+						nutsForLevel, straightDrawType);
 				break;
 			case TURN:
-				bettingDecision = strategyFactory.decideAtTurn(bestPermutation, ihaveNuts(),
-						boardDraws, nutsForLevel, straightDrawType);
+				bettingDecision = strategyFactory.decideAtTurn(handDrawsSorted, boardDrawsSorted, iHaveNuts(),
+						nutsForLevel, straightDrawType);
 				break;
 			case RIVER:
-				bettingDecision = strategyFactory.decideAtRiver(bestPermutation, ihaveNuts(),
-						boardDraws, nutsForLevel, straightDrawType);
+				bettingDecision = strategyFactory.decideAtRiver(handDrawsSorted, boardDrawsSorted, iHaveNuts(),
+						nutsForLevel, straightDrawType);
 				break;
 			default:
 				break;
 			}
 		}
 
-		System.out.println(">>>> I " + bettingDecision + " at " + dealStep + " (" + nbTurnToBet + ")");
+		System.out.println(">>>> I " + bettingDecision + " at " + dealStep + " (" + context.getNbTurnOfBet() + ")");
 		System.out.println("----------------------------------------------------------------");
 
 		return bettingDecision;
 	}
 
-	public boolean ihaveNuts() {
+	public boolean iHaveNuts() {
 		return handLevel == 0 && nutsForLevel;
 	}
 }

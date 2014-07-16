@@ -28,6 +28,7 @@ import com.omahaBot.model.DealStepModel;
 import com.omahaBot.model.PlayerModel;
 import com.omahaBot.model.draw.DrawModel;
 import com.omahaBot.model.hand.HandModel;
+import com.omahaBot.strategy.StrategyTurnContext;
 import com.omahaBot.ui.form.MainForm;
 
 public class ThreadTable extends MyThread {
@@ -78,9 +79,9 @@ public class ThreadTable extends MyThread {
 
 	private Double lastBet = 0.0;
 	
-	private int nbTurnToBet = 1;
+	private int nbTurnOfBet = 1;
 	
-	private int nbMoveAction = 1;
+	private int nbAction = 1;
 
 	// TODO Contexte
 
@@ -182,8 +183,8 @@ public class ThreadTable extends MyThread {
 		lastActionCurrent = PlayerAction.UNKNOW;
 		lastBet = 0.0;
 		positionTurnToPlayOld = 0;
-		nbTurnToBet = 1;
-		nbMoveAction = 0;
+		nbTurnOfBet = 1;
+		nbAction = 0;
 		// END - intialize
 
 		dealStepOld = dealStepCurrent;
@@ -225,7 +226,7 @@ public class ThreadTable extends MyThread {
 			System.out.println("----> TURN TO PLAY : " + positionTurnToPlayCurrent);	
 		}
 		
-		nbMoveAction++;
+		nbAction++;
 		
 		try {
 			potCurrent = ocrService.scanPot();
@@ -408,19 +409,19 @@ public class ThreadTable extends MyThread {
 
 		switch (dealStepCurrent) {
 		case PRE_FLOP:
-			bettingDecision = preFlopAnalyser.decide(handModel, nbTurnToBet);
+			bettingDecision = preFlopAnalyser.decide(handModel, nbTurnOfBet);
 			break;
 		case FLOP:
 		case TURN:
 		case RIVER:
-			postFlopAnalyser.analyseMyPosition(nbTurnToBet, nbMoveAction);
-			bettingDecision = postFlopAnalyser.decide(dealStepCurrent, handModel, nbTurnToBet);
+			StrategyTurnContext context = new StrategyTurnContext(nbTurnOfBet, nbPlayerCurrent, nbAction);
+			bettingDecision = postFlopAnalyser.decide(dealStepCurrent, handModel, context);
 			break;
 		default:
 			break;
 		}
 		
-		nbTurnToBet++;
+		nbTurnOfBet++;
 
 		try {
 			MyRobot robot = new MyRobot();
