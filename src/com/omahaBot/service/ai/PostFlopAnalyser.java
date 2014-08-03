@@ -67,9 +67,10 @@ public class PostFlopAnalyser {
 			log.debug(">> START analyseHand");
 		}
 
-		System.out.println("----------------------------------------------------------------");
+		System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
 		System.out.println(" ANALYSE POSTFLOP : " + handModel + " / " + boardModel);
-
+		System.out.println("----------------------------------------");
+		
 		handLevel = 99;
 		handDrawsSorted = handModel.initCombinaisonDraws(boardModel);
 
@@ -116,13 +117,14 @@ public class PostFlopAnalyser {
 			if (bestPermutation.compareTo(boardDrawsSorted.first()) < 0) {
 				handLevel = 0;
 				nutsForLevel = true;
-				System.out.println("==> BUG !!!");
-				log.error("==> BUG !!!");
+				System.out.println("BUG !");
+				log.error("BUG !");
 			}
 
 		}
 
-		System.out.println(" - HAND DRAWS :");
+		System.out.println("----------------------------------------");
+		System.out.println("HAND DRAWS :");
 
 		// analyse de STRAIGHT DRAWS TYPE si pas de STRAIGHT
 		if (!handModel.isStraight(handDrawsSorted)) {
@@ -132,26 +134,27 @@ public class PostFlopAnalyser {
 
 		int level = 0;
 		for (DrawModel drawModel : handDrawsSorted) {
-			System.out.println("  #" + level + ": " + drawModel);
+			System.out.println(" #" + level + ": " + drawModel);
 			level++;
 		}
 
-		System.out.println(" - BOARD DRAWS :");
+		System.out.println("----------------------------------------");
+		System.out.println("BOARD DRAWS :");
 
 		level = 0;
 		for (DrawModel drawModel : boardDrawsSorted) {
-			System.out.println("  #" + level + ": " + drawModel);
+			System.out.println(" #" + level + ": " + drawModel);
 			level++;
 		}
 
-		if (iHaveNuts()) {
-			System.out.println(">>>> I have NUTS !");
-		}
-		else {
-			System.out.println(">>>> LEVEL=" + handLevel + " / NUTS=" + isNutsForLevel());
-		}
+//		if (iHaveNuts()) {
+//			System.out.println(">>>> I have NUTS !");
+//		}
+//		else {
+//			System.out.println(">>>> LEVEL=" + handLevel + " / NUTS=" + isNutsForLevel());
+//		}
 
-		System.out.println("----------------------------------------------------------------");
+		System.out.println("----------------------------------------");
 	}
 
 	public BettingDecision decide(DealStep dealStep, HandModel myHand, StrategyContext context) {
@@ -159,9 +162,6 @@ public class PostFlopAnalyser {
 		if (log.isDebugEnabled()) {
 			log.debug(">> START decide " + dealStep);
 		}
-
-		System.out.println("----------------------------------------------------------------");
-		System.out.println(" DECIDE : " + dealStep);
 
 		BettingDecision bettingDecision = BettingDecision.CHECK_FOLD;
 
@@ -210,8 +210,8 @@ public class PostFlopAnalyser {
 			}
 		}
 
-		System.out.println(">>>> I " + bettingDecision + " at " + dealStep + " (" + context.getNbTurnOfBet() + ")");
-		System.out.println("----------------------------------------------------------------");
+		System.out.println("Me: I " + bettingDecision + " at " + dealStep + " (" + context.getNbTurnOfBet() + ")");
+		System.out.println("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
 
 		return bettingDecision;
 	}

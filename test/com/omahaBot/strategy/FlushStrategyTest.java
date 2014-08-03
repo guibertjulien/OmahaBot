@@ -62,7 +62,7 @@ public class FlushStrategyTest {
 	}
 	
 	@Test
-	public final void testFlushDraw_10_FLOP() throws CardPackNoValidException {
+	public final void testFlush_10_FLOP() throws CardPackNoValidException {
 		dealStep = DealStep.FLOP;
 		handModel = new HandModel("2dKhAhAc", dealStep);
 		boardModel = new BoardModel("3h2hQh", dealStep);
@@ -80,7 +80,7 @@ public class FlushStrategyTest {
 	}
 
 	@Test
-	public final void testFlushDraw_10_TURN() throws CardPackNoValidException {
+	public final void testFlush_10_TURN() throws CardPackNoValidException {
 		dealStep = DealStep.TURN;
 		handModel = new HandModel("2dKhAhAc", dealStep);
 		boardModel = new BoardModel("3h2hQh8d", dealStep);
@@ -98,7 +98,7 @@ public class FlushStrategyTest {
 	}
 	
 	@Test
-	public final void testFlushDraw_10_RIVER() throws CardPackNoValidException {
+	public final void testFlush_10_RIVER() throws CardPackNoValidException {
 		dealStep = DealStep.RIVER;
 		handModel = new HandModel("2dKhAhAc", dealStep);
 		boardModel = new BoardModel("3h2hQh8d5c", dealStep);
@@ -116,7 +116,7 @@ public class FlushStrategyTest {
 	}
 	
 	@Test
-	public final void testFlushDraw_11_FLOP() throws CardPackNoValidException {
+	public final void testFlush_11_FLOP() throws CardPackNoValidException {
 		dealStep = DealStep.FLOP;
 		handModel = new HandModel("2dKh8hAc", dealStep);
 		boardModel = new BoardModel("3h2hQh", dealStep);
@@ -134,7 +134,7 @@ public class FlushStrategyTest {
 	}
 	
 	@Test
-	public final void testFlushDraw_11_TURN() throws CardPackNoValidException {
+	public final void testFlush_11_TURN() throws CardPackNoValidException {
 		dealStep = DealStep.TURN;
 		handModel = new HandModel("2dKh8hAc", dealStep);
 		boardModel = new BoardModel("3h2hQh7d", dealStep);
@@ -152,7 +152,7 @@ public class FlushStrategyTest {
 	}
 	
 	@Test
-	public final void testFlushDraw_11_RIVER() throws CardPackNoValidException {
+	public final void testFlush_11_RIVER() throws CardPackNoValidException {
 		dealStep = DealStep.RIVER;
 		handModel = new HandModel("2dKh8hAc", dealStep);
 		boardModel = new BoardModel("3h2hQh7d5c", dealStep);
@@ -170,7 +170,7 @@ public class FlushStrategyTest {
 	}
 	
 	@Test
-	public final void testFlushDraw_20_FLOP() throws CardPackNoValidException {
+	public final void testFlush_20_FLOP() throws CardPackNoValidException {
 		dealStep = DealStep.FLOP;
 		handModel = new HandModel("QdKh8hQc", dealStep);
 		boardModel = new BoardModel("3h2hQh", dealStep);
@@ -188,7 +188,7 @@ public class FlushStrategyTest {
 	}
 	
 	@Test
-	public final void testFlushDraw_20_TURN() throws CardPackNoValidException {
+	public final void testFlush_20_TURN() throws CardPackNoValidException {
 		dealStep = DealStep.TURN;
 		handModel = new HandModel("QdKh8hQc", dealStep);
 		boardModel = new BoardModel("3h2hQh5d", dealStep);
@@ -206,7 +206,7 @@ public class FlushStrategyTest {
 	}
 	
 	@Test
-	public final void testFlushDraw_20_RIVER() throws CardPackNoValidException {
+	public final void testFlush_20_RIVER() throws CardPackNoValidException {
 		dealStep = DealStep.RIVER;
 		handModel = new HandModel("QdKh8hQc", dealStep);
 		boardModel = new BoardModel("3h2hQh5d9c", dealStep);
@@ -224,7 +224,7 @@ public class FlushStrategyTest {
 	}
 
 	@Test
-	public final void testFlushDraw_21_FLOP() throws CardPackNoValidException {
+	public final void testFlush_21_FLOP() throws CardPackNoValidException {
 		dealStep = DealStep.FLOP;
 		handModel = new HandModel("3dKh8h3c", dealStep);
 		boardModel = new BoardModel("3h2hQh", dealStep);
@@ -242,7 +242,7 @@ public class FlushStrategyTest {
 	}
 	
 	@Test
-	public final void testFlushDraw_21_TURN() throws CardPackNoValidException {
+	public final void testFlush_21_TURN() throws CardPackNoValidException {
 		dealStep = DealStep.TURN;
 		handModel = new HandModel("3dKh8h3c", dealStep);
 		boardModel = new BoardModel("3h2hQh5d", dealStep);
@@ -260,7 +260,7 @@ public class FlushStrategyTest {
 	}
 	
 	@Test
-	public final void testFlushDraw_21_RIVER() throws CardPackNoValidException {
+	public final void testFlush_21_RIVER() throws CardPackNoValidException {
 		dealStep = DealStep.RIVER;
 		handModel = new HandModel("3dKh8h3c", dealStep);
 		boardModel = new BoardModel("3h2hQh5d9c", dealStep);
@@ -278,7 +278,7 @@ public class FlushStrategyTest {
 	}
 
 	@Test
-	public final void testFlushDraw_30_TURN() throws CardPackNoValidException {
+	public final void testFlush_30_TURN() throws CardPackNoValidException {
 		dealStep = DealStep.TURN;
 		handModel = new HandModel("2dKhAhAc", dealStep);
 		boardModel = new BoardModel("3hQhQd8h", dealStep);
@@ -296,7 +296,7 @@ public class FlushStrategyTest {
 	}
 	
 	@Test
-	public final void testFlushDraw_30_RIVER() throws CardPackNoValidException {
+	public final void testFlush_30_RIVER() throws CardPackNoValidException {
 		dealStep = DealStep.RIVER;
 		handModel = new HandModel("2dKhAhAc", dealStep);
 		boardModel = new BoardModel("3hQhQd8h5c", dealStep);
@@ -314,7 +314,7 @@ public class FlushStrategyTest {
 	}
 	
 	@Test
-	public final void testFlushDraw_31_TURN() throws CardPackNoValidException {
+	public final void testFlush_31_TURN() throws CardPackNoValidException {
 		dealStep = DealStep.TURN;
 		handModel = new HandModel("2dKhJhAc", dealStep);
 		boardModel = new BoardModel("3hQhQd8h", dealStep);
@@ -332,7 +332,7 @@ public class FlushStrategyTest {
 	}
 	
 	@Test
-	public final void testFlushDraw_31_RIVER() throws CardPackNoValidException {
+	public final void testFlush_31_RIVER() throws CardPackNoValidException {
 		dealStep = DealStep.RIVER;
 		handModel = new HandModel("2dKhJhAc", dealStep);
 		boardModel = new BoardModel("3hQhQd8h5c", dealStep);

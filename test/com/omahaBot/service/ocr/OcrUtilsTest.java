@@ -2,8 +2,6 @@ package com.omahaBot.service.ocr;
 
 import static org.junit.Assert.assertTrue;
 
-import java.awt.AWTException;
-import java.awt.Robot;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -16,6 +14,7 @@ import net.sourceforge.tess4j.Tesseract;
 import net.sourceforge.tess4j.TesseractException;
 import net.sourceforge.vietocr.ImageHelper;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.omahaBot.enums.Block;
@@ -35,6 +34,7 @@ public class OcrUtilsTest {
 	}
 
 	@Test
+	@Ignore("TODO à voir")
 	public void test2() {
 
 		String ocr = "";
@@ -56,6 +56,7 @@ public class OcrUtilsTest {
 	}
 
 	@Test
+	@Ignore("TODO à voir")
 	public void test3() {
 
 		String ocr = "";
@@ -66,15 +67,15 @@ public class OcrUtilsTest {
 			bufferedImage = OcrUtils.rezizeImage(bufferedImage, Block.ZOOM_RESIZE);
 			ocr = Tesseract.getInstance().doOCR(bufferedImage);
 			System.out.println("--> : " + ocr);
-			//assertTrue(ocr.equals("9678€"));
-			bufferedImage = ImageIO.read(new File("C:/_DEV/caps/PLAYER_1PLAYER_STACK.png"));			
+			// assertTrue(ocr.equals("9678€"));
+			bufferedImage = ImageIO.read(new File("C:/_DEV/caps/PLAYER_1PLAYER_STACK.png"));
 			bufferedImage = ImageHelper.convertImageToGrayscale(bufferedImage);
 			bufferedImage = OcrUtils.rezizeImage(bufferedImage, Block.ZOOM_RESIZE);
 			Tesseract.getInstance().setTessVariable(OcrUtils.TESS_VAR_WHITELIST, "123456789€");
 			Tesseract.getInstance().setPageSegMode(TessPageSegMode.PSM_SINGLE_LINE);
 			ocr = Tesseract.getInstance().doOCR(bufferedImage);
 			System.out.println("--> : " + ocr);
-			//assertTrue(ocr.equals("9678€"));
+			// assertTrue(ocr.equals("9678€"));
 
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -83,24 +84,5 @@ public class OcrUtilsTest {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
-
-	}
-	
-
-	@Test
-	public void testShortCut() {
-		try {
-			Robot robot = new Robot();
-			
-			robot.keyPress(java.awt.event.KeyEvent.VK_0);
-			
-			
-		} catch (AWTException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		
 	}
 }

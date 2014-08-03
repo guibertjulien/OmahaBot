@@ -89,7 +89,12 @@ public @Data class FullModel extends DrawModel {
 			card1 = new CardModel(rankThree, Suit.SPADE);
 
 			if (rankGroup.equals(kickerPack1)) {
-				card2 = new CardModel(rankPair, Suit.HEART);
+				if (rankPair.equals(kickerPack2)) {
+					card2 = new CardModel(rankPair, Suit.HEART);
+				}
+				else {
+					card2 = new CardModel(kickerPack2, Suit.HEART);
+				}
 			}
 			else {
 				card2 = new CardModel(rankThree, Suit.HEART);
