@@ -29,7 +29,7 @@ public class FlushDrawStrategy extends AbstractStrategy {
 
 	public FlushDrawStrategy(StrategyContext context) {
 		super(context);
-		// System.out.println("--> FlushDrawStrategy");
+		System.out.println("--> FlushDrawStrategy");
 	}
 
 	@Override

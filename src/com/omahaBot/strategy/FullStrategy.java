@@ -15,7 +15,7 @@ public class FullStrategy extends AbstractStrategy {
 
 	public FullStrategy(StrategyContext context) {
 		super(context);
-		//System.out.println("--> FullStrategy");
+		System.out.println("--> FullStrategy");
 	}
 
 	@Override
