@@ -19,4 +19,5 @@ public final class PixelConsts {
 	
 	public static final Color PLAYER_NOT_TURN_PLAY_COLOR1 = new Color(100, 100, 100);
 	public static final Color PLAYER_NOT_TURN_PLAY_COLOR2 = new Color(99, 99, 99);
+	public static final Color PLAYER_IS_DEALER = new Color(196, 194, 33);// PLAYER_IS_DEALER.png
 }

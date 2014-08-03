@@ -14,7 +14,7 @@ import com.omahaBot.model.draw.DrawModel;
  */
 public class BluffStrategy extends AbstractStrategy {
 
-	public BluffStrategy(StrategyTurnContext context) {
+	public BluffStrategy(StrategyContext context) {
 		super(context);
 		System.out.println("--> BluffStrategy");
 	}

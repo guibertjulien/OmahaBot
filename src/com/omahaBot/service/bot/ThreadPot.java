@@ -37,7 +37,7 @@ public class ThreadPot extends MyThread {
 
 		while (running) {
 			// scan du pot toutes les 100ms
-			currentPot = ocrService.scanPot();
+			//currentPot = ocrService.scanPot();
 
 			if (!oldPot.equals(currentPot)) {
 				oldPot = currentPot;

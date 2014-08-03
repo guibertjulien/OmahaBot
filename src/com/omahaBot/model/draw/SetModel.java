@@ -55,18 +55,17 @@ public @Data class SetModel extends DrawModel {
 	}
 
 	@Override
-	public boolean isNuts(Object obj) {
-		SetModel other = (SetModel) obj;
+	public boolean equals(Object obj) {
+		if (obj instanceof SetModel) {
+			SetModel other = (SetModel) obj;
 
-		if (!this.equals(obj))
+			if (rank != other.rank)
+				return false;
+			return true;
+		}
+		else {
 			return false;
-		if (!nutsOrHoleCards.getSortedCards().first().getRank()
-				.equals(other.nutsOrHoleCards.getSortedCards().first().getRank()))
-			return false;
-		if (!nutsOrHoleCards.getSortedCards().last().getRank()
-				.equals(other.nutsOrHoleCards.getSortedCards().last().getRank()))
-			return false;
-		return true;
+		}
 	}
 
 	@Override
@@ -88,6 +87,21 @@ public @Data class SetModel extends DrawModel {
 		else {
 			return super.compareTo(o);
 		}
+	}
+
+	@Override
+	public boolean isNuts(Object obj) {
+		SetModel other = (SetModel) obj;
+
+		if (!this.equals(obj))
+			return false;
+		if (!nutsOrHoleCards.getSortedCards().first().getRank()
+				.equals(other.nutsOrHoleCards.getSortedCards().first().getRank()))
+			return false;
+		if (!nutsOrHoleCards.getSortedCards().last().getRank()
+				.equals(other.nutsOrHoleCards.getSortedCards().last().getRank()))
+			return false;
+		return true;
 	}
 
 }

@@ -1,9 +1,14 @@
 package com.omahaBot.strategy;
 
+import java.util.Iterator;
+import java.util.Optional;
 import java.util.SortedSet;
+import java.util.function.Predicate;
 
 import com.omahaBot.enums.BettingDecision;
+import com.omahaBot.enums.HandCategory;
 import com.omahaBot.enums.StraightDrawType;
+import com.omahaBot.exception.StrategyUnknownException;
 import com.omahaBot.model.draw.DrawModel;
 
 public abstract class AbstractStrategy {
@@ -12,28 +17,28 @@ public abstract class AbstractStrategy {
 	protected boolean bluffStrategy = false;
 	protected boolean raise = false;
 
-	protected final StrategyTurnContext context;
+	protected final StrategyContext context;
 
 	public enum BetType {
 		SMALL, BIG, POT
 	}
 
-	public AbstractStrategy(StrategyTurnContext context) {
+	public AbstractStrategy(StrategyContext context) {
 		super();
 		this.context = context;
 	}
 
 	public abstract BettingDecision decideAtFlop(SortedSet<DrawModel> handDrawsSorted,
 			SortedSet<DrawModel> boardDrawsSorted,
-			boolean iHaveNuts, boolean nutsForLevel, StraightDrawType straightDrawType);
+			boolean iHaveNuts, boolean nutsForLevel, StraightDrawType straightDrawType) throws StrategyUnknownException;
 
 	public abstract BettingDecision decideAtTurn(SortedSet<DrawModel> handDrawsSorted,
 			SortedSet<DrawModel> boardDrawsSorted,
-			boolean iHaveNuts, boolean nutsForLevel, StraightDrawType straightDrawType);
+			boolean iHaveNuts, boolean nutsForLevel, StraightDrawType straightDrawType) throws StrategyUnknownException;
 
 	public abstract BettingDecision decideAtRiver(SortedSet<DrawModel> handDrawsSorted,
 			SortedSet<DrawModel> boardDrawsSorted,
-			boolean iHaveNuts, boolean nutsForLevel, StraightDrawType straightDrawType);
+			boolean iHaveNuts, boolean nutsForLevel, StraightDrawType straightDrawType) throws StrategyUnknownException;
 
 	/**
 	 * Call all bets
@@ -71,10 +76,11 @@ public abstract class AbstractStrategy {
 		return BettingDecision.ALLIN;
 	}
 
-//	public BettingDecision bluff() {
-//		bluffStrategy = true;
-//		return BettingDecision.randomBetween(BettingDecision.ALLIN, BettingDecision.BET_RAISE_75);
-//	}
+	// public BettingDecision bluff() {
+	// bluffStrategy = true;
+	// return BettingDecision.randomBetween(BettingDecision.ALLIN,
+	// BettingDecision.BET_RAISE_75);
+	// }
 
 	/**
 	 * 1 : betOrFold - 2 : fold
@@ -82,6 +88,9 @@ public abstract class AbstractStrategy {
 	 * @return
 	 */
 	public BettingDecision betOrFold_fold(BetType betType) {
+
+		System.out.println("betOrFold_fold : " + betType);
+
 		if (context.isFirstTurnOfBet()) {// 1er tour de mise
 			if (context.noBetInTurn()) {// pas de mise précédente
 				return bet(betType);
@@ -97,6 +106,9 @@ public abstract class AbstractStrategy {
 	 * @return
 	 */
 	public BettingDecision betOrCall_fold(BetType betType) {
+
+		System.out.println("betOrCall_fold : " + betType);
+
 		if (context.isFirstTurnOfBet()) {// 1er tour de mise
 			if (context.noBetInTurn()) {// pas de mise précédente
 				return bet(betType);
@@ -110,11 +122,57 @@ public abstract class AbstractStrategy {
 	}
 
 	/**
+	 * 
+	 * @param betType
+	 * @return
+	 */
+	public BettingDecision betIfnoBetOrCall_call(BetType betType) {
+
+		BettingDecision bettingDecision = BettingDecision.CHECK_FOLD;
+
+		if (context.isFirstTurnOfBet()) {// 1er tour de mise
+			if (context.noBetInTurn()) {// pas de mise précédente
+				bettingDecision = bet(betType);
+			}
+			else {
+				bettingDecision = callAllBet();
+			}
+		}
+		else {
+			bettingDecision = callAllBet();
+		}
+
+		return bettingDecision;
+	}
+
+	public BettingDecision betIfnoBetOrFold_fold(BetType betType) {
+
+		BettingDecision bettingDecision = BettingDecision.CHECK_FOLD;
+
+		if (context.isFirstTurnOfBet()) {// 1er tour de mise
+			if (context.noBetInTurn()) {// pas de mise précédente
+				bettingDecision = bet(betType);
+			}
+			else {
+				bettingDecision = BettingDecision.CHECK_FOLD;
+			}
+		}
+		else {
+			bettingDecision = BettingDecision.CHECK_FOLD;
+		}
+
+		return bettingDecision;
+	}
+
+	/**
 	 * MOVE Check Raise
 	 * 
 	 * @return
 	 */
 	public BettingDecision checkRaise_withNuts() {
+
+		System.out.println("checkRaise_withNuts");
+
 		if (context.imFirstToAction()) {
 			return callAllBet();
 		}
@@ -154,7 +212,7 @@ public abstract class AbstractStrategy {
 		for (DrawModel drawModelBoard : boardDrawsSorted) {
 			if (handDraw != null && drawModelBoard != null) {
 				// same handCategory
-				if (handDraw.getHandCategory().equals(drawModelBoard.getHandCategory())) {
+				if (handDraw.equals(drawModelBoard)) {
 					return handDraw.isNuts(drawModelBoard);
 				}
 			}
@@ -174,5 +232,81 @@ public abstract class AbstractStrategy {
 		default:
 			return BettingDecision.CHECK_FOLD;
 		}
+	}
+
+	private DrawModel drawSecondCategory(SortedSet<DrawModel> drawsSorted) {
+		if (drawsSorted.size() > 0) {
+			HandCategory level0 = drawsSorted.first().getHandCategory();
+
+			for (DrawModel drawModel : drawsSorted) {
+				if (!drawModel.getHandCategory().equals(level0)) {
+					return drawModel;
+				}
+			}
+		}
+
+		return null;
+	}
+	
+	protected DrawModel drawSecond(SortedSet<DrawModel> drawsSorted) {
+		if (drawsSorted.size() > 1) {
+			Iterator<DrawModel> it = drawsSorted.iterator();
+			DrawModel drawModel1 = it.next();
+			DrawModel drawModel2 = it.next();
+			
+			return drawModel2; 
+		}
+
+		return null;
+	}
+
+	public boolean isNutsForSecondDrawCategory(SortedSet<DrawModel> handDrawsSorted, SortedSet<DrawModel> boardDrawsSorted) {
+
+		// compare handDraw & boarDraw second Categoy
+		DrawModel handDrawSecondCategory = drawSecondCategory(handDrawsSorted);
+		DrawModel boardDrawSecondCategory = drawSecondCategory(boardDrawsSorted);
+
+		if (handDrawSecondCategory != null && boardDrawSecondCategory != null) {
+			if (handDrawSecondCategory.getHandCategory().equals(boardDrawSecondCategory.getHandCategory())) {
+				return handDrawSecondCategory.isNuts(boardDrawSecondCategory);
+			}	
+		}
+		
+		return false;
+	}
+
+	/**
+	 * MIN ONE PAIR on board
+	 * @param drawsSorted
+	 * @return
+	 */
+	public boolean boardHasFullDraw(SortedSet<DrawModel> drawsSorted) {
+
+		Predicate<? super DrawModel> filter_rankDraws = (d -> d.getHandCategory().equals(HandCategory.FOUR_OF_A_KIND)
+				|| d.getHandCategory().equals(HandCategory.FULL_HOUSE));
+
+		Optional<DrawModel> drawExist = drawsSorted
+				.stream()
+				.filter(filter_rankDraws)
+				.findAny();
+
+		return drawExist.isPresent();
+	}
+	
+	public boolean boardHasStraightDraw(SortedSet<DrawModel> drawsSorted) {
+
+		Predicate<? super DrawModel> filter_rankDraws = (d -> d.getHandCategory().equals(HandCategory.STRAIGHT)
+				|| d.getHandCategory().equals(HandCategory.STRAIGHT_ACE_LOW));
+
+		Optional<DrawModel> drawExist = drawsSorted
+				.stream()
+				.filter(filter_rankDraws)
+				.findAny();
+
+		return drawExist.isPresent();
+	}
+	
+	public boolean boardHasFullorStraightDraw(SortedSet<DrawModel> drawsSorted) {
+		return boardHasFullDraw(drawsSorted) || boardHasStraightDraw(drawsSorted);
 	}
 }

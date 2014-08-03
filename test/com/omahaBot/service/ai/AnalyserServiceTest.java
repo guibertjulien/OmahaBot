@@ -4,10 +4,11 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.omahaBot.enums.DealStep;
+import com.omahaBot.enums.LastPlayerBetType;
 import com.omahaBot.exception.CardPackNoValidException;
 import com.omahaBot.model.BoardModel;
 import com.omahaBot.model.hand.HandModel;
-import com.omahaBot.strategy.StrategyTurnContext;
+import com.omahaBot.strategy.StrategyContext;
 
 public class AnalyserServiceTest {
 
@@ -128,12 +129,12 @@ public class AnalyserServiceTest {
 		HandModel handModel;
 		BoardModel boardModel;
 		DealStep dealStep;
-		StrategyTurnContext context;
+		StrategyContext context;
 		
 		dealStep = DealStep.FLOP;
 		handModel = new HandModel("Tc3d4c5d");
 		boardModel = new BoardModel("6h5h2s", dealStep);
-		context = new StrategyTurnContext(1, 6, 1);
+		context = new StrategyContext(1, 6, 1, LastPlayerBetType.NO_BET);
 		
 		System.out.println(handModel);
 		System.out.println(boardModel);

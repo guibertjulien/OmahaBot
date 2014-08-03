@@ -98,7 +98,7 @@ public class ThreadAction extends MyThread {
 			if (positionPlayerTurnPlayOld != positionPlayerTurnPlay) {
 				log.debug("NEW ACTION");
 
-				currentPot = ocrService.scanPot();
+				//currentPot = ocrService.scanPot();
 
 				currentNbPlayer = nbPlayerActive();
 
@@ -111,7 +111,7 @@ public class ThreadAction extends MyThread {
 				actionModel.setNbPlayer(currentNbPlayer);
 				actionModel.setListPlayer(listCurrentPlayer);
 				actionModel.setPlayerAction(currentLastAction);
-				actionModel.setLastBet(lastBet);
+				//actionModel.setLastBet(lastBet);
 
 				oldNbPlayer = currentNbPlayer;
 
@@ -259,7 +259,7 @@ public class ThreadAction extends MyThread {
 
 		return listCurrentPlayerBlock.size();
 	}
-
+	
 	public void initListCurrentPlayer() {
 
 		for (PlayerBlock playerBlock : PlayerBlock.values()) {
@@ -347,7 +347,7 @@ public class ThreadAction extends MyThread {
 
 	@Override
 	public void initialize() {
-		oldPot = ocrService.scanPot();
+		//oldPot = ocrService.scanPot();
 
 		Display.getDefault().syncExec(new Runnable() {
 			public void run() {

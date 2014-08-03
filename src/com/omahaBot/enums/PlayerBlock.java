@@ -10,12 +10,12 @@ import com.omahaBot.consts.PixelConsts;
 
 public enum PlayerBlock {
 
-	PLAYER_1(Consts.BLOCK_PLAYER1, Consts.PT_PLAYER1_ACTIVE, Consts.PT_PLAYER1_TURN),
-	PLAYER_2(Consts.BLOCK_PLAYER2, Consts.PT_PLAYER2_ACTIVE, Consts.PT_PLAYER2_TURN),
-	PLAYER_3(Consts.BLOCK_PLAYER3, Consts.PT_PLAYER3_ACTIVE, Consts.PT_PLAYER3_TURN),
-	PLAYER_4(Consts.BLOCK_PLAYER4, Consts.PT_PLAYER4_ACTIVE, Consts.PT_PLAYER4_TURN),
-	PLAYER_5(Consts.BLOCK_PLAYER5, Consts.PT_PLAYER5_ACTIVE, Consts.PT_PLAYER5_TURN),
-	PLAYER_6(Consts.BLOCK_PLAYER6, Consts.PT_PLAYER6_ACTIVE, Consts.PT_PLAYER6_TURN);
+	PLAYER_1(Consts.BLOCK_PLAYER1, Consts.PT_PLAYER1_ACTIVE, Consts.PT_PLAYER1_TURN, Consts.PT_PLAYER1_DEALER),
+	PLAYER_2(Consts.BLOCK_PLAYER2, Consts.PT_PLAYER2_ACTIVE, Consts.PT_PLAYER2_TURN, Consts.PT_PLAYER2_DEALER),
+	PLAYER_3(Consts.BLOCK_PLAYER3, Consts.PT_PLAYER3_ACTIVE, Consts.PT_PLAYER3_TURN, Consts.PT_PLAYER3_DEALER),
+	PLAYER_4(Consts.BLOCK_PLAYER4, Consts.PT_PLAYER4_ACTIVE, Consts.PT_PLAYER4_TURN, Consts.PT_PLAYER4_DEALER),
+	PLAYER_5(Consts.BLOCK_PLAYER5, Consts.PT_PLAYER5_ACTIVE, Consts.PT_PLAYER5_TURN, Consts.PT_PLAYER5_DEALER),
+	PLAYER_6(Consts.BLOCK_PLAYER6, Consts.PT_PLAYER6_ACTIVE, Consts.PT_PLAYER6_TURN, Consts.PT_PLAYER6_DEALER);
 
 	public static final int BET_WIDTH = 150;
 	public static final int BET_HEIGHT = 15;
@@ -23,11 +23,13 @@ public enum PlayerBlock {
 	private Rectangle block;
 	private Point active;
 	private Point turnPlay;
+	private Point dealer;
 
-	PlayerBlock(Rectangle block, Point active, Point turnPlay) {
+	PlayerBlock(Rectangle block, Point active, Point turnPlay, Point dealer) {
 		this.block = block;
 		this.active = active;
 		this.turnPlay = turnPlay;
+		this.dealer = dealer;
 	}
 
 	public Rectangle getBlock() {
@@ -61,6 +63,14 @@ public enum PlayerBlock {
 
 	public void setTurnPlay(Point turnPlay) {
 		this.turnPlay = turnPlay;
+	}
+	
+	public Point getDealer() {
+		return dealer;
+	}
+
+	public void setDealer(Point dealer) {
+		this.dealer = dealer;
 	}
 
 	public boolean itsMe() {
@@ -100,5 +110,15 @@ public enum PlayerBlock {
 	public boolean isPlayerTurnPlay(Color colorScaned) {
 		return (!colorScaned.equals(PixelConsts.PLAYER_NOT_TURN_PLAY_COLOR1)
 		&& !colorScaned.equals(PixelConsts.PLAYER_NOT_TURN_PLAY_COLOR2));
+	}
+	
+	/**
+	 * return true if player is the dealer
+	 * 
+	 * @param colorScaned
+	 * @return
+	 */
+	public boolean isPlayerDealer(Color colorScaned) {
+		return (colorScaned.equals(PixelConsts.PLAYER_IS_DEALER));
 	}
 }

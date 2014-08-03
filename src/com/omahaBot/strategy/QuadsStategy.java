@@ -10,7 +10,7 @@ public class QuadsStategy extends AbstractStrategy {
 
 	private static String Quads_10 = "Quads_10 : I have NUTS";
 	
-	public QuadsStategy(StrategyTurnContext context) {
+	public QuadsStategy(StrategyContext context) {
 		super(context);
 		System.out.println("--> QuadsStategy");
 	}

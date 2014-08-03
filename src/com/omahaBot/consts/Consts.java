@@ -29,6 +29,7 @@ public final class Consts {
 	public static final Rectangle BLOCK_TABLE = new Rectangle(TABLE_X, TABLE_Y, TABLE_WIDTH, TABLE_HEIGHT);
 	public static final Rectangle BLOCK_DEAL_ID = new Rectangle(TABLE_X + 52, TABLE_Y + 40, 116, 18);
 	public static final Rectangle BLOCK_POT = new Rectangle(TABLE_X + 477, TABLE_Y + 97, 270, 22);
+	public static final Rectangle BLOCK_BUTTON_CHECK_OR_CALL = new Rectangle(TABLE_X + 795, TABLE_Y + 769, 180, 74);
 
 	public static final int BLOCK_PLAYER_WIDTH = 120;
 	public static final int BLOCK_PLAYER_HEIGHT = 45;
@@ -58,6 +59,13 @@ public final class Consts {
 	public static final Point PT_PLAYER4_TURN = new Point(TABLE_X + 297, TABLE_Y + 631);
 	public static final Point PT_PLAYER5_TURN = new Point(TABLE_X + 132, TABLE_Y + 466);
 	public static final Point PT_PLAYER6_TURN = new Point(TABLE_X + 272, TABLE_Y + 158);
+	
+	public static final Point PT_PLAYER1_DEALER = new Point(TABLE_X + 737, TABLE_Y + 196);
+	public static final Point PT_PLAYER2_DEALER = new Point(TABLE_X + 980, TABLE_Y + 324);
+	public static final Point PT_PLAYER3_DEALER = new Point(TABLE_X + 876, TABLE_Y + 535);
+	public static final Point PT_PLAYER4_DEALER = new Point(TABLE_X + 491, TABLE_Y + 546);
+	public static final Point PT_PLAYER5_DEALER = new Point(TABLE_X + 234, TABLE_Y + 436);
+	public static final Point PT_PLAYER6_DEALER = new Point(TABLE_X + 356, TABLE_Y + 202);
 
 	public static final int BLOCK_CARD_Y = TABLE_Y + 311;
 //	public static final int BLOCK_CARD_WIDTH = 65;
@@ -77,4 +85,6 @@ public final class Consts {
 	public static final Rectangle MY_CARD4 = new Rectangle(TABLE_X + 434, TABLE_Y + 574, BLOCK_CARD_WIDTH, BLOCK_CARD_HEIGHT);
 	
 	public static final Point PT_SUIT = new Point(15, 65);
+
+	public static final Object CHECK = "Check";
 }

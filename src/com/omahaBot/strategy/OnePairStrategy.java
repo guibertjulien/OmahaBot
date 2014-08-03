@@ -13,9 +13,9 @@ public class OnePairStrategy extends AbstractStrategy {
 	private static String OnePair_30 = "OnePair_30 : TOP PAIR and good STRAIGHT outs";
 	private static String OnePair_31 = "OnePair_30 : TOP PAIR and bad STRAIGHT outs";
 	private static String OnePair_50 = "OnePair_50 : NO TOP PAIR";
-	private static String OnePair_60 = "OnePair_50 : FOLD at RIVER";
+	private static String OnePair_60 = "OnePair_60 : FOLD at RIVER";
 
-	public OnePairStrategy(StrategyTurnContext context) {
+	public OnePairStrategy(StrategyContext context) {
 		super(context);
 		System.out.println("--> OnePairStrategy");
 	}
@@ -38,7 +38,7 @@ public class OnePairStrategy extends AbstractStrategy {
 			case FLUSH_DRAW:
 			case STRAIGHT:
 			case STRAIGHT_ACE_LOW:
-				if (straightDrawType.getOuts() > StrategyTurnContext.STRAIGHT_OUTS_MIN) {
+				if (straightDrawType.getOuts() > StrategyContext.STRAIGHT_OUTS_MIN) {
 					System.out.println(OnePair_30);
 					bettingDecision = betOrCall_fold(BetType.SMALL);
 				}

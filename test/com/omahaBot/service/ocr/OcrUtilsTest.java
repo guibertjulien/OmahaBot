@@ -7,6 +7,7 @@ import java.awt.Robot;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.math.BigDecimal;
 
 import javax.imageio.ImageIO;
 
@@ -23,14 +24,14 @@ public class OcrUtilsTest {
 
 	@Test
 	public void test() {
-		Double stack = OcrUtils.cleanPot(",Pot:1200€");
-		assertTrue(",Pot:1200€", stack.equals(Double.valueOf(1200)));
+		BigDecimal stack = OcrUtils.cleanPot(",Pot:1200€");
+		assertTrue(",Pot:1200€", stack.doubleValue() == 1200);
 
 		stack = OcrUtils.cleanPot(",Pot:0,58€");
-		assertTrue(",Pot:0,58€", stack.equals(Double.valueOf(0.58)));
+		assertTrue(",Pot:0,58€", stack.doubleValue() == 0.58);
 
 		stack = OcrUtils.cleanPot(",POT : 12,456€");
-		assertTrue(",Pot:0,58€", stack.equals(Double.valueOf(12.456)));
+		assertTrue(",Pot:0,58€", stack.doubleValue() == 12.456);
 	}
 
 	@Test

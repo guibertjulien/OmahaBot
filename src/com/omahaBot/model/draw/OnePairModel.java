@@ -52,6 +52,20 @@ public @Data class OnePairModel extends DrawModel {
 	}
 
 	@Override
+	public boolean equals(Object obj) {
+		if (obj instanceof OnePairModel) {
+			OnePairModel other = (OnePairModel) obj;
+
+			if (rank != other.rank)
+				return false;
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+
+	@Override
 	public int compareTo(DrawModel o) {
 
 		if (o instanceof OnePairModel) {

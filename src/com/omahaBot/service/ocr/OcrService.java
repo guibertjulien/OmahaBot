@@ -2,6 +2,7 @@ package com.omahaBot.service.ocr;
 
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.SortedSet;
 
@@ -17,12 +18,14 @@ public interface OcrService {
 
 	List<CardModel> scanBoardCards(DealStep dealStep);
 
-	Double scanPot();
+	BigDecimal scanPot();
 	
 	boolean checkTable();
 
 	SortedSet<CardModel> scanMyHand();
 
 	CardModel scanCard(CardBlock card);
+
+	BigDecimal scanCheckOrCallButton();
 
 }

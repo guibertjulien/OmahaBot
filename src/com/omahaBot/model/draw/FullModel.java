@@ -35,7 +35,7 @@ public @Data class FullModel extends DrawModel {
 		super(HandCategory.FULL_HOUSE);
 		this.rankThree = rankThree;
 		this.rankPair = rankPair;
-		
+
 		if (CardUtils.coupleIsPair(permutationHand)) {
 			boardCategory = BoardCategory.THREE_OF_A_KIND;
 		}
@@ -80,11 +80,10 @@ public @Data class FullModel extends DrawModel {
 	 * @param kickerPack2
 	 */
 	private void initRanksAndNuts(BoardCategory boardCategory, Rank rankGroup, Rank kickerPack1, Rank kickerPack2) {
-		CardModel card1 = null;
-		CardModel card2 = null;
+		CardModel card1 = null, card2 = null;
 
 		switch (boardCategory) {
-		
+
 		case ONE_PAIR:
 		case TWO_PAIR:
 			card1 = new CardModel(rankThree, Suit.SPADE);
@@ -176,28 +175,18 @@ public @Data class FullModel extends DrawModel {
 
 	@Override
 	public boolean equals(Object obj) {
-		FullModel other = (FullModel) obj;
+		if (obj instanceof FullModel) {
+			FullModel other = (FullModel) obj;
 
-		if (rankPair != other.rankPair)
+			if (rankPair != other.rankPair)
+				return false;
+			if (rankThree != other.rankThree)
+				return false;
+			return true;
+		}
+		else {
 			return false;
-		if (rankThree != other.rankThree)
-			return false;
-		return true;
-	}
-
-	@Override
-	public boolean isNuts(Object obj) {
-		FullModel other = (FullModel) obj;
-
-		if (!this.equals(obj))
-			return false;
-		if (!nutsOrHoleCards.getSortedCards().first().getRank()
-				.equals(other.nutsOrHoleCards.getSortedCards().first().getRank()))
-			return false;
-		if (!nutsOrHoleCards.getSortedCards().last().getRank()
-				.equals(other.nutsOrHoleCards.getSortedCards().last().getRank()))
-			return false;
-		return true;
+		}
 	}
 
 	@Override
@@ -227,5 +216,20 @@ public @Data class FullModel extends DrawModel {
 		else {
 			return super.compareTo(o);
 		}
+	}
+	
+	@Override
+	public boolean isNuts(Object obj) {
+		FullModel other = (FullModel) obj;
+
+		if (!this.equals(obj))
+			return false;
+		if (!nutsOrHoleCards.getSortedCards().first().getRank()
+				.equals(other.nutsOrHoleCards.getSortedCards().first().getRank()))
+			return false;
+		if (!nutsOrHoleCards.getSortedCards().last().getRank()
+				.equals(other.nutsOrHoleCards.getSortedCards().last().getRank()))
+			return false;
+		return true;
 	}
 }

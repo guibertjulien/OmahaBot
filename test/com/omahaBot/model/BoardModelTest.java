@@ -491,6 +491,20 @@ public class BoardModelTest {
 		System.out.println(twoPairModel);
 		assertTrue(twoPairModel.getNutsOrHoleCards().getCard1().getRank().equals(Rank.SEVEN));
 		assertTrue(twoPairModel.getNutsOrHoleCards().getCard2().getRank().equals(Rank.ACE));
+		
+		boardModel = new BoardModel("2h4s4d", DealStep.FLOP);
+		twoPairModel = (TwoPairModel) boardModel.searchBestTwoPairDraw();
+		System.out.println(boardModel);
+		System.out.println(twoPairModel);
+		assertTrue(twoPairModel.getNutsOrHoleCards().getCard1().getRank().equals(Rank.ACE));
+		assertTrue(twoPairModel.getNutsOrHoleCards().getCard2().getRank().equals(Rank.ACE));
+		
+		boardModel = new BoardModel("2hAsAd", DealStep.FLOP);
+		twoPairModel = (TwoPairModel) boardModel.searchBestTwoPairDraw();
+		System.out.println(boardModel);
+		System.out.println(twoPairModel);
+		assertTrue(twoPairModel.getNutsOrHoleCards().getCard1().getRank().equals(Rank.KING));
+		assertTrue(twoPairModel.getNutsOrHoleCards().getCard2().getRank().equals(Rank.KING));
 	}
 
 	@Test

@@ -11,12 +11,13 @@ import com.omahaBot.enums.DealStep;
 import com.omahaBot.enums.HandCategory;
 import com.omahaBot.enums.StraightDrawType;
 import com.omahaBot.exception.StraightInitializeException;
+import com.omahaBot.exception.StrategyUnknownException;
 import com.omahaBot.model.BoardModel;
 import com.omahaBot.model.draw.DrawModel;
 import com.omahaBot.model.hand.HandModel;
 import com.omahaBot.strategy.AbstractStrategy;
 import com.omahaBot.strategy.StrategyFactory;
-import com.omahaBot.strategy.StrategyTurnContext;
+import com.omahaBot.strategy.StrategyContext;
 
 /**
  * TODO continuation BET SLOW_PLAY DEAD_CARD POSITION BLUFF CAPACITY OUT STACK 2
@@ -153,7 +154,7 @@ public class PostFlopAnalyser {
 		System.out.println("----------------------------------------------------------------");
 	}
 
-	public BettingDecision decide(DealStep dealStep, HandModel myHand, StrategyTurnContext context) {
+	public BettingDecision decide(DealStep dealStep, HandModel myHand, StrategyContext context) {
 
 		if (log.isDebugEnabled()) {
 			log.debug(">> START decide " + dealStep);
@@ -161,8 +162,6 @@ public class PostFlopAnalyser {
 
 		System.out.println("----------------------------------------------------------------");
 		System.out.println(" DECIDE : " + dealStep);
-
-		System.out.println(context);
 
 		BettingDecision bettingDecision = BettingDecision.CHECK_FOLD;
 
@@ -186,21 +185,28 @@ public class PostFlopAnalyser {
 			AbstractStrategy strategyFactory = StrategyFactory.getStrategy(bestPermutation.getHandCategory(),
 					context);
 
-			switch (dealStep) {
-			case FLOP:
-				bettingDecision = strategyFactory.decideAtFlop(handDrawsSorted, boardDrawsSorted, iHaveNuts(),
-						nutsForLevel, straightDrawType);
-				break;
-			case TURN:
-				bettingDecision = strategyFactory.decideAtTurn(handDrawsSorted, boardDrawsSorted, iHaveNuts(),
-						nutsForLevel, straightDrawType);
-				break;
-			case RIVER:
-				bettingDecision = strategyFactory.decideAtRiver(handDrawsSorted, boardDrawsSorted, iHaveNuts(),
-						nutsForLevel, straightDrawType);
-				break;
-			default:
-				break;
+			try {
+				switch (dealStep) {
+				case FLOP:
+					bettingDecision = strategyFactory.decideAtFlop(handDrawsSorted, boardDrawsSorted, iHaveNuts(),
+							nutsForLevel, straightDrawType);
+
+					break;
+				case TURN:
+					bettingDecision = strategyFactory.decideAtTurn(handDrawsSorted, boardDrawsSorted, iHaveNuts(),
+							nutsForLevel, straightDrawType);
+					break;
+				case RIVER:
+					bettingDecision = strategyFactory.decideAtRiver(handDrawsSorted, boardDrawsSorted, iHaveNuts(),
+							nutsForLevel, straightDrawType);
+					break;
+				default:
+					break;
+				}
+
+			} catch (StrategyUnknownException e) {
+				System.out.println("BUG : " + e.getMessage());
+				log.debug(e.getMessage());
 			}
 		}
 

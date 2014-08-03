@@ -61,7 +61,7 @@ public @Data class StraightModel extends DrawModel {
 	 * 
 	 * @param handCategory
 	 * @param drawString
-	 * @throws StraightInitializeException 
+	 * @throws StraightInitializeException
 	 */
 	public StraightModel(HandCategory handCategory, String drawString) throws StraightInitializeException {
 		super(handCategory);
@@ -198,20 +198,14 @@ public @Data class StraightModel extends DrawModel {
 
 	@Override
 	public boolean equals(Object obj) {
-		StraightModel other = (StraightModel) obj;
+		if (obj instanceof StraightModel) {
 
-		return rank.equals(other.rank);
-	}
+			StraightModel other = (StraightModel) obj;
 
-	@Override
-	public boolean isNuts(Object obj) {
-		StraightModel other = (StraightModel) obj;
-
-		if (!this.equals(obj)) {
-			return false;
+			return rank.equals(other.rank);
 		}
-		else {// on rank of straight
-			return this.rank.equals(other.getRank());
+		else {
+			return false;
 		}
 	}
 
@@ -234,4 +228,17 @@ public @Data class StraightModel extends DrawModel {
 			return super.compareTo(o);
 		}
 	}
+
+	@Override
+	public boolean isNuts(Object obj) {
+		StraightModel other = (StraightModel) obj;
+
+		if (!this.equals(obj)) {
+			return false;
+		}
+		else {// on rank of straight
+			return this.rank.equals(other.getRank());
+		}
+	}
+
 }

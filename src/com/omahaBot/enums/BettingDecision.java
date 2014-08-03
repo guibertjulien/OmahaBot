@@ -7,15 +7,15 @@ import java.util.List;
 import java.util.Random;
 
 public enum BettingDecision {
-	CHECK_FOLD(KeyEvent.VK_1),
-	FOLD_ALWAYS(KeyEvent.VK_2),
-	//CHECK(KeyEvent.VK_3),
-	//CALL(KeyEvent.VK_4),
-	CHECK_CALL(KeyEvent.VK_5),
-	BET_RAISE_MIN(KeyEvent.VK_6),
-	BET_RAISE_50(KeyEvent.VK_8),
-	BET_RAISE_75(KeyEvent.VK_9),
-	ALLIN(KeyEvent.VK_7);
+	CHECK_FOLD(KeyEvent.VK_NUMPAD1),
+	FOLD_ALWAYS(KeyEvent.VK_NUMPAD2),
+	CHECK(KeyEvent.VK_NUMPAD3),
+	CALL(KeyEvent.VK_NUMPAD4),
+	CHECK_CALL(KeyEvent.VK_NUMPAD5),
+	BET_RAISE_MIN(KeyEvent.VK_NUMPAD6),
+	BET_RAISE_50(KeyEvent.VK_NUMPAD7),
+	BET_RAISE_75(KeyEvent.VK_NUMPAD8),
+	ALLIN(KeyEvent.VK_NUMPAD9);
 
 	private static final List<BettingDecision> VALUES =
 			Collections.unmodifiableList(Arrays.asList(values()));

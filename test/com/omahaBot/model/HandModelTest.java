@@ -172,6 +172,19 @@ public class HandModelTest {
 		twoPairModel = (TwoPairModel) listDraw.get(0);
 		assertTrue(twoPairModel.getRankPair1().equals(Rank.ACE));
 		assertTrue(twoPairModel.getRankPair2().equals(Rank.SIX));
+		
+		listDraw.clear();
+		handModel = new HandModel("JhQsKsKd");
+		boardModel = new BoardModel("2h4s4d", DealStep.FLOP);
+		listDraw.addAll(handModel.initCombinaisonDraws(boardModel));
+		System.out.println(handModel);
+		System.out.println(boardModel);
+		System.out.println(listDraw);
+		assertTrue(listDraw.size() == 1);
+		assertTrue(listDraw.get(0).getHandCategory().equals(HandCategory.TWO_PAIR));
+		twoPairModel = (TwoPairModel) listDraw.get(0);
+		assertTrue(twoPairModel.getRankPair1().equals(Rank.KING));
+		assertTrue(twoPairModel.getRankPair2().equals(Rank.FOUR));
 
 		// =========================================================================
 		// THREE_OF_A_KIND

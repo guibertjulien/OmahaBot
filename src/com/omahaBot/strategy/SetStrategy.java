@@ -16,7 +16,7 @@ public class SetStrategy extends AbstractStrategy {
 	private static String Set_40 = "Set_40 : TOP SET and good STRAIGHT outs";
 	private static String Set_41 = "Set_41 : SET and good STRAIGHT outs";
 
-	public SetStrategy(StrategyTurnContext actionContext) {
+	public SetStrategy(StrategyContext actionContext) {
 		super(actionContext);
 		System.out.println("--> SetStrategy");
 	}
@@ -40,32 +40,32 @@ public class SetStrategy extends AbstractStrategy {
 			case FLUSH:
 				if (nutsForLevel) {
 					System.out.println(Set_20);
-					bettingDecision = betOrCall_fold(BetType.SMALL);
+					bettingDecision = betIfnoBetOrCall_call(BetType.BIG);
 				}
 				else {
 					System.out.println(Set_21);
-					bettingDecision = betOrFold_fold(BetType.SMALL);
+					bettingDecision = betIfnoBetOrCall_call(BetType.SMALL);
 				}
 				break;
 			case FLUSH_DRAW:
 				if (nutsForLevel) {
 					System.out.println(Set_30);
-					bettingDecision = betOrCall_fold(BetType.SMALL);
+					bettingDecision = betIfnoBetOrCall_call(BetType.BIG);
 				}
 				else {
 					System.out.println(Set_31);
-					bettingDecision = betOrFold_fold(BetType.SMALL);
+					bettingDecision = betIfnoBetOrCall_call(BetType.SMALL);
 				}
 				break;
 			case STRAIGHT:
 			case STRAIGHT_ACE_LOW:
-				if (straightDrawType.getOuts() > StrategyTurnContext.STRAIGHT_OUTS_MIN) {
+				if (straightDrawType.getOuts() > StrategyContext.STRAIGHT_OUTS_MIN) {
 					System.out.println(Set_40);
-					bettingDecision = betOrCall_fold(BetType.SMALL);
+					bettingDecision = betIfnoBetOrCall_call(BetType.BIG);
 				}
 				else {
 					System.out.println(Set_41);
-					bettingDecision = betOrFold_fold(BetType.SMALL);
+					bettingDecision = betIfnoBetOrCall_call(BetType.SMALL);
 				}
 				break;
 			default:

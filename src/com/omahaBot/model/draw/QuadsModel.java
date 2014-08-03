@@ -83,20 +83,17 @@ public class QuadsModel extends DrawModel {
 	}
 
 	@Override
-	public boolean isNuts(Object obj) {
-		QuadsModel other = (QuadsModel) obj;
-		
-		if (!this.equals(obj))
+	public boolean equals(Object obj) {
+		if (obj instanceof QuadsModel) {
+			QuadsModel other = (QuadsModel) obj;
+
+			if (rank != other.rank)
+				return false;
+			return true;
+		}
+		else {
 			return false;
-		if (!(nutsOrHoleCards.getSortedCards().first().getRank()
-				.equals(other.nutsOrHoleCards.getSortedCards().first().getRank())
-				|| other.nutsOrHoleCards.getSortedCards().first().getRank().equals(Rank.UNKNOWN)))
-			return false;
-		if (!(nutsOrHoleCards.getSortedCards().last().getRank()
-				.equals(other.nutsOrHoleCards.getSortedCards().last().getRank())
-				|| other.nutsOrHoleCards.getSortedCards().last().getRank().equals(Rank.UNKNOWN)))
-			return false;
-		return true;
+		}
 	}
 
 	@Override
@@ -118,5 +115,22 @@ public class QuadsModel extends DrawModel {
 		else {
 			return super.compareTo(o);
 		}
+	}
+
+	@Override
+	public boolean isNuts(Object obj) {
+		QuadsModel other = (QuadsModel) obj;
+		
+		if (!this.equals(obj))
+			return false;
+		if (!(nutsOrHoleCards.getSortedCards().first().getRank()
+				.equals(other.nutsOrHoleCards.getSortedCards().first().getRank())
+				|| other.nutsOrHoleCards.getSortedCards().first().getRank().equals(Rank.UNKNOWN)))
+			return false;
+		if (!(nutsOrHoleCards.getSortedCards().last().getRank()
+				.equals(other.nutsOrHoleCards.getSortedCards().last().getRank())
+				|| other.nutsOrHoleCards.getSortedCards().last().getRank().equals(Rank.UNKNOWN)))
+			return false;
+		return true;
 	}
 }

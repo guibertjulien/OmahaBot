@@ -4,7 +4,7 @@ import com.omahaBot.enums.HandCategory;
 
 public class StrategyFactory {
 
-	public static AbstractStrategy getStrategy(HandCategory handCategory, StrategyTurnContext actionContext) {
+	public static AbstractStrategy getStrategy(HandCategory handCategory, StrategyContext actionContext) {
 		switch (handCategory) {
 		case FOUR_OF_A_KIND:
 			return new QuadsStategy(actionContext);

@@ -7,11 +7,13 @@ import java.awt.Robot;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
-import java.util.logging.Logger;
+import org.apache.log4j.Logger;
+import org.eclipse.swt.widgets.Display;
 
 import javax.imageio.ImageIO;
 
@@ -31,10 +33,11 @@ import com.omahaBot.enums.Rank;
 import com.omahaBot.enums.Suit;
 import com.omahaBot.model.CardModel;
 import com.omahaBot.model.PlayerModel;
+import com.omahaBot.service.bot.ThreadTable;
 
 public class OcrServiceImpl implements OcrService {
 
-	private final static Logger LOGGER = Logger.getLogger(OcrServiceImpl.class.getName());
+	private static final Logger log = Logger.getLogger(ThreadTable.class);
 
 	private static final String TABLE_FILENAME = "tableCaps.png";
 	private static final String CAPS_DIRECTORY = "C:/_DEV/caps/";
@@ -51,7 +54,7 @@ public class OcrServiceImpl implements OcrService {
 		try {
 			robot = new Robot();
 		} catch (AWTException e) {
-			LOGGER.warning(e.getMessage());
+			log.warn(e.getMessage());
 		}
 	}
 
@@ -71,8 +74,8 @@ public class OcrServiceImpl implements OcrService {
 	}
 
 	@Override
-	public Double scanPot() {
-		Double res;
+	public BigDecimal scanPot() {
+		BigDecimal res;
 		
 		Rectangle block = new Rectangle(Consts.BLOCK_POT);
 		BufferedImage capture = robot.createScreenCapture(block);
@@ -81,6 +84,30 @@ public class OcrServiceImpl implements OcrService {
 				TessPageSegMode.PSM_SINGLE_LINE, BlockType.POT.name());
 
 		res = OcrUtils.cleanPot(ocr);
+		
+		return res;
+	}
+	
+	@Override
+	public BigDecimal scanCheckOrCallButton() {
+		BigDecimal res;
+		
+		Rectangle block = new Rectangle(Consts.BLOCK_BUTTON_CHECK_OR_CALL);
+		BufferedImage capture = robot.createScreenCapture(block);
+
+		String ocr = scanBlock(null, capture, "",
+				TessPageSegMode.PSM_AUTO, BlockType.BUTTON_CHECK_OR_CALL.name());
+		
+		log.debug("scanCheckOrCallButton - ocr : " + ocr);
+		
+		if (ocr.equals(Consts.CHECK)) {
+			res = new BigDecimal(0);
+		}
+		else {
+			res = OcrUtils.cleanPot(ocr);
+		}
+		
+		log.debug("scanCheckOrCallButton - res : " + res);
 		
 		return res;
 	}
@@ -198,9 +225,9 @@ public class OcrServiceImpl implements OcrService {
 			result = instance.doOCR(capture);
 
 		} catch (IOException e) {
-			LOGGER.warning(e.getMessage());
+			log.warn(e.getMessage());
 		} catch (TesseractException e) {
-			LOGGER.warning(e.getMessage());
+			log.warn(e.getMessage());
 		}
 
 		return result.trim();
@@ -242,7 +269,7 @@ public class OcrServiceImpl implements OcrService {
 
 			result = new CardModel(rankMatch, suitMatch);
 		} catch (TesseractException | IOException e) {
-			LOGGER.warning(e.getMessage());
+			log.warn(e.getMessage());
 		}
 
 		return result;
@@ -259,7 +286,7 @@ public class OcrServiceImpl implements OcrService {
 			Assert.assertTrue(true);
 
 		} catch (IOException e) {
-			LOGGER.warning(e.getMessage());
+			log.warn(e.getMessage());
 		}
 
 		// TODO Auto-generated method stub

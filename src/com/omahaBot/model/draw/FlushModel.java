@@ -37,8 +37,8 @@ public @Data class FlushModel extends DrawModel {
 		super(handCategory);
 		this.suit = suit;
 
-		initRankAndNuts(drawString);	
-		
+		initRankAndNuts(drawString);
+
 		if (permutationHand != null) {
 			initHoleCards(permutationHand);
 			rank = permutationHand.last().getRank();
@@ -101,9 +101,13 @@ public @Data class FlushModel extends DrawModel {
 
 	@Override
 	public boolean equals(Object obj) {
-		FlushModel other = (FlushModel) obj;
-
-		return suit.equals(other.suit);
+		if (obj instanceof FlushModel) {
+			FlushModel other = (FlushModel) obj;
+			return suit.equals(other.suit);
+		}
+		else {
+			return false;
+		}
 	}
 
 	@Override
@@ -116,15 +120,28 @@ public @Data class FlushModel extends DrawModel {
 			if (this.handCategory.ordinal() > drawCompare.handCategory.ordinal()) {
 				return -1;
 			}
-			// compare nutsOrHoleCards
+			else if (this.handCategory.ordinal() < drawCompare.handCategory.ordinal()) {
+				return 1;
+			}
+			// compare suit
 			else {
-				if (this.nutsOrHoleCards.getCard2().ordinal() > drawCompare.nutsOrHoleCards.getCard2().ordinal()) {
+				if (this.suit.ordinal() > drawCompare.suit.ordinal()) {
 					return -1;
 				}
-				else if (this.nutsOrHoleCards.getCard2().ordinal() < drawCompare.nutsOrHoleCards.getCard2().ordinal()) {
+				else if (this.suit.ordinal() < drawCompare.suit.ordinal()) {
 					return 1;
-				} else {
-					return 0;
+				}
+				// compare nutsOrHoleCards
+				else {
+					if (this.nutsOrHoleCards.getCard2().ordinal() > drawCompare.nutsOrHoleCards.getCard2().ordinal()) {
+						return -1;
+					}
+					else if (this.nutsOrHoleCards.getCard2().ordinal() < drawCompare.nutsOrHoleCards.getCard2()
+							.ordinal()) {
+						return 1;
+					} else {
+						return 0;
+					}
 				}
 			}
 		}

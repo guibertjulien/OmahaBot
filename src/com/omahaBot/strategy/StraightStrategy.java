@@ -9,11 +9,11 @@ import com.omahaBot.model.draw.DrawModel;
 public class StraightStrategy extends AbstractStrategy {
 
 	private static String Straight_10 = "Straight_10 : I have NUTS";
-	private static String Straight_20 = "Straight_10 : STRAIGHT but FLUSH_DRAW in board";
-	private static String Straight_30 = "Straight_10 : TOP STRAIGHT but FLUSH_DRAW in board";
-	private static String Straight_31 = "Straight_10 : STRAIGHT but FLUSH_DRAW in board";
+	private static String Straight_20 = "Straight_20 : STRAIGHT but FLUSH in board";
+	private static String Straight_30 = "Straight_30 : TOP STRAIGHT but FLUSH_DRAW in board";
+	private static String Straight_31 = "Straight_31 : STRAIGHT but FLUSH_DRAW in board";
 
-	public StraightStrategy(StrategyTurnContext actionContext) {
+	public StraightStrategy(StrategyContext actionContext) {
 		super(actionContext);
 		System.out.println("--> StraightStrategy");
 	}
@@ -43,7 +43,7 @@ public class StraightStrategy extends AbstractStrategy {
 				}
 				else {
 					System.out.println(Straight_31);
-					bettingDecision = betOrFold_fold(BetType.SMALL);
+					bettingDecision = betOrCall_fold(BetType.BIG);
 				}
 				break;
 			default:
@@ -67,7 +67,8 @@ public class StraightStrategy extends AbstractStrategy {
 
 		if (iHaveNuts) {
 			System.out.println(Straight_10);
-			bettingDecision = checkRaise_withNuts();
+			//bettingDecision = checkRaise_withNuts();
+			bettingDecision = betPot();
 		}
 		else {
 			return decideAtFlop(handDrawsSorted, boardDrawsSorted, iHaveNuts, nutsForLevel, straightDrawType);

@@ -2,14 +2,12 @@ package com.omahaBot.model;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 import java.util.Optional;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 import com.omahaBot.enums.HandCategory;
 import com.omahaBot.enums.Rank;
@@ -405,46 +403,22 @@ public class CardPackModel {
 	/**
 	 * return best STRAIGHT DRAW
 	 * 
-	 * @param handDrawsSorted
+	 * @param drawsSorted
 	 */
-	protected void cleanStraightDraws(SortedSet<DrawModel> handDrawsSorted) {
+	protected void cleanStraightDraws(SortedSet<DrawModel> drawsSorted) {
 
 		Predicate<? super DrawModel> filter_rankDraws = (d -> d.getHandCategory().equals(HandCategory.STRAIGHT_ACE_LOW)
 				|| d.getHandCategory().equals(HandCategory.STRAIGHT));
 
-		Optional<DrawModel> bestRankDraw = handDrawsSorted
+		Optional<DrawModel> bestRankDraw = drawsSorted
 				.stream()
 				.filter(filter_rankDraws)
 				.findFirst();
 
-		handDrawsSorted.removeIf(filter_rankDraws);
+		drawsSorted.removeIf(filter_rankDraws);
 
 		if (bestRankDraw.isPresent()) {
-			handDrawsSorted.add(bestRankDraw.get());
-		}
-	}
-
-	/**
-	 * return best FLUSH DRAW for SUIT TYPE
-	 * 
-	 * @param handDrawsSorted
-	 */
-	protected void cleanFlushDraws(SortedSet<DrawModel> handDrawsSorted) {
-		Predicate<? super DrawModel> filter_rankDraws = (d -> d.getHandCategory().equals(HandCategory.FLUSH_DRAW));
-
-		List<DrawModel> find = handDrawsSorted.stream()
-				.filter(filter_rankDraws)
-				.collect(Collectors.toList());
-
-		handDrawsSorted.removeIf(filter_rankDraws);
-
-		Suit suitOld = Suit.UNKNOW;
-		for (DrawModel drawModel : find) {
-			FlushModel flushModel = (FlushModel) drawModel;
-			if (!suitOld.equals(flushModel.getSuit())) {
-				handDrawsSorted.add(flushModel);
-				suitOld = flushModel.getSuit();
-			}
+			drawsSorted.add(bestRankDraw.get());
 		}
 	}
 }

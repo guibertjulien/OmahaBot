@@ -3,6 +3,7 @@ package com.omahaBot.service.ocr;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
+import java.math.BigDecimal;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -86,8 +87,12 @@ public class OcrUtils {
 		return src;
 	}
 
-	public static Double cleanPot(String src) {
-
+	public static BigDecimal cleanPot(String src) {
+		
+		String test = src;
+		
+		BigDecimal bigDecimal = BigDecimal.ZERO;
+		
 		src = src.trim();
 		src = src.replaceAll("[,;]", ".");
 		src = src.replaceAll("[oO]", "0");
@@ -108,11 +113,13 @@ public class OcrUtils {
 		result = result.replaceFirst(",", ".");
 
 		try {
-			return Double.valueOf(result);
-		} catch (NumberFormatException e) {
-			//LOGGER.warning(e.getMessage());
-			return 0.0;
+			bigDecimal = new BigDecimal(result);
 		}
+		catch (NumberFormatException exception) {
+			System.out.println("EXCEPTION : " + test);
+		}
+		
+		return bigDecimal;
 	}
 
 	public static String scanCardRank(Tesseract instance, BufferedImage bufferedImage) throws TesseractException {

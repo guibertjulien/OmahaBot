@@ -20,8 +20,9 @@ public class TwoPairStrategy extends AbstractStrategy {
 	private static String TwoPair_31 = "TwoPair_30 : TOP 2 PAIR and bad STRAIGHT outs";
 	private static String TwoPair_50 = "TwoPair_50 : NO TOP 2 PAIR";
 	private static String TwoPair_60 = "TwoPair_60 : FOLD at RIVER";
+	private static String TwoPair_70 = "TwoPair_70 : STAIGHT_DRAW ???";
 
-	public TwoPairStrategy(StrategyTurnContext context) {
+	public TwoPairStrategy(StrategyContext context) {
 		super(context);
 		System.out.println("--> TwoPairStrategy");
 	}
@@ -43,7 +44,7 @@ public class TwoPairStrategy extends AbstractStrategy {
 			case FLUSH_DRAW:
 			case STRAIGHT:
 			case STRAIGHT_ACE_LOW:
-				if (straightDrawType.getOuts() > StrategyTurnContext.STRAIGHT_OUTS_MIN) {
+				if (straightDrawType.getOuts() > StrategyContext.STRAIGHT_OUTS_MIN) {
 					System.out.println(TwoPair_30);
 					bettingDecision = betOrCall_fold(BetType.BIG);
 				}
@@ -53,6 +54,8 @@ public class TwoPairStrategy extends AbstractStrategy {
 				}
 				break;
 			default:
+				System.out.println(TwoPair_70);
+				// TODO tester straightDrawType
 				break;
 			}
 		}

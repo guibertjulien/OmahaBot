@@ -3,6 +3,7 @@ package com.omahaBot.service.bot;
 import java.awt.AWTException;
 import java.awt.Color;
 import java.awt.Robot;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
@@ -16,6 +17,7 @@ import com.omahaBot.consts.Consts;
 import com.omahaBot.enums.BettingDecision;
 import com.omahaBot.enums.CardBlock;
 import com.omahaBot.enums.DealStep;
+import com.omahaBot.enums.LastPlayerBetType;
 import com.omahaBot.enums.PlayerAction;
 import com.omahaBot.enums.PlayerBlock;
 import com.omahaBot.enums.Suit;
@@ -28,7 +30,7 @@ import com.omahaBot.model.DealStepModel;
 import com.omahaBot.model.PlayerModel;
 import com.omahaBot.model.draw.DrawModel;
 import com.omahaBot.model.hand.HandModel;
-import com.omahaBot.strategy.StrategyTurnContext;
+import com.omahaBot.strategy.StrategyContext;
 import com.omahaBot.ui.form.MainForm;
 
 public class ThreadTable extends MyThread {
@@ -67,8 +69,6 @@ public class ThreadTable extends MyThread {
 
 	private ArrayList<DrawModel> boardDraws = new ArrayList<DrawModel>();
 
-	private Double potOld = 0.0, potCurrent;
-
 	private int nbPlayerOld = 0, nbPlayerCurrent = 0;
 
 	private boolean firstLoop = true;
@@ -77,11 +77,14 @@ public class ThreadTable extends MyThread {
 
 	private PlayerAction lastActionOld = PlayerAction.UNKNOW, lastActionCurrent = PlayerAction.UNKNOW;
 
-	private Double lastBet = 0.0;
-	
+	private BigDecimal potOld = BigDecimal.ZERO;
+	private BigDecimal potCurrent = BigDecimal.ZERO;
+
 	private int nbTurnOfBet = 1;
-	
+
 	private int nbAction = 1;
+
+	private ArrayList<StrategyContext> strategyContexts = new ArrayList<StrategyContext>();
 
 	// TODO Contexte
 
@@ -137,8 +140,9 @@ public class ThreadTable extends MyThread {
 		// initDealContexte()
 		log.debug("NEW DEAL : " + dealIdCurrent);
 
-		System.out.println("_______________________________________________________________");
-		System.out.println("NEW DEAL : " + dealIdCurrent);
+		System.out.println("NEW DEAL : " + dealIdCurrent + ", dealer : " + positionDealer());
+		System.out.println("========================================");
+
 
 		// START - intialize
 		handModel = null;
@@ -147,12 +151,17 @@ public class ThreadTable extends MyThread {
 		listBoardCard.clear();
 		positionTurnToPlayOld = 0;
 		initAnalyseWidgetPreFlopDone = false;
+
+		potOld = BigDecimal.ZERO;
+		potCurrent = BigDecimal.ZERO;
 		// END - intialize
 
 		dealIdOld = dealIdCurrent;
 
 		dealModel = new DealModel();
 		dealModel.setDealId(dealIdCurrent);
+
+		strategyContexts.clear();
 
 		Display.getDefault().syncExec(new Runnable() {
 			public void run() {
@@ -170,21 +179,21 @@ public class ThreadTable extends MyThread {
 	private void goDealStep() {
 		log.debug("NEW STEP : " + dealStepCurrent);
 
-		System.out.println("--> NEW STEP : " + dealStepCurrent);
+		System.out.println(" STEP : " + dealStepCurrent);
 
 		// START - intialize
 		handDraws.clear();
 		boardDraws.clear();
-		potOld = 0.0;
 		nbPlayerOld = 0;
 		nbPlayerCurrent = 0;
 		firstLoop = true;
 		lastActionOld = PlayerAction.UNKNOW;
 		lastActionCurrent = PlayerAction.UNKNOW;
-		lastBet = 0.0;
 		positionTurnToPlayOld = 0;
 		nbTurnOfBet = 1;
 		nbAction = 0;
+
+		potOld = ocrService.scanPot();
 		// END - intialize
 
 		dealStepOld = dealStepCurrent;
@@ -220,14 +229,14 @@ public class ThreadTable extends MyThread {
 		log.debug("TURN TO PLAY : " + positionTurnToPlayCurrent);
 
 		if (positionTurnToPlayCurrent == Consts.MY_TABLEPOSITION) {
-			System.out.println("----> TURN TO PLAY : ME");
+			System.out.println("Me : it's my TURN TO PLAY");
 		}
-		else {
-			System.out.println("----> TURN TO PLAY : " + positionTurnToPlayCurrent);	
-		}
-		
+//		else {
+//			System.out.println("----> TURN TO PLAY : " + positionTurnToPlayCurrent);
+//		}
+
 		nbAction++;
-		
+
 		try {
 			potCurrent = ocrService.scanPot();
 
@@ -242,8 +251,6 @@ public class ThreadTable extends MyThread {
 			actionModel.setNbPlayer(nbPlayerCurrent);
 			actionModel.setListPlayer(listCurrentPlayer);
 			actionModel.setPlayerAction(lastActionCurrent);
-			actionModel.setLastBet(lastBet);
-
 			nbPlayerOld = nbPlayerCurrent;
 
 			potOld = potCurrent;
@@ -266,7 +273,7 @@ public class ThreadTable extends MyThread {
 
 			Display.getDefault().syncExec(new Runnable() {
 				public void run() {
-					mainForm.initPotWidget(potCurrent);
+					// mainForm.initPotWidget(potCurrent);
 					mainForm.initActionWidget(actionModel);
 					mainForm.initPlayerWidget(listCurrentPlayer);
 
@@ -362,6 +369,23 @@ public class ThreadTable extends MyThread {
 		return position;
 	}
 
+	public int positionDealer() {
+
+		int position = 0;
+
+		for (PlayerBlock playerBlock : listCurrentPlayerBlock) {
+			// TODO optimize
+			Color colorScaned = robot.getPixelColor(playerBlock.getDealer().x, playerBlock.getDealer().y);
+
+			if (playerBlock.isPlayerDealer(colorScaned)) {
+				position = playerBlock.ordinal() + 1;
+				break;
+			}
+		}
+
+		return position;
+	}
+
 	public void initBoardCard() {
 
 		switch (dealStepCurrent) {
@@ -407,20 +431,31 @@ public class ThreadTable extends MyThread {
 
 		BettingDecision bettingDecision = BettingDecision.CHECK_FOLD;
 
+		// Action Context
+		BigDecimal toCall = ocrService.scanCheckOrCallButton();
+
+		// Players Context
+		LastPlayerBetType lastPlayerBetType = lastPlayerBetType(toCall, toCall);
+		
+		//
+		StrategyContext strategyContext = new StrategyContext(nbTurnOfBet, nbPlayerCurrent, nbAction, lastPlayerBetType);
+		strategyContexts.add(strategyContext);
+
+		//System.out.println(strategyContext);
+
 		switch (dealStepCurrent) {
 		case PRE_FLOP:
-			bettingDecision = preFlopAnalyser.decide(handModel, nbTurnOfBet);
+			bettingDecision = preFlopAnalyser.decide(strategyContext);
 			break;
 		case FLOP:
 		case TURN:
 		case RIVER:
-			StrategyTurnContext context = new StrategyTurnContext(nbTurnOfBet, nbPlayerCurrent, nbAction);
-			bettingDecision = postFlopAnalyser.decide(dealStepCurrent, handModel, context);
+			bettingDecision = postFlopAnalyser.decide(dealStepCurrent, handModel, strategyContext);
 			break;
 		default:
 			break;
 		}
-		
+
 		nbTurnOfBet++;
 
 		try {
@@ -485,6 +520,31 @@ public class ThreadTable extends MyThread {
 	private boolean iAmInDeal() {
 		PlayerBlock playerBlock = PlayerBlock.PLAYER_4;
 		Color colorScanedActive = robot.getPixelColor(playerBlock.getActive().x, playerBlock.getActive().y);
-		return playerBlock.isActivePlayer(colorScanedActive);
+		return Consts.register && playerBlock.isActivePlayer(colorScanedActive);
+	}
+
+	private LastPlayerBetType lastPlayerBetType(BigDecimal toCall, BigDecimal potOld) {
+		
+		LastPlayerBetType lastPlayerBetType = LastPlayerBetType.UNKNOW;
+
+		if (toCall.equals(0)) {
+			lastPlayerBetType = LastPlayerBetType.NO_BET;
+		}
+		else if (toCall.equals(potOld)) {
+			lastPlayerBetType = LastPlayerBetType.RAISE_POT;
+		} else if (toCall.doubleValue() > potOld.doubleValue() / 2) {
+			lastPlayerBetType = LastPlayerBetType.BIG_RAISE;
+		}
+		else {
+			lastPlayerBetType = LastPlayerBetType.SMALL_RAISE;
+		}
+		
+		System.out.println("........................................");
+		System.out.println("- potOld : " + potOld);
+		System.out.println("- potCurrent : " + potCurrent);
+		System.out.println("- lastPlayerBetType : " + lastPlayerBetType);
+		System.out.println("........................................");
+		
+		return lastPlayerBetType;
 	}
 }

@@ -13,8 +13,8 @@ public class MyRobot extends Robot {
 
 	private static final Logger log = Logger.getLogger(PreFlopAnalyser.class);
 
-	public static final int MIN = 500;
-	public static final int MAX = 2000;
+	public static final int MIN = 1000;
+	public static final int MAX = 3000;
 
 	public MyRobot() throws AWTException {
 		super();
@@ -26,15 +26,15 @@ public class MyRobot extends Robot {
 		if (log.isDebugEnabled()) {
 			log.debug(">> clickAction");
 		}
-		
+
 		Random rand = new Random();
 		int randomNumber = rand.nextInt(MAX - MIN + 1) + MIN;
 
-		if (log.isDebugEnabled()) {
-			log.debug("threadId=" + threadId + " / random=" + randomNumber + " / playerShortcut=" + bettingDecision);
-		}
-
 		delay(randomNumber);
-		this.keyPress(bettingDecision.getShortcut());
+		keyPress(bettingDecision.getShortcut());
+
+		log.debug("threadId=" + threadId + " / random=" + randomNumber + " / playerShortcut=" + bettingDecision);
+
+		System.out.println("KEYPRESS at " + randomNumber);
 	}
 }
