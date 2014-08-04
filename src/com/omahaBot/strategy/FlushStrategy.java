@@ -11,11 +11,11 @@ import com.omahaBot.model.draw.DrawModel;
 public class FlushStrategy extends AbstractStrategy {
 
 	public static String Flush_10 = "Flush_10 : I have NUTS !!!";
-	public static String Flush_11 = "Flush_11 : FLUSH";
+	public static String Flush_11 = "Flush_11 : FLUSH no max";
 	public static String Flush_20 = "Flush_20 : FLUSH and FULL_DRAW MAX";
 	public static String Flush_21 = "Flush_21 : FLUSH and FULL_DRAW";
-	public static String Flush_30 = "Flush_30 : FLUSH MAX but PAIR in Board";
-	public static String Flush_31 = "Flush_31 : FLUSH but PAIR in Board";
+	public static String Flush_30 = "Flush_30 : FLUSH MAX but PAIR on Board";
+	public static String Flush_31 = "Flush_31 : FLUSH but PAIR on Board";
 
 	public FlushStrategy(StrategyContext context) {
 		super(context);

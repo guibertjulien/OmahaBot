@@ -225,10 +225,12 @@ public class BoardModel extends CardPackModel {
 
 			rankGroup = Rank.fromShortName(group.charAt(0));
 
-//			// test if handModel has a same rank card
-			if (handModel != null && !handModel.hasOnlyOneRankCard(rankGroup)) {
-				QuadsModel quadsModel = new QuadsModel(rankGroup, boardCategory);
-				listDraw.add(quadsModel);
+			if (!boardCategory.equals(BoardCategory.UNDEFINED)) {
+				// test if handModel has a same rank card
+				if (handModel != null && !handModel.hasOnlyOneRankCard(rankGroup)) {
+					QuadsModel quadsModel = new QuadsModel(rankGroup, boardCategory);
+					listDraw.add(quadsModel);
+				}
 			}
 		}
 

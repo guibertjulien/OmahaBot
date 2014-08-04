@@ -11,7 +11,7 @@ public class FullStrategy extends AbstractStrategy {
 
 	public static String Full_10 = "Full_10 : I have NUTS !!!";
 	public static String Full_20 = "Full_20 : FULL MAX";
-	public static String Full_21 = "Full_21 : FULL";
+	public static String Full_21 = "Full_21 : FULL no max";
 
 	public FullStrategy(StrategyContext context) {
 		super(context);
