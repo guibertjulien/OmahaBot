@@ -25,6 +25,10 @@ public class FlushDrawStrategy extends AbstractStrategy {
 	public static String FlushDraw_60 = "FlushDraw_60 : TWO FLUSH_DRAW (no best draws on board)";
 	public static String FlushDraw_61 = "FlushDraw_61 : TWO FLUSH_DRAW but BEST draws on board";
 
+	// TODO
+	// FLUSH_DRAW and SET
+	// KICKER FLUSH BOARD KO
+	
 	public static String FlushDraw_BUG = "FlushDraw_BUG : NO RIVER possible with FLUSH_DRAW";
 
 	public FlushDrawStrategy(StrategyContext context) {

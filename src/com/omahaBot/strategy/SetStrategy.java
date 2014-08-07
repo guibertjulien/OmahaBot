@@ -12,13 +12,17 @@ public class SetStrategy extends AbstractStrategy {
 
 	public static String Set_10 = "Set_10 : I have NUTS !!!";
 	public static String Set_11 = "Set_11 : SET no max";
+	//
 	public static String Set_20 = "Set_20 : SET MAX but FLUSH on board";
 	public static String Set_21 = "Set_21 : SET but FLUSH on board";
+	//
 	public static String Set_30 = "Set_30 : SET MAX but FLUSH_DRAW on board";
 	public static String Set_31 = "Set_31 : SET but FLUSH_DRAW on board";
+	// TODO
 	public static String Set_40 = "Set_40 : SET MAX and good STRAIGHT outs";
 	public static String Set_41 = "Set_41 : SET and good STRAIGHT outs";
 	public static String Set_42 = "Set_42 : SET and bad STRAIGHT outs";
+	//
 	public static String Set_50 = "Set_50 : COMMUNITY SET";
 	public static String Set_51 = "Set_51 : SET MAX but PAIR at board";
 	public static String Set_52 = "Set_52 : SET but PAIR at board";
@@ -39,24 +43,14 @@ public class SetStrategy extends AbstractStrategy {
 
 		switch (boardDrawFirst.getHandCategory()) {
 		case FOUR_OF_A_KIND:
-		case FULL_HOUSE:
 			// COMMUNITY SET, 3 same cards at board
 			if (boardDrawFirst.getBoardCategory().equals(BoardCategory.THREE_OF_A_KIND)) {
 				System.out.println(Set_50);
 				bettingDecision = BettingDecision.CHECK_FOLD;
 			}
-			// HOLE SET, PAIR at board
-			else {
-				if (nutsForLevel) {
-					System.out.println(Set_51);
-					// TODO à revoir
-					bettingDecision = callAllBet();
-				}
-				else {
-					System.out.println(Set_52);
-					bettingDecision = BettingDecision.CHECK_FOLD;
-				}
-			}
+			break;
+		case FULL_HOUSE:
+			// impossible
 			break;
 		case FLUSH:
 			if (nutsForLevel) {
@@ -105,7 +99,7 @@ public class SetStrategy extends AbstractStrategy {
 		}
 
 		if (bettingDecision == null) {
-			throw new StrategyUnknownException(this.getClass().getName());
+			throw new StrategyUnknownException(this.getClass().getName() + ", boardDrawFirst.getHandCategory() : " + boardDrawFirst.getHandCategory());
 		}
 
 		return bettingDecision;

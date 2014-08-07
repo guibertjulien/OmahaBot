@@ -84,9 +84,9 @@ public class PreFlopAnalyser {
 		}
 		else if (handPreFlopPower.getPower() >= 5) {
 			if (context.isFirstTurnOfBet()) {
-				if (context.noBetInTurn()) {
+				//if (context.noBetInTurn()) {
 					bettingDecision = BettingDecision.CHECK_CALL;	
-				}				
+				//}				
 			}		
 		}
 		
