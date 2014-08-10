@@ -18,14 +18,14 @@ public class StraightDrawService {
 	private final BoardModel boardModel;
 
 	private CardModel card1, card2, card3, card4, card5, card6;
-	
+
 	private List<CardModel> connectors;
 
 	public StraightDrawService(SortedSet<CardModel> combinaisonCardsSortedSet, BoardModel boardModel) {
-		
+
 		this.combinaisonCards = new ArrayList<CardModel>(combinaisonCardsSortedSet);
 		this.boardModel = boardModel;
-		/// TODO
+		// / TODO
 		try {
 			this.card1 = this.combinaisonCards.get(0);
 			this.card2 = this.combinaisonCards.get(1);
@@ -38,11 +38,11 @@ public class StraightDrawService {
 		} catch (Exception exception) {
 			System.out.println("--> BUG : " + combinaisonCards);
 		}
-		
+
 	}
-	
+
 	public StraightDrawService(ArrayList<CardModel> combinaisonCardsSortedByAceLow, BoardModel boardModel) {
-		
+
 		this.combinaisonCards = new ArrayList<CardModel>(combinaisonCardsSortedByAceLow);
 		this.boardModel = boardModel;
 
@@ -52,14 +52,14 @@ public class StraightDrawService {
 		this.card4 = this.combinaisonCards.get(3);
 		this.card5 = this.combinaisonCards.get(4);
 		this.card6 = this.combinaisonCards.get(5);
-		
+
 		initConnectors();
 	}
 
 	public StraightDrawType straightDrawType() {
-		
+
 		StraightDrawType straightDrawType = StraightDrawType.NO_DRAW;
-		
+
 		if (isValidConnectors()) {
 			if (is20CardWrap()) {
 				return StraightDrawType.CARD20_WRAP;
@@ -83,7 +83,7 @@ public class StraightDrawService {
 		else if (isGutshot()) {
 			return StraightDrawType.GUT_SHOT;
 		}
-		
+
 		return straightDrawType;
 	}
 
@@ -92,16 +92,30 @@ public class StraightDrawService {
 	 * @return
 	 */
 	private boolean isGutshot() {
-		
-		int ordinalFirst = (card1.getRank().equals(Rank.ACE)) ? -1 : card1.ordinal(); 		
-		int diffDraw1 = (card4.ordinal() - card3.ordinal()) + (card3.ordinal() - card2.ordinal()) + (card2.ordinal() - ordinalFirst);
 
-		ordinalFirst = (card2.getRank().equals(Rank.ACE)) ? -1 : card2.ordinal(); 
-		int diffDraw2 = (card5.ordinal() - card4.ordinal()) + (card4.ordinal() - card3.ordinal()) + (card3.ordinal() - ordinalFirst);
-		
-		ordinalFirst = (card3.getRank().equals(Rank.ACE)) ? -1 : card3.ordinal(); 
-		int diffDraw3 = (card6.ordinal() - card5.ordinal()) + (card5.ordinal() - card4.ordinal()) + (card4.ordinal() - ordinalFirst);
-		
+		int ordinalFirst = 0;
+		int diffDraw1 = 0;
+		int diffDraw2 = 0;
+		int diffDraw3 = 0;
+
+		if (isValidGutShotConnectors(card1, card2, card3, card4)) {
+			ordinalFirst = (card1.getRank().equals(Rank.ACE)) ? -1 : card1.ordinal();
+			diffDraw1 = (card4.ordinal() - card3.ordinal()) + (card3.ordinal() - card2.ordinal())
+					+ (card2.ordinal() - ordinalFirst);
+		}
+
+		if (isValidGutShotConnectors(card2, card3, card4, card5)) {
+			ordinalFirst = (card2.getRank().equals(Rank.ACE)) ? -1 : card2.ordinal();
+			diffDraw2 = (card5.ordinal() - card4.ordinal()) + (card4.ordinal() - card3.ordinal())
+					+ (card3.ordinal() - ordinalFirst);
+		}
+
+		if (isValidGutShotConnectors(card3, card4, card5, card6)) {
+			ordinalFirst = (card3.getRank().equals(Rank.ACE)) ? -1 : card3.ordinal();
+			diffDraw3 = (card6.ordinal() - card5.ordinal()) + (card5.ordinal() - card4.ordinal())
+					+ (card4.ordinal() - ordinalFirst);
+		}
+
 		return diffDraw1 == 4 || diffDraw2 == 4 || diffDraw3 == 4;
 	}
 
@@ -118,7 +132,7 @@ public class StraightDrawService {
 		ArrayList<CardModel> cards = new ArrayList<>(connectors);
 		PermutationsOfN<CardModel> permutationsOrdered = new PermutationsOfN<CardModel>();
 		List<List<CardModel>> permutations = permutationsOrdered.processSubsets(cards, 2);
-		
+
 		for (List<CardModel> list : permutations) {
 			if (boardModel.getCards().containsAll(list)) {
 				return true;
@@ -158,7 +172,7 @@ public class StraightDrawService {
 		if (is20CardWrap()) {
 			return false;
 		}
-		
+
 		return true;
 	}
 
@@ -197,7 +211,7 @@ public class StraightDrawService {
 		}
 
 		CardModel cardFirst = connectors.get(0);
-		CardModel cardLast = connectors.get(connectors.size()-1);
+		CardModel cardLast = connectors.get(connectors.size() - 1);
 
 		if (boardModel.getCards().contains(cardFirst) || boardModel.getCards().contains(cardLast)) {
 			return false;
@@ -233,7 +247,7 @@ public class StraightDrawService {
 		CardModel cardModelNext;
 
 		int i = 0;
-		
+
 		for (CardModel cardModel : combinaisonCards) {
 			if (i < combinaisonCards.size() - 1) {
 				cardModelNext = combinaisonCards.get(i + 1);
@@ -252,28 +266,52 @@ public class StraightDrawService {
 					}
 				}
 			}
-			
+
 			i++;
 		}
 
 		// TODO bonnes pratiques ?
 		this.connectors = connectors;
 	}
-	
+
 	/**
 	 * test if 2 board cards in connectors
+	 * 
 	 * @return
 	 */
 	private boolean isValidConnectors() {
-		
+
 		int countBoardCardInConnectors = 0;
-		
+
 		for (CardModel cardModel : boardModel.getCards()) {
 			if (connectors.contains(cardModel)) {
 				countBoardCardInConnectors++;
 			}
 		}
-		
+
 		return (countBoardCardInConnectors == 2);
+	}
+
+	/**
+	 * TODO refactor
+	 * 
+	 * @param card1
+	 * @param card2
+	 * @param card3
+	 * @param card4
+	 * @return
+	 */
+	private boolean isValidGutShotConnectors(CardModel card1, CardModel card2, CardModel card3, CardModel card4) {
+		if (card1.getRank().equals(card2.getRank())) {
+			return false;
+		}
+		if (card2.getRank().equals(card3.getRank())) {
+			return false;
+		}
+		if (card3.getRank().equals(card4.getRank())) {
+			return false;
+		}
+
+		return true;
 	}
 }

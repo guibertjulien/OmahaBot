@@ -128,11 +128,11 @@ public @Data class TwoPairModel extends DrawModel {
 
 		if (!this.equals(obj))
 			return false;
-		if (!nutsOrHoleCards.getSortedCards().first().getRank()
-				.equals(other.nutsOrHoleCards.getSortedCards().first().getRank()))
+		if (!rankPair1
+				.equals(other.rankPair1))
 			return false;
-		if (!nutsOrHoleCards.getSortedCards().last().getRank()
-				.equals(other.nutsOrHoleCards.getSortedCards().last().getRank()))
+		if (!rankPair2
+				.equals(other.rankPair2))
 			return false;
 		return true;
 	}

@@ -147,12 +147,12 @@ public class PostFlopAnalyser {
 			level++;
 		}
 
-//		if (iHaveNuts()) {
-//			System.out.println(">>>> I have NUTS !");
-//		}
-//		else {
-//			System.out.println(">>>> LEVEL=" + handLevel + " / NUTS=" + isNutsForLevel());
-//		}
+		if (iHaveNuts()) {
+			System.out.println(">>>> I have NUTS !");
+		}
+		else {
+			System.out.println(">>>> LEVEL=" + handLevel + " / NUTS=" + isNutsForLevel());
+		}
 
 		System.out.println("----------------------------------------");
 	}

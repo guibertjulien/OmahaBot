@@ -24,4 +24,8 @@ public enum StraightDrawType {
     public String toString() {
 		return this.name().concat("; outs: " + this.getOuts());
 	}
+	
+	public boolean isDraw() {
+		return getOuts() > 0;
+	}
 }

@@ -3,7 +3,9 @@ package com.omahaBot.strategy;
 import java.util.SortedSet;
 
 import com.omahaBot.enums.BettingDecision;
+import com.omahaBot.enums.HandCategory;
 import com.omahaBot.enums.StraightDrawType;
+import com.omahaBot.exception.StrategyUnknownException;
 import com.omahaBot.model.draw.DrawModel;
 
 /**
@@ -14,14 +16,25 @@ import com.omahaBot.model.draw.DrawModel;
  */
 public class TwoPairStrategy extends AbstractStrategy {
 
-	// private static String TwoPair_10 = "TwoPair_10 : NO FIRST TURN OF BET";
-	private static String TwoPair_20 = "TwoPair_20 : TOP 2 PAIR but PAIR or FLUSH/DRAW in board";
-	private static String TwoPair_30 = "TwoPair_30 : TOP 2 PAIR and good STRAIGHT outs";
-	private static String TwoPair_31 = "TwoPair_30 : TOP 2 PAIR and bad STRAIGHT outs";
-	private static String TwoPair_50 = "TwoPair_50 : NO TOP 2 PAIR";
-	private static String TwoPair_60 = "TwoPair_60 : FOLD at RIVER";
-	private static String TwoPair_70 = "TwoPair_70 : STAIGHT_DRAW ???";
-
+	//
+	public static String TwoPair_10 = "TwoPair_10 : TOP 2 PAIR HIDE";
+	public static String TwoPair_11 = "TwoPair_11 : 2 PAIR HIDE";
+	//
+	public static String TwoPair_20 = "TwoPair_20 : TOP 2 PAIR but PAIR on board";
+	public static String TwoPair_21 = "TwoPair_21 : 2 PAIR but PAIR on board";
+	//
+	public static String TwoPair_30 = "TwoPair_30 : TOP 2 PAIR but FLUSH on board";
+	public static String TwoPair_31 = "TwoPair_31 : 2 PAIR but FLUSH on board";
+	//
+	public static String TwoPair_40 = "TwoPair_40 : TOP 2 PAIR but FLUSH_DRAW on board";
+	public static String TwoPair_41 = "TwoPair_41 : 2 PAIR but FLUSH_DRAW on board";
+	//
+	public static String TwoPair_50 = "TwoPair_50 : TOP 2 PAIR and good STRAIGHT outs";
+	public static String TwoPair_51 = "TwoPair_51 : 2 PAIR and bad STRAIGHT outs";
+	public static String TwoPair_52 = "TwoPair_52 : 2 PAIR but STRAIGHT outs";
+	// RIVER
+	public static String TwoPair_60 = "TwoPair_60 : 2 PAIR but best draws on board";
+	
 	public TwoPairStrategy(StrategyContext context) {
 		super(context);
 		System.out.println("--> TwoPairStrategy");
@@ -29,38 +42,84 @@ public class TwoPairStrategy extends AbstractStrategy {
 
 	@Override
 	public BettingDecision decideAtFlop(SortedSet<DrawModel> handDrawsSorted, SortedSet<DrawModel> boardDrawsSorted,
-			boolean iHaveNuts, boolean nutsForLevel, StraightDrawType straightDrawType) {
-		BettingDecision bettingDecision = BettingDecision.CHECK_FOLD;
+			boolean iHaveNuts, boolean nutsForLevel, StraightDrawType straightDrawType) throws StrategyUnknownException {
 
-		// TOP PAIR ?
-		if (nutsForLevel) {
-			// test bordDraw level 0
-			switch (boardDrawsSorted.first().getHandCategory()) {
-			case FOUR_OF_A_KIND:
-			case FULL_HOUSE:
-			case FLUSH:
+		BettingDecision bettingDecision = null;
+
+		// test boardDraw first
+		DrawModel boardDrawFirst = boardDrawsSorted.first();
+
+		switch (boardDrawsSorted.first().getHandCategory()) {
+		case FOUR_OF_A_KIND:
+		case FULL_HOUSE:
+			if (nutsForLevel) {
 				System.out.println(TwoPair_20);
-				break;
-			case FLUSH_DRAW:
-			case STRAIGHT:
-			case STRAIGHT_ACE_LOW:
-				if (straightDrawType.getOuts() > StrategyContext.STRAIGHT_OUTS_MIN) {
-					System.out.println(TwoPair_30);
-					bettingDecision = betOrCall_fold(BetType.BIG);
-				}
-				else {
-					System.out.println(TwoPair_31);
-					bettingDecision = betOrFold_fold(BetType.BIG);
-				}
-				break;
-			default:
-				System.out.println(TwoPair_70);
-				// TODO tester straightDrawType
-				break;
+				bettingDecision = betIfnoBetOrCall_call(BetType.BIG);
 			}
+			else {
+				System.out.println(TwoPair_21);
+				bettingDecision = betIfnoBetOrCall_call(BetType.SMALL);
+			}
+			break;
+		case FLUSH:
+			if (nutsForLevel) {
+				System.out.println(TwoPair_30);
+				bettingDecision = betIfnoBetOrCall_call(BetType.BIG);
+			}
+			else {
+				System.out.println(TwoPair_31);
+				bettingDecision = betIfnoBetOrCall_call(BetType.SMALL);
+			}
+			break;
+		case FLUSH_DRAW:
+			if (nutsForLevel) {
+				System.out.println(TwoPair_40);
+				bettingDecision = betIfnoBetOrCall_call(BetType.BIG);
+			}
+			else {
+				System.out.println(TwoPair_41);
+				bettingDecision = betIfnoBetOrCall_call(BetType.SMALL);
+			}
+			break;
+		case STRAIGHT:
+		case STRAIGHT_ACE_LOW:
+			// no STRAIGHT outs
+			if (straightDrawType.getOuts() == 0) {
+				System.out.println(TwoPair_52);
+				bettingDecision = betIfnoBetOrFold_fold(BetType.SMALL);				
+			}
+			// good STRAIGHT outs
+			else if (straightDrawType.getOuts() >= StrategyContext.STRAIGHT_OUTS_MIN) {
+				System.out.println(TwoPair_50);
+				bettingDecision = betIfnoBetOrCall_call(BetType.BIG);
+			}
+			// bad STRAIGHT outs
+			else {
+				System.out.println(TwoPair_51);
+				bettingDecision =  betIfnoBetOrCall_call(BetType.SMALL);
+			}
+			break;
+		case THREE_OF_A_KIND:
+			if (nutsForLevel) {
+				// tirage FULL MAX
+				System.out.println(TwoPair_10);
+				bettingDecision = betIfnoBetOrCall_call(BetType.BIG);
+			}
+			else {
+				// tirage FULL
+				System.out.println(TwoPair_11);
+				bettingDecision = betIfnoBetOrCall_call(BetType.SMALL);
+			}
+			break;
+
+		default:
+			// TODO exception : impossible
+			break;
 		}
-		else {
-			System.out.println(TwoPair_50);
+
+		if (bettingDecision == null) {
+			throw new StrategyUnknownException(this.getClass().getName() + ", boardDrawFirst.getHandCategory() : "
+					+ boardDrawFirst.getHandCategory());
 		}
 
 		return bettingDecision;
@@ -68,16 +127,40 @@ public class TwoPairStrategy extends AbstractStrategy {
 
 	@Override
 	public BettingDecision decideAtTurn(SortedSet<DrawModel> handDrawsSorted, SortedSet<DrawModel> boardDrawsSorted,
-			boolean iHaveNuts, boolean nutsForLevel, StraightDrawType straightDrawType) {
+			boolean iHaveNuts, boolean nutsForLevel, StraightDrawType straightDrawType) throws StrategyUnknownException {
 
 		return decideAtFlop(handDrawsSorted, boardDrawsSorted, iHaveNuts, nutsForLevel, straightDrawType);
 	}
 
 	@Override
 	public BettingDecision decideAtRiver(SortedSet<DrawModel> handDrawsSorted, SortedSet<DrawModel> boardDrawsSorted,
-			boolean iHaveNuts, boolean nutsForLevel, StraightDrawType straightDrawType) {
+			boolean iHaveNuts, boolean nutsForLevel, StraightDrawType straightDrawType) throws StrategyUnknownException {
 
-		System.out.println(TwoPair_60);
-		return BettingDecision.CHECK_FOLD;
+		BettingDecision bettingDecision = null;
+
+		// test boardDraw first
+		DrawModel boardDrawFirst = boardDrawsSorted.first();
+
+		if (boardDrawsSorted.first().getHandCategory().equals(HandCategory.THREE_OF_A_KIND)) {
+			if (nutsForLevel) {
+				System.out.println(TwoPair_10);
+				bettingDecision = betIfnoBetOrCall_call(BetType.BIG);
+			}
+			else {
+				System.out.println(TwoPair_11);
+				bettingDecision = betIfnoBetOrCall_call(BetType.SMALL);
+			}
+		}
+		else  {
+			System.out.println(TwoPair_60);
+			bettingDecision = BettingDecision.CHECK_FOLD;			
+		}
+
+		if (bettingDecision == null) {
+			throw new StrategyUnknownException(this.getClass().getName() + ", boardDrawFirst.getHandCategory() : "
+					+ boardDrawFirst.getHandCategory());
+		}
+
+		return bettingDecision;
 	}
 }

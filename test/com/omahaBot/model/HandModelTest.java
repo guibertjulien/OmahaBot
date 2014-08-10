@@ -400,6 +400,13 @@ public class HandModelTest {
 		StraightDrawType straightDrawType;
 
 		// test if Gut-Shot
+		handModel = new HandModel("QdKh8c7c");
+		boardModel = new BoardModel("8s9c7d", DealStep.FLOP);
+		straightDrawType = handModel.searchStraightDrawType(boardModel);
+		System.out.println(straightDrawType);
+		assertTrue(!straightDrawType.equals(StraightDrawType.GUT_SHOT));
+		
+		// test if Gut-Shot
 		handModel = new HandModel("AsJs9s2s");
 		boardModel = new BoardModel("4s5s8s", DealStep.FLOP);
 		straightDrawType = handModel.searchStraightDrawType(boardModel);
