@@ -435,7 +435,7 @@ public class ThreadTable extends MyThread {
 		BigDecimal toCall = ocrService.scanCheckOrCallButton();
 
 		// Players Context
-		LastPlayerBetType lastPlayerBetType = lastPlayerBetType(toCall, toCall);
+		LastPlayerBetType lastPlayerBetType = lastPlayerBetType(toCall);
 		
 		//
 		StrategyContext strategyContext = new StrategyContext(nbTurnOfBet, nbPlayerCurrent, nbAction, lastPlayerBetType);
@@ -523,25 +523,22 @@ public class ThreadTable extends MyThread {
 		return Consts.register && playerBlock.isActivePlayer(colorScanedActive);
 	}
 
-	private LastPlayerBetType lastPlayerBetType(BigDecimal toCall, BigDecimal potOld) {
+	private LastPlayerBetType lastPlayerBetType(BigDecimal toCall) {
 		
 		LastPlayerBetType lastPlayerBetType = LastPlayerBetType.UNKNOW;
 
-		if (toCall.equals(0)) {
+		if (toCall.compareTo(BigDecimal.ZERO) == 0) {
 			lastPlayerBetType = LastPlayerBetType.NO_BET;
 		}
-		else if (toCall.equals(potOld)) {
-			lastPlayerBetType = LastPlayerBetType.RAISE_POT;
-		} else if (toCall.doubleValue() > potOld.doubleValue() / 2) {
-			lastPlayerBetType = LastPlayerBetType.BIG_RAISE;
+		else if (toCall.compareTo(Consts.BB) > 0) {
+			lastPlayerBetType = LastPlayerBetType.BET;
 		}
 		else {
-			lastPlayerBetType = LastPlayerBetType.SMALL_RAISE;
+			lastPlayerBetType = LastPlayerBetType.CALL;
 		}
 		
 		System.out.println("........................................");
-		System.out.println("- potOld : " + potOld);
-		System.out.println("- potCurrent : " + potCurrent);
+		System.out.println("- toCall : " + toCall);
 		System.out.println("- lastPlayerBetType : " + lastPlayerBetType);
 		System.out.println("........................................");
 		

@@ -1,6 +1,7 @@
 package com.omahaBot.consts;
 
 import java.awt.Rectangle;
+import java.math.BigDecimal;
 
 import org.eclipse.swt.graphics.Point;
 
@@ -11,6 +12,8 @@ public final class Consts {
 	public static final int NB_CARD_BY_SUIT = 13;
 	
 	public static final int MY_TABLEPOSITION = 4;
+	
+	public static final BigDecimal BB = new BigDecimal(0.02);
 	
 	public static final boolean register = true;
 	

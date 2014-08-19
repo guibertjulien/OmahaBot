@@ -8,7 +8,9 @@ package com.omahaBot.enums;
 public enum LastPlayerBetType {
 	UNKNOW,
 	NO_BET,
-	SMALL_RAISE,
-	BIG_RAISE,
-	RAISE_POT
+	CALL,
+	BET
+//	SMALL_RAISE,
+//	BIG_RAISE,
+//	RAISE_POT
 }
