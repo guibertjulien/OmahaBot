@@ -93,8 +93,6 @@ public @Data class SetModel extends DrawModel {
 	public boolean isNuts(Object obj) {
 		SetModel other = (SetModel) obj;
 
-		if (!this.equals(obj))
-			return false;
 		if (!nutsOrHoleCards.getSortedCards().first().getRank()
 				.equals(other.nutsOrHoleCards.getSortedCards().first().getRank()))
 			return false;

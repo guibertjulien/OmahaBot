@@ -121,8 +121,6 @@ public class QuadsModel extends DrawModel {
 	public boolean isNuts(Object obj) {
 		QuadsModel other = (QuadsModel) obj;
 		
-		if (!this.equals(obj))
-			return false;
 		if (!(nutsOrHoleCards.getSortedCards().first().getRank()
 				.equals(other.nutsOrHoleCards.getSortedCards().first().getRank())
 				|| other.nutsOrHoleCards.getSortedCards().first().getRank().equals(Rank.UNKNOWN)))

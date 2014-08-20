@@ -654,4 +654,40 @@ public class TwoPairStrategyTest {
 		Assert.assertTrue(baos.toString().contains(TwoPairStrategy.TwoPair_60));
 		Assert.assertTrue(bettingDecision.equals(BettingDecision.CHECK_FOLD));
 	}
+	
+	@Test
+	public final void testTwoPair_whithPairInHandAndNuts_FLOP() throws CardPackNoValidException {
+		dealStep = DealStep.FLOP;
+		handModel = new HandModel("AdAh8c7c", dealStep);
+		boardModel = new BoardModel("5s5c7d", dealStep);
+		context = new StrategyContext(1, 6, 1, LastPlayerBetType.NO_BET);
+
+		analyserService.analyseHand(handModel, boardModel);
+		BettingDecision bettingDecision = analyserService.decide(dealStep, handModel, context);
+
+		// Put things back
+		System.out.flush();
+		System.setOut(old);
+
+		Assert.assertTrue(baos.toString().contains(TwoPairStrategy.TwoPair_20));
+		Assert.assertTrue(!bettingDecision.equals(BettingDecision.CHECK_FOLD));
+	}
+	
+	@Test
+	public final void testTwoPair_whithPairInHandAndNoNuts_FLOP() throws CardPackNoValidException {
+		dealStep = DealStep.FLOP;
+		handModel = new HandModel("KdKh8c7c", dealStep);
+		boardModel = new BoardModel("5s5c7d", dealStep);
+		context = new StrategyContext(1, 6, 1, LastPlayerBetType.NO_BET);
+
+		analyserService.analyseHand(handModel, boardModel);
+		BettingDecision bettingDecision = analyserService.decide(dealStep, handModel, context);
+
+		// Put things back
+		System.out.flush();
+		System.setOut(old);
+
+		Assert.assertTrue(baos.toString().contains(TwoPairStrategy.TwoPair_21));
+		Assert.assertTrue(!bettingDecision.equals(BettingDecision.CHECK_FOLD));
+	}
 }

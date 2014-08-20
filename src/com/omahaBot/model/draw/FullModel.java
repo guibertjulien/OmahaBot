@@ -227,8 +227,6 @@ public @Data class FullModel extends DrawModel {
 	public boolean isNuts(Object obj) {
 		FullModel other = (FullModel) obj;
 
-		if (!this.equals(obj))
-			return false;
 		if (!nutsOrHoleCards.getSortedCards().first().getRank()
 				.equals(other.nutsOrHoleCards.getSortedCards().first().getRank()))
 			return false;

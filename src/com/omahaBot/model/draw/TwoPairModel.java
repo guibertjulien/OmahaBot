@@ -6,6 +6,9 @@ import java.util.TreeSet;
 
 import lombok.Data;
 
+
+import static com.omahaBot.enums.BoardCategory.*;
+
 import com.omahaBot.enums.BoardCategory;
 import com.omahaBot.enums.HandCategory;
 import com.omahaBot.enums.Rank;
@@ -46,7 +49,7 @@ public @Data class TwoPairModel extends DrawModel {
 		this.rankPair2 = rankPair2;
 		this.boardCategory = boardCategory;
 
-		initNuts(boardCategory);
+		initNuts();
 	}
 
 	@Override
@@ -54,7 +57,7 @@ public @Data class TwoPairModel extends DrawModel {
 		return this.display(handCategory + " of " + rankPair1 + " and " + rankPair2 + "; ");
 	}
 
-	private void initNuts(BoardCategory boardCategory) {
+	private void initNuts() {
 		CardModel card1 = null, card2 = null;
 
 		switch (boardCategory) {
@@ -126,13 +129,13 @@ public @Data class TwoPairModel extends DrawModel {
 	public boolean isNuts(Object obj) {
 		TwoPairModel other = (TwoPairModel) obj;
 
-		if (!this.equals(obj))
+		if (other.boardCategory.equals(BoardCategory.ONE_PAIR_ACE))
+			return rankPair2.equals(Rank.KING);
+		if (other.boardCategory.equals(BoardCategory.ONE_PAIR))
+			return rankPair1.equals(Rank.ACE);
+		if (!rankPair1.equals(other.rankPair1))
 			return false;
-		if (!rankPair1
-				.equals(other.rankPair1))
-			return false;
-		if (!rankPair2
-				.equals(other.rankPair2))
+		if (!rankPair2.equals(other.rankPair2))
 			return false;
 		return true;
 	}

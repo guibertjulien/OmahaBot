@@ -257,34 +257,43 @@ public class BoardModel extends CardPackModel {
 	 * @return
 	 */
 	public DrawModel searchBestTwoPairDraw() {
-
-		ArrayList<CardModel> listCards = new ArrayList<>(sortedCards);
-		Collections.reverse(listCards);
+		
+		BoardCategory boardCategory = BoardCategory.UNDEFINED;
 
 		CardModel topPair1, topPair2;
 		
-		BoardCategory boardCategory = null;
+		String whithoutSuit = this.toStringByRank().replaceAll("[shdc]", ".");
+
+		Pattern pattern = Pattern.compile("(\\w.)\\1{1,}");
+
+		Matcher matcher = pattern.matcher(whithoutSuit);
+
+		Rank rankGroup = Rank.UNKNOWN;
+
+		if (matcher.find()) {
+			String group = matcher.group(0);
+			rankGroup = Rank.fromShortName(group.charAt(0));
 		
-		if (!listCards.get(0).getRank().equals(listCards.get(1).getRank())) {
-			topPair1 = listCards.get(0);
-			topPair2 = listCards.get(1);
-			boardCategory = BoardCategory.NO_PAIR;
-		}
-		else {// equals
-			topPair1 = new CardModel(Rank.ACE);
-			
-			if (listCards.get(0).getRank().equals(Rank.ACE)) {
+			if (rankGroup.equals(Rank.ACE)) {
+				topPair1 = new CardModel(Rank.ACE);
 				topPair2 = new CardModel(Rank.KING);
-				// nuts = KK
 				boardCategory = BoardCategory.ONE_PAIR_ACE;
 			}
 			else {
-				topPair2 = listCards.get(0);	
-				// nuts = AA
+				topPair1 = new CardModel(Rank.ACE);
+				topPair2 = new CardModel(rankGroup);
 				boardCategory = BoardCategory.ONE_PAIR;
 			}
 		}
-
+		else {
+			ArrayList<CardModel> listCards = new ArrayList<>(sortedCards);
+			Collections.reverse(listCards);
+			
+			topPair1 = listCards.get(0);
+			topPair2 = listCards.get(1);
+			boardCategory = BoardCategory.NO_PAIR;				
+		}
+		
 		TwoPairModel twoPairModel = new TwoPairModel(topPair1.getRank(), topPair2.getRank(), boardCategory);
 
 		return twoPairModel;

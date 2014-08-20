@@ -154,11 +154,6 @@ public @Data class FlushModel extends DrawModel {
 	public boolean isNuts(Object obj) {
 		FlushModel other = (FlushModel) obj;
 
-		if (!this.equals(obj)) {
-			return false;
-		}
-		else {
-			return nutsOrHoleCards.isEqualsKicker(other.nutsOrHoleCards);
-		}
+		return nutsOrHoleCards.isEqualsKicker(other.nutsOrHoleCards);
 	}
 }

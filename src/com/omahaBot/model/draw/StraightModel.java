@@ -233,12 +233,7 @@ public @Data class StraightModel extends DrawModel {
 	public boolean isNuts(Object obj) {
 		StraightModel other = (StraightModel) obj;
 
-		if (!this.equals(obj)) {
-			return false;
-		}
-		else {// on rank of straight
-			return this.rank.equals(other.getRank());
-		}
+		return this.rank.equals(other.rank);
 	}
 
 }

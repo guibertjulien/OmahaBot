@@ -480,8 +480,8 @@ public class SetStrategyTest {
 	@Test
 	public final void testSet_40_TURN() throws CardPackNoValidException {
 		dealStep = DealStep.TURN;
-		handModel = new HandModel("2dKh6s6d", dealStep);
-		boardModel = new BoardModel("6c3s4h5d", dealStep);
+		handModel = new HandModel("2cKh5s5d", dealStep);
+		boardModel = new BoardModel("5c3s4h2d", dealStep);
 		context = new StrategyContext(1, 6, 1, LastPlayerBetType.NO_BET);
 
 		analyserService.analyseHand(handModel, boardModel);
