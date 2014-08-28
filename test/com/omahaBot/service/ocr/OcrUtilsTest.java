@@ -18,11 +18,12 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import com.omahaBot.enums.Block;
+import com.omahaBot.exception.ScanOcrException;
 
 public class OcrUtilsTest {
 
 	@Test
-	public void test() {
+	public void test() throws ScanOcrException {
 		BigDecimal stack = OcrUtils.cleanPot(",Pot:1200€");
 		assertTrue(",Pot:1200€", stack.doubleValue() == 1200);
 

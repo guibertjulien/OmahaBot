@@ -88,12 +88,6 @@ public @Data class OnePairModel extends DrawModel {
 
 	@Override
 	public boolean isNuts(Object obj) {
-		OnePairModel other = (OnePairModel) obj;
-
-		if (other.nutsOrHoleCards.getCard1().getRank().ordinal() >= rank.ordinal())
-			return true;
-		if (other.nutsOrHoleCards.getCard1().getRank().ordinal() >= rank.ordinal())
-			return true;
-		return false;
+		return rank.equals(Rank.ACE);
 	}
 }

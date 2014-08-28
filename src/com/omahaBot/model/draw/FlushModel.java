@@ -140,7 +140,16 @@ public @Data class FlushModel extends DrawModel {
 							.ordinal()) {
 						return 1;
 					} else {
-						return 0;
+						if (this.nutsOrHoleCards.getCard1().ordinal() > drawCompare.nutsOrHoleCards.getCard1()
+								.ordinal()) {
+							return -1;
+						}
+						else if (this.nutsOrHoleCards.getCard1().ordinal() < drawCompare.nutsOrHoleCards.getCard1()
+								.ordinal()) {
+							return 1;
+						} else {
+							return 0;
+						}
 					}
 				}
 			}

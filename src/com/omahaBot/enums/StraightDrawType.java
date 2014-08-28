@@ -12,6 +12,8 @@ public enum StraightDrawType {
 
 	private final int outs;
 
+	private static final int STRAIGHT_OUTS_MIN = 8;
+	
 	private StraightDrawType(int outs) {
 		this.outs = outs;
 	}
@@ -27,5 +29,9 @@ public enum StraightDrawType {
 	
 	public boolean isDraw() {
 		return getOuts() > 0;
+	}
+	
+	public boolean isGoodStraightOut() {
+		return outs >= STRAIGHT_OUTS_MIN;
 	}
 }

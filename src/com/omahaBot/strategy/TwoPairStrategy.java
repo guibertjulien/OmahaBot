@@ -20,8 +20,7 @@ public class TwoPairStrategy extends AbstractStrategy {
 	public static String TwoPair_10 = "TwoPair_10 : TOP 2 PAIR HIDE";
 	public static String TwoPair_11 = "TwoPair_11 : 2 PAIR HIDE";
 	//
-	public static String TwoPair_20 = "TwoPair_20 : TOP 2 PAIR but PAIR on board";
-	public static String TwoPair_21 = "TwoPair_21 : 2 PAIR but PAIR on board";
+	public static String TwoPair_20 = "TwoPair_20 : 2 PAIR but FULL_DRAW on board";
 	//
 	public static String TwoPair_30 = "TwoPair_30 : TOP 2 PAIR but FLUSH on board";
 	public static String TwoPair_31 = "TwoPair_31 : 2 PAIR but FLUSH on board";
@@ -29,12 +28,12 @@ public class TwoPairStrategy extends AbstractStrategy {
 	public static String TwoPair_40 = "TwoPair_40 : TOP 2 PAIR but FLUSH_DRAW on board";
 	public static String TwoPair_41 = "TwoPair_41 : 2 PAIR but FLUSH_DRAW on board";
 	//
-	public static String TwoPair_50 = "TwoPair_50 : TOP 2 PAIR and good STRAIGHT outs";
+	public static String TwoPair_50 = "TwoPair_50 : 2 PAIR and good STRAIGHT outs";
 	public static String TwoPair_51 = "TwoPair_51 : 2 PAIR and bad STRAIGHT outs";
 	public static String TwoPair_52 = "TwoPair_52 : 2 PAIR but STRAIGHT outs";
 	// RIVER
 	public static String TwoPair_60 = "TwoPair_60 : 2 PAIR but best draws on board";
-	
+
 	public TwoPairStrategy(StrategyContext context) {
 		super(context);
 		System.out.println("--> TwoPairStrategy");
@@ -49,17 +48,11 @@ public class TwoPairStrategy extends AbstractStrategy {
 		// test boardDraw first
 		DrawModel boardDrawFirst = boardDrawsSorted.first();
 
-		switch (boardDrawsSorted.first().getHandCategory()) {
+		switch (boardDrawFirst.getHandCategory()) {
 		case FOUR_OF_A_KIND:
 		case FULL_HOUSE:
-			if (nutsForLevel) {
-				System.out.println(TwoPair_20);
-				bettingDecision = betIfnoBetOrCall_call(BetType.BIG);
-			}
-			else {
-				System.out.println(TwoPair_21);
-				bettingDecision = betIfnoBetOrCall_call(BetType.SMALL);
-			}
+			System.out.println(TwoPair_20);
+			bettingDecision = betIfnoBetOrCall_call(BetType.SMALL);
 			break;
 		case FLUSH:
 			if (nutsForLevel) {
@@ -86,17 +79,17 @@ public class TwoPairStrategy extends AbstractStrategy {
 			// no STRAIGHT outs
 			if (straightDrawType.getOuts() == 0) {
 				System.out.println(TwoPair_52);
-				bettingDecision = betIfnoBetOrFold_fold(BetType.SMALL);				
+				bettingDecision = betIfnoBetOrFold_fold(BetType.SMALL);
 			}
 			// good STRAIGHT outs
-			else if (straightDrawType.getOuts() >= StrategyContext.STRAIGHT_OUTS_MIN) {
+			else if (straightDrawType.isGoodStraightOut()) {
 				System.out.println(TwoPair_50);
 				bettingDecision = betIfnoBetOrCall_call(BetType.BIG);
 			}
 			// bad STRAIGHT outs
 			else {
 				System.out.println(TwoPair_51);
-				bettingDecision =  betIfnoBetOrCall_call(BetType.SMALL);
+				bettingDecision = betIfnoBetOrCall_call(BetType.SMALL);
 			}
 			break;
 		case THREE_OF_A_KIND:
@@ -111,9 +104,7 @@ public class TwoPairStrategy extends AbstractStrategy {
 				bettingDecision = betIfnoBetOrCall_call(BetType.SMALL);
 			}
 			break;
-
 		default:
-			// TODO exception : impossible
 			break;
 		}
 
@@ -151,9 +142,9 @@ public class TwoPairStrategy extends AbstractStrategy {
 				bettingDecision = betIfnoBetOrCall_call(BetType.SMALL);
 			}
 		}
-		else  {
+		else {
 			System.out.println(TwoPair_60);
-			bettingDecision = BettingDecision.CHECK_FOLD;			
+			bettingDecision = BettingDecision.CHECK_FOLD;
 		}
 
 		if (bettingDecision == null) {

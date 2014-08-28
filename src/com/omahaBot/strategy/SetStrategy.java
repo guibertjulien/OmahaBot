@@ -18,7 +18,7 @@ public class SetStrategy extends AbstractStrategy {
 	//
 	public static String Set_30 = "Set_30 : SET MAX but FLUSH_DRAW on board";
 	public static String Set_31 = "Set_31 : SET but FLUSH_DRAW on board";
-	// 
+	//
 	public static String Set_40 = "Set_40 : SET MAX and good STRAIGHT outs";
 	public static String Set_41 = "Set_41 : SET and good STRAIGHT outs";
 	public static String Set_42 = "Set_42 : SET MAX and bad STRAIGHT outs";
@@ -27,8 +27,7 @@ public class SetStrategy extends AbstractStrategy {
 	public static String Set_45 = "Set_45 : SET but STRAIGHT outs";
 	//
 	public static String Set_50 = "Set_50 : COMMUNITY SET";
-	public static String Set_51 = "Set_51 : SET MAX but PAIR at board";
-	public static String Set_52 = "Set_52 : SET but PAIR at board";
+	public static String Set_51 = "Set_51 : SET but PAIR at board";
 
 	public SetStrategy(StrategyContext actionContext) {
 		super(actionContext);
@@ -53,7 +52,9 @@ public class SetStrategy extends AbstractStrategy {
 			}
 			break;
 		case FULL_HOUSE:
-			// impossible
+			// THREE_OF_A_KIND, PAIR at board
+			System.out.println(Set_51);
+			bettingDecision = betIfnoBetOrCall_call(BetType.SMALL);
 			break;
 		case FLUSH:
 			if (nutsForLevel) {
@@ -89,7 +90,7 @@ public class SetStrategy extends AbstractStrategy {
 				}
 			}
 			// good STRAIGHT outs
-			else if (straightDrawType.getOuts() >= StrategyContext.STRAIGHT_OUTS_MIN) {
+			else if (straightDrawType.isGoodStraightOut()) {
 				if (nutsForLevel) {
 					System.out.println(Set_40);
 					bettingDecision = betIfnoBetOrCall_call(BetType.BIG);
@@ -112,7 +113,8 @@ public class SetStrategy extends AbstractStrategy {
 			}
 			break;
 		case THREE_OF_A_KIND:
-			if (iHaveNuts) {// THREE_OF_A_KIND HOLE, no PAIR at board
+			// THREE_OF_A_KIND HOLE, no PAIR at board
+			if (iHaveNuts) {
 				System.out.println(Set_10);
 				bettingDecision = checkRaise_withNuts();
 			}
@@ -127,7 +129,8 @@ public class SetStrategy extends AbstractStrategy {
 		}
 
 		if (bettingDecision == null) {
-			throw new StrategyUnknownException(this.getClass().getName() + ", boardDrawFirst.getHandCategory() : " + boardDrawFirst.getHandCategory());
+			throw new StrategyUnknownException(this.getClass().getName() + ", boardDrawFirst.getHandCategory() : "
+					+ boardDrawFirst.getHandCategory());
 		}
 
 		return bettingDecision;
@@ -142,7 +145,7 @@ public class SetStrategy extends AbstractStrategy {
 	@Override
 	public BettingDecision decideAtRiver(SortedSet<DrawModel> handDrawsSorted, SortedSet<DrawModel> boardDrawsSorted,
 			boolean iHaveNuts, boolean nutsForLevel, StraightDrawType straightDrawType) throws StrategyUnknownException {
-		
+
 		BettingDecision bettingDecision = null;
 
 		if (iHaveNuts) {
@@ -156,7 +159,7 @@ public class SetStrategy extends AbstractStrategy {
 		if (bettingDecision == null) {
 			throw new StrategyUnknownException(this.getClass().getName());
 		}
-		
+
 		return bettingDecision;
 	}
 }

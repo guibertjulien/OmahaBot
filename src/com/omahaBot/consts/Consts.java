@@ -5,6 +5,8 @@ import java.math.BigDecimal;
 
 import org.eclipse.swt.graphics.Point;
 
+import com.omahaBot.enums.PlayerBlock;
+
 public final class Consts {
 
 	public static final String CAPS_DIRECTORY = "C:/_DEV/caps/";
@@ -12,6 +14,7 @@ public final class Consts {
 	public static final int NB_CARD_BY_SUIT = 13;
 	
 	public static final int MY_TABLEPOSITION = 4;
+	//public static final PlayerBlock MY_PLAYERBLOCK = PlayerBlock.PLAYER_4;
 	
 	public static final BigDecimal BB = new BigDecimal(0.02);
 	

@@ -1,5 +1,6 @@
 package com.omahaBot;
 
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -49,5 +50,41 @@ public class FooTest {
 		context = new StrategyContext(1, 6, 1, LastPlayerBetType.NO_BET);
 		
 		analyserService.analyseHand(handModel, boardModel);
-	}	
+	}
+	
+	@Test
+	public void testBug3() throws CardPackNoValidException {
+		dealStep = DealStep.FLOP;
+		handModel = new HandModel("4d6d7d5d", dealStep);
+		boardModel = new BoardModel("8dKdTd", dealStep);
+		context = new StrategyContext(1, 6, 1, LastPlayerBetType.NO_BET);
+		
+		analyserService.analyseHand(handModel, boardModel);
+	}
+	
+	@Test
+	public void testBug4() throws CardPackNoValidException {
+		dealStep = DealStep.RIVER;
+		handModel = new HandModel("3c8dTcAd", dealStep);
+		boardModel = new BoardModel("2s2d4h5dJc", dealStep);
+		context = new StrategyContext(1, 6, 1, LastPlayerBetType.NO_BET);
+		
+		analyserService.analyseHand(handModel, boardModel);
+		
+		Assert.assertTrue(analyserService.getHandLevel() == 2);
+		Assert.assertTrue(analyserService.isNutsForLevel());
+	}
+	
+	@Test
+	public void testBug5() throws CardPackNoValidException {
+		dealStep = DealStep.TURN;
+		handModel = new HandModel("7sJsQcAs", dealStep);
+		boardModel = new BoardModel("2s6sJhJd", dealStep);
+		context = new StrategyContext(1, 6, 1, LastPlayerBetType.NO_BET);
+		
+		analyserService.analyseHand(handModel, boardModel);
+		
+		Assert.assertTrue(analyserService.getHandLevel() == 1);
+		Assert.assertTrue(analyserService.isNutsForLevel());
+	}
 }

@@ -61,7 +61,7 @@ public class FlushDrawStrategy extends AbstractStrategy {
 					bettingDecision = betPot();
 				}
 				else {
-					System.out.println(FlushDraw_30);
+					System.out.println(FlushDraw_30);// TODO BETTER METHOD
 					bettingDecision = betIfnoBetOrFold_fold(BetType.SMALL);
 				}
 			}
@@ -69,8 +69,14 @@ public class FlushDrawStrategy extends AbstractStrategy {
 		// PAIR or STRAIGHT_DRAW in board; iHaveNuts = false, use nutsForLevel  
 		else {
 			if (isNutsForSecondDrawCategory(handDrawsSorted, boardDrawsSorted)) {
-				System.out.println(FlushDraw_10);
-				bettingDecision = betPot();
+				if (iHaveNuts) {
+					System.out.println(FlushDraw_10);
+					bettingDecision = betPot();
+				}
+				else {
+					System.out.println(FlushDraw_11);
+					bettingDecision = betPot();// TODO caution
+				}
 			}
 			else {
 				if (nutsForLevel) {

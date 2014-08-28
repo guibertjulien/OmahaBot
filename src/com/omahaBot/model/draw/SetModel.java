@@ -15,6 +15,8 @@ public @Data class SetModel extends DrawModel {
 
 	private final Rank rank;
 
+	private Rank kicker;
+
 	/**
 	 * Constructor for HandModel / CombinaisonModel
 	 * 
@@ -25,6 +27,7 @@ public @Data class SetModel extends DrawModel {
 		super(HandCategory.THREE_OF_A_KIND);
 
 		this.rank = rank;
+		this.kicker = permutationHand.last().getRank();
 
 		initHoleCards(permutationHand);
 	}
@@ -47,11 +50,16 @@ public @Data class SetModel extends DrawModel {
 		return this.display(handCategory + " " + rank + "; ");
 	}
 
+	/**
+	 * for BoardModel
+	 */
 	private void initNuts() {
 		CardModel card1 = new CardModel(rank);
 		CardModel card2 = new CardModel(rank);
 
 		nutsOrHoleCards = new CoupleCards(new TreeSet<CardModel>(Arrays.asList(card1, card2)));
+		
+		this.kicker = rank;
 	}
 
 	@Override
@@ -61,6 +69,7 @@ public @Data class SetModel extends DrawModel {
 
 			if (rank != other.rank)
 				return false;
+
 			return true;
 		}
 		else {
@@ -81,7 +90,15 @@ public @Data class SetModel extends DrawModel {
 			else if (this.rank.ordinal() < drawCompare.rank.ordinal()) {
 				return 1;
 			} else {
-				return 0;
+				// compare kicker
+				if (this.kicker.ordinal() > drawCompare.kicker.ordinal()) {
+					return -1;
+				}
+				else if (this.kicker.ordinal() < drawCompare.kicker.ordinal()) {
+					return 1;
+				} else {
+					return 0;
+				}
 			}
 		}
 		else {

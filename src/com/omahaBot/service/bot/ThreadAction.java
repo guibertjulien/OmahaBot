@@ -278,11 +278,11 @@ public class ThreadAction extends MyThread {
 			// TODO optimize
 			if (playerBlock.isActivePlayer(colorScaned)) {
 				playerModel.setActiv(true);
-				playerModel.setStack(ocrService.scanPlayerStack(playerBlock));
+				//playerModel.setStack(ocrService.scanPlayerStack(playerBlock));
 			}
 			else {
 				playerModel.setActiv(false);
-				playerModel.setStack(ocrService.scanPlayerStack(playerBlock));
+				//playerModel.setStack(ocrService.scanPlayerStack(playerBlock));
 			}
 		}
 

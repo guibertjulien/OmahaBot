@@ -491,20 +491,6 @@ public class BoardModelTest {
 		System.out.println(twoPairModel);
 		assertTrue(twoPairModel.getNutsOrHoleCards().getCard1().getRank().equals(Rank.SEVEN));
 		assertTrue(twoPairModel.getNutsOrHoleCards().getCard2().getRank().equals(Rank.ACE));
-		
-		boardModel = new BoardModel("2h4s4d", DealStep.FLOP);
-		twoPairModel = (TwoPairModel) boardModel.searchBestTwoPairDraw();
-		System.out.println(boardModel);
-		System.out.println(twoPairModel);
-		assertTrue(twoPairModel.getNutsOrHoleCards().getCard1().getRank().equals(Rank.ACE));
-		assertTrue(twoPairModel.getNutsOrHoleCards().getCard2().getRank().equals(Rank.ACE));
-		
-		boardModel = new BoardModel("2hAsAd", DealStep.FLOP);
-		twoPairModel = (TwoPairModel) boardModel.searchBestTwoPairDraw();
-		System.out.println(boardModel);
-		System.out.println(twoPairModel);
-		assertTrue(twoPairModel.getNutsOrHoleCards().getCard1().getRank().equals(Rank.KING));
-		assertTrue(twoPairModel.getNutsOrHoleCards().getCard2().getRank().equals(Rank.KING));
 	}
 
 	@Test
@@ -867,27 +853,21 @@ public class BoardModelTest {
 		handModel = new HandModel("KsKhKdKc");
 		listDraw.addAll(boardModel.initDraws(handModel));
 		System.out.println(listDraw);
-		assertTrue(listDraw.size() == 7);
+		assertTrue(listDraw.size() == 4);
 		assertTrue(listDraw.get(0).getHandCategory().equals(HandCategory.FOUR_OF_A_KIND));
 		assertTrue(listDraw.get(1).getHandCategory().equals(HandCategory.FULL_HOUSE));
 		assertTrue(listDraw.get(2).getHandCategory().equals(HandCategory.FLUSH));
 		assertTrue(listDraw.get(3).getHandCategory().equals(HandCategory.STRAIGHT));// TJQKA
-		assertTrue(listDraw.get(4).getHandCategory().equals(HandCategory.THREE_OF_A_KIND));
-		assertTrue(listDraw.get(5).getHandCategory().equals(HandCategory.TWO_PAIR));
-		assertTrue(listDraw.get(6).getHandCategory().equals(HandCategory.ONE_PAIR));
 		
 		listDraw.clear();
 		boardModel = new BoardModel("As9s3d2s9c", DealStep.RIVER);
 		handModel = new HandModel("KsKhKdKc");
 		listDraw.addAll(boardModel.initDraws(handModel));
 		System.out.println(listDraw);
-		assertTrue(listDraw.size() == 7);
+		assertTrue(listDraw.size() == 4);
 		assertTrue(listDraw.get(0).getHandCategory().equals(HandCategory.FOUR_OF_A_KIND));
 		assertTrue(listDraw.get(1).getHandCategory().equals(HandCategory.FULL_HOUSE));
 		assertTrue(listDraw.get(2).getHandCategory().equals(HandCategory.FLUSH));
 		assertTrue(listDraw.get(3).getHandCategory().equals(HandCategory.STRAIGHT_ACE_LOW));// A2345
-		assertTrue(listDraw.get(4).getHandCategory().equals(HandCategory.THREE_OF_A_KIND));
-		assertTrue(listDraw.get(5).getHandCategory().equals(HandCategory.TWO_PAIR));
-		assertTrue(listDraw.get(6).getHandCategory().equals(HandCategory.ONE_PAIR));
 	}
 }

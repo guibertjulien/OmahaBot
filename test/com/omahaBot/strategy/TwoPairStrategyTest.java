@@ -224,42 +224,6 @@ public class TwoPairStrategyTest {
 	}
 	
 	@Test
-	public final void testTwoPair_21_FLOP() throws CardPackNoValidException {
-		dealStep = DealStep.FLOP;
-		handModel = new HandModel("3dKhKc5c", dealStep);
-		boardModel = new BoardModel("8hAs8d", dealStep);
-		context = new StrategyContext(1, 6, 1, LastPlayerBetType.NO_BET);
-
-		analyserService.analyseHand(handModel, boardModel);
-		BettingDecision bettingDecision = analyserService.decide(dealStep, handModel, context);
-
-		// Put things back
-		System.out.flush();
-		System.setOut(old);
-
-		Assert.assertTrue(baos.toString().contains(TwoPairStrategy.TwoPair_21));
-		Assert.assertTrue(!bettingDecision.equals(BettingDecision.CHECK_FOLD));
-	}
-	
-	@Test
-	public final void testTwoPair_21_TURN() throws CardPackNoValidException {
-		dealStep = DealStep.TURN;
-		handModel = new HandModel("3dKhKc5c", dealStep);
-		boardModel = new BoardModel("8hAs8d3c", dealStep);
-		context = new StrategyContext(1, 6, 1, LastPlayerBetType.NO_BET);
-
-		analyserService.analyseHand(handModel, boardModel);
-		BettingDecision bettingDecision = analyserService.decide(dealStep, handModel, context);
-
-		// Put things back
-		System.out.flush();
-		System.setOut(old);
-
-		Assert.assertTrue(baos.toString().contains(TwoPairStrategy.TwoPair_21));
-		Assert.assertTrue(!bettingDecision.equals(BettingDecision.CHECK_FOLD));
-	}
-	
-	@Test
 	public final void testTwoPair_21_60_RIVER() throws CardPackNoValidException {
 		dealStep = DealStep.RIVER;
 		handModel = new HandModel("3dKhKc5c", dealStep);
@@ -496,7 +460,7 @@ public class TwoPairStrategyTest {
 	@Test
 	public final void testTwoPair_50_FLOP() throws CardPackNoValidException {
 		dealStep = DealStep.FLOP;
-		handModel = new HandModel("TdKh8c7c", dealStep);
+		handModel = new HandModel("TdKh9d7c", dealStep);
 		boardModel = new BoardModel("8s9c7d", dealStep);
 		context = new StrategyContext(1, 6, 1, LastPlayerBetType.NO_BET);
 
@@ -507,7 +471,7 @@ public class TwoPairStrategyTest {
 		System.out.flush();
 		System.setOut(old);
 
-		Assert.assertTrue(baos.toString().contains(TwoPairStrategy.TwoPair_50));
+		Assert.assertTrue(baos.toString().contains(TwoPairStrategy.TwoPair_52));
 		Assert.assertTrue(!bettingDecision.equals(BettingDecision.CHECK_FOLD));
 	}
 	
@@ -670,24 +634,6 @@ public class TwoPairStrategyTest {
 		System.setOut(old);
 
 		Assert.assertTrue(baos.toString().contains(TwoPairStrategy.TwoPair_20));
-		Assert.assertTrue(!bettingDecision.equals(BettingDecision.CHECK_FOLD));
-	}
-	
-	@Test
-	public final void testTwoPair_whithPairInHandAndNoNuts_FLOP() throws CardPackNoValidException {
-		dealStep = DealStep.FLOP;
-		handModel = new HandModel("KdKh8c7c", dealStep);
-		boardModel = new BoardModel("5s5c7d", dealStep);
-		context = new StrategyContext(1, 6, 1, LastPlayerBetType.NO_BET);
-
-		analyserService.analyseHand(handModel, boardModel);
-		BettingDecision bettingDecision = analyserService.decide(dealStep, handModel, context);
-
-		// Put things back
-		System.out.flush();
-		System.setOut(old);
-
-		Assert.assertTrue(baos.toString().contains(TwoPairStrategy.TwoPair_21));
 		Assert.assertTrue(!bettingDecision.equals(BettingDecision.CHECK_FOLD));
 	}
 }

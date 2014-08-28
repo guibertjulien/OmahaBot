@@ -60,7 +60,7 @@ public class FlushDrawStrategyTest {
 	@After
 	public void tearDown() throws Exception {
 	}
-
+	
 	@Test
 	public final void testFlushDraw_10_FLOP() throws CardPackNoValidException {
 		dealStep = DealStep.FLOP;
@@ -79,6 +79,24 @@ public class FlushDrawStrategyTest {
 		Assert.assertTrue(!bettingDecision.equals(BettingDecision.CHECK_FOLD));
 	}
 
+	@Test
+	public final void testFlushDraw2_10_FLOP() throws CardPackNoValidException {
+		dealStep = DealStep.FLOP;
+		handModel = new HandModel("4s7hTsJh", dealStep);
+		boardModel = new BoardModel("9sQsKc", dealStep);
+		context = new StrategyContext(1, 6, 1, LastPlayerBetType.NO_BET);
+
+		analyserService.analyseHand(handModel, boardModel);
+		BettingDecision bettingDecision = analyserService.decide(dealStep, handModel, context);
+
+		// Put things back
+		System.out.flush();
+		System.setOut(old);
+
+		Assert.assertTrue(baos.toString().contains(FlushDrawStrategy.FlushDraw_11));
+		Assert.assertTrue(!bettingDecision.equals(BettingDecision.CHECK_FOLD));
+	}
+	
 	@Test
 	public final void testFlushDraw_10_TURN() throws CardPackNoValidException {
 		dealStep = DealStep.TURN;

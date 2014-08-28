@@ -15,6 +15,7 @@ import net.sourceforge.tess4j.TesseractException;
 import net.sourceforge.vietocr.ImageHelper;
 
 import com.omahaBot.enums.Block;
+import com.omahaBot.exception.ScanOcrException;
 
 public class OcrUtils {
 
@@ -48,7 +49,12 @@ public class OcrUtils {
 		return dest;
 	}
 
-	public static Double cleanStack(String src) {
+	public static BigDecimal cleanStack(String src) throws ScanOcrException {
+		
+		String beforeUpdate = src;
+		
+		BigDecimal bigDecimal = BigDecimal.ZERO;
+		
 		src = src.trim();
 		src = src.replaceAll("[,;]", ".");
 		// src = src.replaceAll("[oO]", "0");
@@ -69,11 +75,13 @@ public class OcrUtils {
 		result = result.replaceFirst(",", ".");
 
 		try {
-			return Double.valueOf(result);
-		} catch (NumberFormatException e) {
-			//LOGGER.warning(e.getMessage());
-			return 0.0;
+			bigDecimal = new BigDecimal(result);
 		}
+		catch (NumberFormatException exception) {
+			throw new ScanOcrException(beforeUpdate);
+		}
+		
+		return bigDecimal;
 	}
 
 	public static String cleanDealId(String src) {
@@ -87,9 +95,9 @@ public class OcrUtils {
 		return src;
 	}
 
-	public static BigDecimal cleanPot(String src) {
+	public static BigDecimal cleanPot(String src) throws ScanOcrException {
 		
-		String test = src;
+		String beforeUpdate = src;
 		
 		BigDecimal bigDecimal = BigDecimal.ZERO;
 		
@@ -112,11 +120,11 @@ public class OcrUtils {
 
 		result = result.replaceFirst(",", ".");
 
-		try {
+		try{
 			bigDecimal = new BigDecimal(result);
 		}
 		catch (NumberFormatException exception) {
-			System.out.println("EXCEPTION : " + test);
+			throw new ScanOcrException(beforeUpdate);
 		}
 		
 		return bigDecimal;

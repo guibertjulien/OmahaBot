@@ -6,13 +6,8 @@ import java.util.TreeSet;
 
 import lombok.Data;
 
-
-import static com.omahaBot.enums.BoardCategory.*;
-
-import com.omahaBot.enums.BoardCategory;
 import com.omahaBot.enums.HandCategory;
 import com.omahaBot.enums.Rank;
-import com.omahaBot.enums.Suit;
 import com.omahaBot.model.CardModel;
 import com.omahaBot.model.CoupleCards;
 
@@ -43,11 +38,10 @@ public @Data class TwoPairModel extends DrawModel {
 	 * @param rankPair1
 	 * @param rankPair2
 	 */
-	public TwoPairModel(Rank rankPair1, Rank rankPair2, BoardCategory boardCategory) {
+	public TwoPairModel(Rank rankPair1, Rank rankPair2) {
 		super(HandCategory.TWO_PAIR);
 		this.rankPair1 = rankPair1;
 		this.rankPair2 = rankPair2;
-		this.boardCategory = boardCategory;
 
 		initNuts();
 	}
@@ -60,23 +54,8 @@ public @Data class TwoPairModel extends DrawModel {
 	private void initNuts() {
 		CardModel card1 = null, card2 = null;
 
-		switch (boardCategory) {
-		case NO_PAIR:
-			card1 = new CardModel(rankPair1);
-			card2 = new CardModel(rankPair2);
-			break;
-		case ONE_PAIR_ACE:
-			card1 = new CardModel(Rank.KING, Suit.SPADE);
-			card2 = new CardModel(Rank.KING, Suit.HEART);
-			break;
-		case ONE_PAIR:
-			card1 = new CardModel(Rank.ACE, Suit.SPADE);
-			card2 = new CardModel(Rank.ACE, Suit.HEART);
-			break;
-		default:
-			// TODO exception
-			break;
-		}
+		card1 = new CardModel(rankPair1);
+		card2 = new CardModel(rankPair2);
 
 		nutsOrHoleCards = new CoupleCards(new TreeSet<CardModel>(Arrays.asList(card1, card2)));
 	}
@@ -128,15 +107,6 @@ public @Data class TwoPairModel extends DrawModel {
 	@Override
 	public boolean isNuts(Object obj) {
 		TwoPairModel other = (TwoPairModel) obj;
-
-		if (other.boardCategory.equals(BoardCategory.ONE_PAIR_ACE))
-			return rankPair2.equals(Rank.KING);
-		if (other.boardCategory.equals(BoardCategory.ONE_PAIR))
-			return rankPair1.equals(Rank.ACE);
-		if (!rankPair1.equals(other.rankPair1))
-			return false;
-		if (!rankPair2.equals(other.rankPair2))
-			return false;
-		return true;
+		return this.equals(other);
 	}
 }

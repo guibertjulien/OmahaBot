@@ -7,8 +7,6 @@ import com.omahaBot.enums.LastPlayerBetType;
 @Data
 public class StrategyContext {
 
-	public static final int STRAIGHT_OUTS_MIN = 8;
-
 	private final int nbTurnOfBet;
 	private final int nbPlayerInAction;
 	private final int nbAction;

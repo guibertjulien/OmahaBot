@@ -16,6 +16,8 @@ public class FlushStrategy extends AbstractStrategy {
 	public static String Flush_21 = "Flush_21 : FLUSH and FULL_DRAW";
 	public static String Flush_30 = "Flush_30 : FLUSH MAX but PAIR on Board";
 	public static String Flush_31 = "Flush_31 : FLUSH but PAIR on Board";
+	public static String Flush_40 = "Flush_40 : FLUSH and STRAIGHT MAX";
+	public static String Flush_41 = "Flush_41 : FLUSH and STRAIGHT";
 
 	public FlushStrategy(StrategyContext context) {
 		super(context);
@@ -38,10 +40,11 @@ public class FlushStrategy extends AbstractStrategy {
 			bettingDecision = betPot();
 		}
 		else {
-			// test FULL draw on Hand
+			// test FULL_DRAW on Hand
 			DrawModel handDrawSecond = drawSecond(handDrawsSorted);
 
-			if (handDrawSecond != null && handDrawSecond.getHandCategory().ordinal() > HandCategory.TWO_PAIR.ordinal()) {
+			if (handDrawSecond.getHandCategory().equals(HandCategory.THREE_OF_A_KIND)
+					|| handDrawSecond.getHandCategory().equals(HandCategory.TWO_PAIR)) {
 				if (isNutsForCategory(handDrawSecond, boardDrawsSorted)) {
 					System.out.println(Flush_20);
 					bettingDecision = betPot();
@@ -56,7 +59,6 @@ public class FlushStrategy extends AbstractStrategy {
 				bettingDecision = betIfnoBetOrFold_fold(BetType.SMALL);
 			}
 		}
-
 		if (bettingDecision == null) {
 			throw new StrategyUnknownException(this.getClass().getName());
 		}
@@ -83,7 +85,7 @@ public class FlushStrategy extends AbstractStrategy {
 				bettingDecision = BettingDecision.CHECK_FOLD;
 			}
 		}
-		// NO PAIR in board
+		// NO PAIR on Board
 		else {
 			bettingDecision = decideAtFlop(handDrawsSorted, boardDrawsSorted, iHaveNuts, nutsForLevel, straightDrawType);
 		}
@@ -98,7 +100,7 @@ public class FlushStrategy extends AbstractStrategy {
 	@Override
 	public BettingDecision decideAtRiver(SortedSet<DrawModel> handDrawsSorted, SortedSet<DrawModel> boardDrawsSorted,
 			boolean iHaveNuts, boolean nutsForLevel, StraightDrawType straightDrawType) throws StrategyUnknownException {
-		
+
 		return decideAtTurn(handDrawsSorted, boardDrawsSorted, iHaveNuts, nutsForLevel, straightDrawType);
 	}
 }

@@ -4,16 +4,17 @@ import java.util.SortedSet;
 
 import com.omahaBot.enums.BettingDecision;
 import com.omahaBot.enums.StraightDrawType;
+import com.omahaBot.exception.StrategyUnknownException;
 import com.omahaBot.model.draw.DrawModel;
 
 public class OnePairStrategy extends AbstractStrategy {
 
 	// private static String OnePair_10 = "OnePair_10 : NO FIRST TURN OF BET";
-	private static String OnePair_20 = "OnePair_20 : TOP PAIR but PAIR or FLUSH/DRAW in board";
-	private static String OnePair_30 = "OnePair_30 : TOP PAIR and good STRAIGHT outs";
-	private static String OnePair_31 = "OnePair_30 : TOP PAIR and bad STRAIGHT outs";
-	private static String OnePair_50 = "OnePair_50 : NO TOP PAIR";
-	private static String OnePair_60 = "OnePair_60 : FOLD at RIVER";
+	private static String OnePair_10 = "OnePair_10 : PAIR but FULL_DRAW or FLUSH/DRAW in board";
+	private static String OnePair_20 = "OnePair_20 : PAIR and good STRAIGHT outs";
+	private static String OnePair_30 = "OnePair_30 : TOP PAIR ACE and bad STRAIGHT outs";
+	private static String OnePair_31 = "OnePair_31 : PAIR and bad STRAIGHT outs";
+	private static String OnePair_99 = "OnePair_99 : PAIR, CHECK_FOLD at RIVER";
 
 	public OnePairStrategy(StrategyContext context) {
 		super(context);
@@ -22,23 +23,29 @@ public class OnePairStrategy extends AbstractStrategy {
 
 	@Override
 	public BettingDecision decideAtFlop(SortedSet<DrawModel> handDrawsSorted, SortedSet<DrawModel> boardDrawsSorted,
-			boolean iHaveNuts, boolean nutsForLevel, StraightDrawType straightDrawType) {
+			boolean iHaveNuts, boolean nutsForLevel, StraightDrawType straightDrawType) throws StrategyUnknownException {
 
-		BettingDecision bettingDecision = BettingDecision.CHECK_FOLD;
+		BettingDecision bettingDecision = null;
 
-		// TOP PAIR ?
-		if (nutsForLevel) {
-			// test bordDraw level 0
-			switch (boardDrawsSorted.first().getHandCategory()) {
-			case FOUR_OF_A_KIND:
-			case FULL_HOUSE:
-			case FLUSH:
+		// test boardDraw first
+		DrawModel boardDrawFirst = boardDrawsSorted.first();
+
+		switch (boardDrawFirst.getHandCategory()) {
+		case FOUR_OF_A_KIND:
+		case FULL_HOUSE:
+		case FLUSH:
+			System.out.println(OnePair_10);
+			bettingDecision = BettingDecision.CHECK_FOLD;
+			break;
+		case FLUSH_DRAW:
+		case STRAIGHT:
+		case STRAIGHT_ACE_LOW:
+			if (straightDrawType.isGoodStraightOut()) {
 				System.out.println(OnePair_20);
-				break;
-			case FLUSH_DRAW:
-			case STRAIGHT:
-			case STRAIGHT_ACE_LOW:
-				if (straightDrawType.getOuts() > StrategyContext.STRAIGHT_OUTS_MIN) {
+				bettingDecision = betOrCall_fold(BetType.SMALL);
+			}
+			else {
+				if (nutsForLevel) {
 					System.out.println(OnePair_30);
 					bettingDecision = betOrCall_fold(BetType.SMALL);
 				}
@@ -46,13 +53,15 @@ public class OnePairStrategy extends AbstractStrategy {
 					System.out.println(OnePair_31);
 					bettingDecision = betOrFold_fold(BetType.SMALL);
 				}
-				break;
-			default:
-				break;
 			}
+			break;
+		default:
+			break;
 		}
-		else {
-			System.out.println(OnePair_50);
+
+		if (bettingDecision == null) {
+			throw new StrategyUnknownException(this.getClass().getName() + ", boardDrawFirst.getHandCategory() : "
+					+ boardDrawFirst.getHandCategory());
 		}
 
 		return bettingDecision;
@@ -60,7 +69,7 @@ public class OnePairStrategy extends AbstractStrategy {
 
 	@Override
 	public BettingDecision decideAtTurn(SortedSet<DrawModel> handDrawsSorted, SortedSet<DrawModel> boardDrawsSorted,
-			boolean iHaveNuts, boolean nutsForLevel, StraightDrawType straightDrawType) {
+			boolean iHaveNuts, boolean nutsForLevel, StraightDrawType straightDrawType) throws StrategyUnknownException {
 
 		return decideAtFlop(handDrawsSorted, boardDrawsSorted, iHaveNuts, nutsForLevel, straightDrawType);
 	}
@@ -69,7 +78,11 @@ public class OnePairStrategy extends AbstractStrategy {
 	public BettingDecision decideAtRiver(SortedSet<DrawModel> handDrawsSorted, SortedSet<DrawModel> boardDrawsSorted,
 			boolean iHaveNuts, boolean nutsForLevel, StraightDrawType straightDrawType) {
 
-		System.out.println(OnePair_60);
-		return BettingDecision.CHECK_FOLD;
+		BettingDecision bettingDecision = null;
+
+		System.out.println(OnePair_99);
+		bettingDecision = BettingDecision.CHECK_FOLD;
+
+		return bettingDecision;
 	}
 }

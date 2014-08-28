@@ -20,7 +20,7 @@ public @Data abstract class DrawModel implements Comparable<DrawModel>, DrawAnal
 //	private double percent = 0.0;
 	protected CoupleCards nutsOrHoleCards;
 	/** REQUIRED */
-	protected final HandCategory handCategory;
+	protected HandCategory handCategory;
 	/** OPTIONAL */
 	protected BoardCategory boardCategory = BoardCategory.UNDEFINED;
 	protected SortedSet<CardModel> permutationHand;

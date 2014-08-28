@@ -338,7 +338,7 @@ public class CardPackModel {
 
 			listDraw.add(flushModel);
 		}
-
+		
 		return listDraw;
 	}
 

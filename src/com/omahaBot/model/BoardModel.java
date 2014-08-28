@@ -257,44 +257,13 @@ public class BoardModel extends CardPackModel {
 	 * @return
 	 */
 	public DrawModel searchBestTwoPairDraw() {
-		
-		BoardCategory boardCategory = BoardCategory.UNDEFINED;
+		ArrayList<CardModel> listCards = new ArrayList<>(sortedCards);
+		Collections.reverse(listCards);
 
-		CardModel topPair1, topPair2;
-		
-		String whithoutSuit = this.toStringByRank().replaceAll("[shdc]", ".");
+		CardModel topPair1 = listCards.get(0);
+		CardModel topPair2 = listCards.get(1);
 
-		Pattern pattern = Pattern.compile("(\\w.)\\1{1,}");
-
-		Matcher matcher = pattern.matcher(whithoutSuit);
-
-		Rank rankGroup = Rank.UNKNOWN;
-
-		if (matcher.find()) {
-			String group = matcher.group(0);
-			rankGroup = Rank.fromShortName(group.charAt(0));
-		
-			if (rankGroup.equals(Rank.ACE)) {
-				topPair1 = new CardModel(Rank.ACE);
-				topPair2 = new CardModel(Rank.KING);
-				boardCategory = BoardCategory.ONE_PAIR_ACE;
-			}
-			else {
-				topPair1 = new CardModel(Rank.ACE);
-				topPair2 = new CardModel(rankGroup);
-				boardCategory = BoardCategory.ONE_PAIR;
-			}
-		}
-		else {
-			ArrayList<CardModel> listCards = new ArrayList<>(sortedCards);
-			Collections.reverse(listCards);
-			
-			topPair1 = listCards.get(0);
-			topPair2 = listCards.get(1);
-			boardCategory = BoardCategory.NO_PAIR;				
-		}
-		
-		TwoPairModel twoPairModel = new TwoPairModel(topPair1.getRank(), topPair2.getRank(), boardCategory);
+		TwoPairModel twoPairModel = new TwoPairModel(topPair1.getRank(), topPair2.getRank());
 
 		return twoPairModel;
 	}
@@ -318,7 +287,7 @@ public class BoardModel extends CardPackModel {
 	/**
 	 * 
 	 * @return
-	 * @throws StraightInitializeException 
+	 * @throws StraightInitializeException
 	 */
 	public ArrayList<StraightModel> searchStraightDraw() throws StraightInitializeException {
 
@@ -340,9 +309,10 @@ public class BoardModel extends CardPackModel {
 	 * @param handCategory
 	 *            : STRAIGHT ou STRAIGHT_ACE_LOW
 	 * @return
-	 * @throws StraightInitializeException 
+	 * @throws StraightInitializeException
 	 */
-	private ArrayList<StraightModel> searchStraightDrawByHandCategory(HandCategory handCategory) throws StraightInitializeException {
+	private ArrayList<StraightModel> searchStraightDrawByHandCategory(HandCategory handCategory)
+			throws StraightInitializeException {
 
 		Assert.assertTrue(handCategory.equals(HandCategory.STRAIGHT)
 				|| handCategory.equals(HandCategory.STRAIGHT_ACE_LOW));
@@ -375,7 +345,7 @@ public class BoardModel extends CardPackModel {
 				i++;
 				continue;
 			}
-			
+
 			if (rank1.equals(Rank.ACE)) {
 				ordinalRank1 = -1;
 			} else {
@@ -385,7 +355,7 @@ public class BoardModel extends CardPackModel {
 			diffRank = (rank3.ordinal() - rank2.ordinal()) + (rank2.ordinal() - ordinalRank1);
 
 			String drawString = rankString.substring(0 + i, 3 + i);
-			
+
 			if (diffRank >= 2 && diffRank <= 4) {
 				StraightModel straightModel = new StraightModel(handCategory, drawString);
 				listDraw.add(straightModel);
@@ -405,7 +375,7 @@ public class BoardModel extends CardPackModel {
 	 * 
 	 * @param handModel
 	 * @return
-	 * @throws StraightInitializeException 
+	 * @throws StraightInitializeException
 	 */
 	public TreeSet<DrawModel> initDraws(HandModel handModel) throws StraightInitializeException {
 
@@ -432,20 +402,21 @@ public class BoardModel extends CardPackModel {
 			if (drawModel != null) {
 				draws.add(drawModel);
 			}
+			else {// no PAIR in board
+				drawModel = searchBestSetDraw();
+				if (drawModel != null) {
+					draws.add(drawModel);
+				}
 
-			drawModel = searchBestSetDraw();
-			if (drawModel != null) {
-				draws.add(drawModel);
-			}
+				drawModel = searchBestTwoPairDraw();
+				if (drawModel != null) {
+					draws.add(drawModel);
+				}
 
-			drawModel = searchBestTwoPairDraw();
-			if (drawModel != null) {
-				draws.add(drawModel);
-			}
-			
-			drawModel = searchBestOnePairDraw();
-			if (drawModel != null) {
-				draws.add(drawModel);
+				drawModel = searchBestOnePairDraw();
+				if (drawModel != null) {
+					draws.add(drawModel);
+				}
 			}
 		}
 

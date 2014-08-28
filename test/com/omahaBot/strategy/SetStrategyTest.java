@@ -460,9 +460,9 @@ public class SetStrategyTest {
 	}	
 	
 	@Test
-	public final void testSet_40_FLOP() throws CardPackNoValidException {
+	public final void testSet_44_FLOP() throws CardPackNoValidException {
 		dealStep = DealStep.FLOP;
-		handModel = new HandModel("2dKh5s5d", dealStep);
+		handModel = new HandModel("TdKh5s5d", dealStep);
 		boardModel = new BoardModel("5c3s4h", dealStep);
 		context = new StrategyContext(1, 6, 1, LastPlayerBetType.NO_BET);
 
@@ -473,14 +473,14 @@ public class SetStrategyTest {
 		System.out.flush();
 		System.setOut(old);
 
-		Assert.assertTrue(baos.toString().contains(SetStrategy.Set_40));
+		Assert.assertTrue(baos.toString().contains(SetStrategy.Set_44));
 		Assert.assertTrue(!bettingDecision.equals(BettingDecision.CHECK_FOLD));
 	}
 	
 	@Test
-	public final void testSet_40_TURN() throws CardPackNoValidException {
+	public final void testSet_44_TURN() throws CardPackNoValidException {
 		dealStep = DealStep.TURN;
-		handModel = new HandModel("2cKh5s5d", dealStep);
+		handModel = new HandModel("TcKh5s5d", dealStep);
 		boardModel = new BoardModel("5c3s4h2d", dealStep);
 		context = new StrategyContext(1, 6, 1, LastPlayerBetType.NO_BET);
 
@@ -491,7 +491,62 @@ public class SetStrategyTest {
 		System.out.flush();
 		System.setOut(old);
 
-		Assert.assertTrue(baos.toString().contains(SetStrategy.Set_40));
+		Assert.assertTrue(baos.toString().contains(SetStrategy.Set_44));
+		Assert.assertTrue(!bettingDecision.equals(BettingDecision.CHECK_FOLD));
+	}
+
+	@Test
+	public final void testSet_51_1_FLOP() throws CardPackNoValidException {
+		dealStep = DealStep.FLOP;
+		handModel = new HandModel("5cTdKdAc", dealStep);
+		boardModel = new BoardModel("5s5dJs", dealStep);
+		context = new StrategyContext(1, 6, 1, LastPlayerBetType.NO_BET);
+
+		analyserService.analyseHand(handModel, boardModel);
+		BettingDecision bettingDecision = analyserService.decide(dealStep, handModel, context);
+
+		// Put things back
+		System.out.flush();
+		System.setOut(old);
+
+		Assert.assertTrue(baos.toString().contains(SetStrategy.Set_51));
+		Assert.assertTrue(!bettingDecision.equals(BettingDecision.CHECK_FOLD));
+	}
+
+	@Test
+	public final void testSet_51_1_TURN() throws CardPackNoValidException {
+		dealStep = DealStep.TURN;
+		handModel = new HandModel("5cTdKdAc", dealStep);
+		boardModel = new BoardModel("5s5dJs2c", dealStep);
+		context = new StrategyContext(1, 6, 1, LastPlayerBetType.NO_BET);
+
+		analyserService.analyseHand(handModel, boardModel);
+		BettingDecision bettingDecision = analyserService.decide(dealStep, handModel, context);
+
+		// Put things back
+		System.out.flush();
+		System.setOut(old);
+
+		Assert.assertTrue(baos.toString().contains(SetStrategy.Set_51));
+		Assert.assertTrue(!bettingDecision.equals(BettingDecision.CHECK_FOLD));
+	}
+
+	
+	@Test
+	public final void testSet_51_2_FLOP() throws CardPackNoValidException {
+		dealStep = DealStep.FLOP;
+		handModel = new HandModel("JcTdKdAc", dealStep);
+		boardModel = new BoardModel("JsJd5s", dealStep);
+		context = new StrategyContext(1, 6, 1, LastPlayerBetType.NO_BET);
+
+		analyserService.analyseHand(handModel, boardModel);
+		BettingDecision bettingDecision = analyserService.decide(dealStep, handModel, context);
+
+		// Put things back
+		System.out.flush();
+		System.setOut(old);
+
+		Assert.assertTrue(baos.toString().contains(SetStrategy.Set_51));
 		Assert.assertTrue(!bettingDecision.equals(BettingDecision.CHECK_FOLD));
 	}
 }

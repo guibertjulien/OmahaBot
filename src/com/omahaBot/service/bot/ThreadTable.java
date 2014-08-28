@@ -79,6 +79,8 @@ public class ThreadTable extends MyThread {
 
 	private BigDecimal potOld = BigDecimal.ZERO;
 	private BigDecimal potCurrent = BigDecimal.ZERO;
+	private BigDecimal myStackOld = BigDecimal.ZERO;
+	private BigDecimal myStackCurrent = BigDecimal.ZERO;
 
 	private int nbTurnOfBet = 1;
 
@@ -151,9 +153,22 @@ public class ThreadTable extends MyThread {
 		listBoardCard.clear();
 		positionTurnToPlayOld = 0;
 		initAnalyseWidgetPreFlopDone = false;
-
 		potOld = BigDecimal.ZERO;
 		potCurrent = BigDecimal.ZERO;
+
+		myStackCurrent = ocrService.scanPlayerStack(PlayerBlock.PLAYER_4);
+
+		if (myStackCurrent.compareTo(myStackOld) == 0) {
+			// nothing
+		} else if (myStackCurrent.compareTo(myStackOld) > 0) {
+			System.out.println("=> I WIN ("+ myStackOld + " --> "+ myStackCurrent +")");
+		}
+		else {
+			System.out.println("=> I LOOSE ("+ myStackOld + " --> "+ myStackCurrent +")");	
+		}
+		
+		myStackOld = myStackCurrent;
+		
 		// END - intialize
 
 		dealIdOld = dealIdCurrent;
@@ -500,11 +515,11 @@ public class ThreadTable extends MyThread {
 			// TODO optimize
 			if (playerBlock.isActivePlayer(colorScaned)) {
 				playerModel.setActiv(true);
-				playerModel.setStack(ocrService.scanPlayerStack(playerBlock));
+				//playerModel.setStack(ocrService.scanPlayerStack(playerBlock));
 			}
 			else {
 				playerModel.setActiv(false);
-				playerModel.setStack(ocrService.scanPlayerStack(playerBlock));
+				//playerModel.setStack(ocrService.scanPlayerStack(playerBlock));
 			}
 		}
 
@@ -537,10 +552,10 @@ public class ThreadTable extends MyThread {
 			lastPlayerBetType = LastPlayerBetType.CALL;
 		}
 		
-		System.out.println("........................................");
-		System.out.println("- toCall : " + toCall);
-		System.out.println("- lastPlayerBetType : " + lastPlayerBetType);
-		System.out.println("........................................");
+		System.out.println("----------------------------------------");
+		System.out.println(" toCall : " + toCall);
+		System.out.println(" lastPlayerBetType : " + lastPlayerBetType);
+		System.out.println("----------------------------------------");
 		
 		return lastPlayerBetType;
 	}

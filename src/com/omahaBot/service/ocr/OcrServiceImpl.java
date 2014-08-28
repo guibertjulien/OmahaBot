@@ -9,9 +9,11 @@ import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
+
 import org.apache.log4j.Logger;
 import org.eclipse.swt.widgets.Display;
 
@@ -31,6 +33,7 @@ import com.omahaBot.enums.DealStep;
 import com.omahaBot.enums.PlayerBlock;
 import com.omahaBot.enums.Rank;
 import com.omahaBot.enums.Suit;
+import com.omahaBot.exception.ScanOcrException;
 import com.omahaBot.model.CardModel;
 import com.omahaBot.model.PlayerModel;
 import com.omahaBot.service.bot.ThreadTable;
@@ -39,9 +42,13 @@ public class OcrServiceImpl implements OcrService {
 
 	private static final Logger log = Logger.getLogger(ThreadTable.class);
 
+	private static final String PNG_EXTENSION = ".png";
+	private static final String SCANED_KO_FILENAME = "scanedKO";
 	private static final String TABLE_FILENAME = "tableCaps.png";
 	private static final String CAPS_DIRECTORY = "C:/_DEV/caps/";
 
+	private static int CPT = 0;
+	
 	private List<CardModel> listBoardCard = new ArrayList<CardModel>();
 
 	private Robot robot;
@@ -75,41 +82,57 @@ public class OcrServiceImpl implements OcrService {
 
 	@Override
 	public BigDecimal scanPot() {
-		BigDecimal res;
-		
+
+		BigDecimal potScaned = BigDecimal.ZERO;
+
 		Rectangle block = new Rectangle(Consts.BLOCK_POT);
 		BufferedImage capture = robot.createScreenCapture(block);
 
 		String ocr = scanBlock(null, capture, "",
 				TessPageSegMode.PSM_SINGLE_LINE, BlockType.POT.name());
 
-		res = OcrUtils.cleanPot(ocr);
-		
-		return res;
+		try {
+			potScaned = OcrUtils.cleanPot(ocr);
+		} catch (ScanOcrException e) {
+			try {
+				System.out.println("!!! potScaned KO  (" + e.getMessage() + ")");
+				ImageIO.write(capture, "png", new File(CAPS_DIRECTORY +
+						SCANED_KO_FILENAME + CPT + PNG_EXTENSION));
+				CPT++;
+			} catch (IOException e1) {
+				log.warn(e.getMessage());
+			}
+		}
+
+		return potScaned;
 	}
-	
+
 	@Override
 	public BigDecimal scanCheckOrCallButton() {
-		BigDecimal res;
-		
+		BigDecimal btnCheckCallScaned = new BigDecimal(0);
+
 		Rectangle block = new Rectangle(Consts.BLOCK_BUTTON_CHECK_OR_CALL);
 		BufferedImage capture = robot.createScreenCapture(block);
 
 		String ocr = scanBlock(null, capture, "",
 				TessPageSegMode.PSM_AUTO, BlockType.BUTTON_CHECK_OR_CALL.name());
-		
-		log.debug("scanCheckOrCallButton - ocr : " + ocr);
-		
-		if (ocr.equals(Consts.CHECK)) {
-			res = new BigDecimal(0);
+
+		if (!ocr.equals(Consts.CHECK)) {
+			try {
+				btnCheckCallScaned = OcrUtils.cleanPot(ocr);
+			} catch (ScanOcrException e) {
+				try {
+					System.out.println("!!! btnCheckCallScaned KO (" + e.getMessage() + ")");
+					ImageIO.write(capture, "png", new File(CAPS_DIRECTORY +
+							SCANED_KO_FILENAME + CPT + PNG_EXTENSION));
+					CPT++;
+				} catch (IOException e1) {
+					log.warn(e.getMessage());
+				}
+			}
 		}
-		else {
-			res = OcrUtils.cleanPot(ocr);
-		}
-		
-		log.debug("scanCheckOrCallButton - res : " + res);
-		
-		return res;
+
+		return btnCheckCallScaned;
 	}
 
 	// private void scanPlayerList() {
@@ -128,7 +151,7 @@ public class OcrServiceImpl implements OcrService {
 
 	@Override
 	public List<CardModel> scanBoardCards(DealStep dealStep) {
-		
+
 		listBoardCard.clear();
 
 		switch (dealStep) {
@@ -161,21 +184,21 @@ public class OcrServiceImpl implements OcrService {
 	@Override
 	public SortedSet<CardModel> scanMyHand() {
 		SortedSet<CardModel> listMyCard = new TreeSet<CardModel>();
-		
+
 		listMyCard.add(scanCard(CardBlock.MY_CARD1));
 		listMyCard.add(scanCard(CardBlock.MY_CARD2));
 		listMyCard.add(scanCard(CardBlock.MY_CARD3));
 		listMyCard.add(scanCard(CardBlock.MY_CARD4));
-		
+
 		return listMyCard;
-	}	
-	
+	}
+
 	public PlayerModel scanPlayer(PlayerBlock playerBlock) {
 
 		String name = scanPlayerName(playerBlock);
-		Double stack = scanPlayerStack(playerBlock);
+		BigDecimal stack = scanPlayerStack(playerBlock);
 
-		PlayerModel playerModel = new PlayerModel(playerBlock, name, stack, playerBlock.ordinal() + 1);
+		PlayerModel playerModel = new PlayerModel(playerBlock, name, stack.doubleValue(), playerBlock.ordinal() + 1);
 
 		return playerModel;
 	}
@@ -192,7 +215,10 @@ public class OcrServiceImpl implements OcrService {
 		return ocr;
 	}
 
-	public Double scanPlayerStack(PlayerBlock playerBlock) {
+	public BigDecimal scanPlayerStack(PlayerBlock playerBlock) {
+
+		BigDecimal stackScaned = BigDecimal.ZERO;
+		
 		Rectangle block = new Rectangle(playerBlock.getBlock().x, playerBlock.getBlock().y
 				+ Consts.BLOCK_PLAYER_STACK_Y, playerBlock.getBlock().width, Consts.BLOCK_PLAYER_STACK_HEIGHT);
 		BufferedImage capture = robot.createScreenCapture(block);
@@ -201,7 +227,20 @@ public class OcrServiceImpl implements OcrService {
 				TessPageSegMode.PSM_SINGLE_LINE, playerBlock.name()
 						+ BlockType.PLAYER_NAME.name());
 
-		return OcrUtils.cleanStack(ocr);
+		try {
+			stackScaned = OcrUtils.cleanStack(ocr);
+		} catch (ScanOcrException e) {
+			try {
+				System.out.println("!!! stackScaned KO (" + e.getMessage() + ")");
+				ImageIO.write(capture, "png", new File(CAPS_DIRECTORY +
+						SCANED_KO_FILENAME + CPT + PNG_EXTENSION));
+				CPT++;
+			} catch (IOException e1) {
+				log.warn(e.getMessage());
+			}
+		}
+		
+		return stackScaned;
 	}
 
 	@Override
@@ -254,7 +293,7 @@ public class OcrServiceImpl implements OcrService {
 					break;
 				}
 				else if (cardRankScaned.equals(rank.getShortName())) {
-					rankMatch = rank;	
+					rankMatch = rank;
 					break;
 				}
 			}
@@ -282,7 +321,7 @@ public class OcrServiceImpl implements OcrService {
 			BufferedImage captureTable = robot.createScreenCapture(Consts.BLOCK_TABLE);
 			ImageIO.write(captureTable, "png", new File(CAPS_DIRECTORY +
 					TABLE_FILENAME));
-			
+
 			Assert.assertTrue(true);
 
 		} catch (IOException e) {

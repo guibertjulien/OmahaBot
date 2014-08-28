@@ -54,6 +54,10 @@ public @Data class StraightModel extends DrawModel {
 		else if (handCategory.equals(HandCategory.STRAIGHT_ACE_LOW)) {
 			rank = Rank.FIVE;
 		}
+		
+		if (rank.equals(Rank.FIVE)) {
+			handCategory = HandCategory.STRAIGHT_ACE_LOW;
+		}
 	}
 
 	/**
@@ -69,6 +73,10 @@ public @Data class StraightModel extends DrawModel {
 		this.drawString = drawString;
 
 		initRankAndNuts(drawString);
+		
+		if (rank.equals(Rank.FIVE)) {
+			this.handCategory = HandCategory.STRAIGHT_ACE_LOW;
+		}
 	}
 
 	// TODO à revoir
