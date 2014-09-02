@@ -16,7 +16,8 @@ public class BluffStrategy extends AbstractStrategy {
 
 	public BluffStrategy(StrategyContext context) {
 		super(context);
-		System.out.println("--> BluffStrategy");
+		System.out.println("----------------------------------------");
+		System.out.println("BluffStrategy");
 	}
 
 	@Override

@@ -8,9 +8,7 @@ import com.omahaBot.enums.DealStep;
 import com.omahaBot.enums.preFlop.PreFlopSuitLevel;
 import com.omahaBot.exception.CardPackNoValidException;
 import com.omahaBot.exception.HandNoValidException;
-import com.omahaBot.model.BoardModel;
 import com.omahaBot.model.hand.HandModel;
-import com.omahaBot.model.hand.HandPreFlopPower.SuitedType;
 
 public class PreFlopServiceImplTest {
 

@@ -21,9 +21,19 @@ public class OcrUtils {
 
 	private final static Logger LOGGER = Logger.getLogger(OcrUtils.class.getName());
 
-	private final static String PATTERN_DOUBLE = "(?<double>[0-9\\s]+((\\.|\\,)[0-9]+)?)";
+	private final static String GRP_DOUBLE = "double";
+	private final static String GRP_ALLIN = "allIn";
+	private final static String GRP_NEPASJOUER = "nePasJouer";
 
-	private final static String PATTERN_STACK = "(" + PATTERN_DOUBLE + "\\s*€" + ")";
+	private final static String PATTERN_DOUBLE = "(?<" + GRP_DOUBLE + ">[0-9\\s]+((\\.|\\,)[0-9]+)?)";
+
+	private final static String PATTERN_NEPASJOUER = "?<" + GRP_NEPASJOUER + ">Ne\\spas\\sjouer";
+	private final static String PATTERN_ALLIN = "?<" + GRP_ALLIN + ">All\\s*In";
+
+	// % = €
+	private final static String PATTERN_STACK = "(" + PATTERN_DOUBLE + "\\s*(€|%)" + ")";
+
+	private final static String PATTERN_NOSTACK = "(" + PATTERN_NEPASJOUER + ")|(" + PATTERN_ALLIN + ")";
 
 	public final static String TESS_VAR_WHITELIST = "tessedit_char_whitelist";
 
@@ -50,37 +60,51 @@ public class OcrUtils {
 	}
 
 	public static BigDecimal cleanStack(String src) throws ScanOcrException {
-		
+
 		String beforeUpdate = src;
-		
+
 		BigDecimal bigDecimal = BigDecimal.ZERO;
-		
+
 		src = src.trim();
-		src = src.replaceAll("[,;]", ".");
-		// src = src.replaceAll("[oO]", "0");
-		// src = src.replaceAll("[sS]", "5");
-		// src = src.replaceAll("[iI]", "1");
-		// src = src.replaceAll("(\r\n|\n)", "");
 		src = src.replaceAll(" ", "");
 
-		String result = "";
-
-		Pattern pattern = Pattern.compile(PATTERN_STACK, Pattern.CASE_INSENSITIVE);
+		Pattern pattern = Pattern.compile(PATTERN_NOSTACK, Pattern.CASE_INSENSITIVE);
 		Matcher matcher = pattern.matcher(src);
 
 		if (matcher.find()) {
-			result = matcher.group("double");
+			if (matcher.group(GRP_NEPASJOUER) != null) {
+				bigDecimal = BigDecimal.ZERO;
+			}
+			else if (matcher.group(GRP_ALLIN) != null) {
+				bigDecimal = new BigDecimal(-1);
+			}
+			else {
+				
+			}
+		}
+		else {
+			src = src.replaceAll("[,;]", ".");
+			// src = src.replaceAll("[oO]", "0");
+			// src = src.replaceAll("[sS]", "5");
+			// src = src.replaceAll("[iI]", "1");
+			// src = src.replaceAll("(\r\n|\n)", "");
+
+			String result = "0";
+
+			pattern = Pattern.compile(PATTERN_STACK, Pattern.CASE_INSENSITIVE);
+			matcher = pattern.matcher(src);
+
+			if (matcher.find()) {
+				result = matcher.group(GRP_DOUBLE);
+			}
+			
+			try {
+				bigDecimal = new BigDecimal(result);
+			} catch (NumberFormatException exception) {
+				throw new ScanOcrException(beforeUpdate);
+			}
 		}
 
-		result = result.replaceFirst(",", ".");
-
-		try {
-			bigDecimal = new BigDecimal(result);
-		}
-		catch (NumberFormatException exception) {
-			throw new ScanOcrException(beforeUpdate);
-		}
-		
 		return bigDecimal;
 	}
 
@@ -96,37 +120,34 @@ public class OcrUtils {
 	}
 
 	public static BigDecimal cleanPot(String src) throws ScanOcrException {
-		
+
 		String beforeUpdate = src;
-		
+
 		BigDecimal bigDecimal = BigDecimal.ZERO;
-		
+
 		src = src.trim();
+		src = src.replaceAll("(\r\n|\n)", "");
+		src = src.replaceAll(" ", "");
 		src = src.replaceAll("[,;]", ".");
 		src = src.replaceAll("[oO]", "0");
 		src = src.replaceAll("[sS]", "5");
 		src = src.replaceAll("[iI]", "1");
-		src = src.replaceAll("(\r\n|\n)", "");
-		src = src.replaceAll(" ", "");
 
-		String result = "";
+		String result = "0";
 
 		Pattern pattern = Pattern.compile(PATTERN_STACK, Pattern.CASE_INSENSITIVE);
 		Matcher matcher = pattern.matcher(src);
 
 		if (matcher.find()) {
-			result = matcher.group("double");
+			result = matcher.group(GRP_DOUBLE);
 		}
 
-		result = result.replaceFirst(",", ".");
-
-		try{
+		try {
 			bigDecimal = new BigDecimal(result);
-		}
-		catch (NumberFormatException exception) {
+		} catch (NumberFormatException exception) {
 			throw new ScanOcrException(beforeUpdate);
 		}
-		
+
 		return bigDecimal;
 	}
 

@@ -2,20 +2,20 @@ package com.omahaBot.service.ocr;
 
 import java.awt.AWTException;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Rectangle;
 import java.awt.Robot;
+import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
-
-import org.apache.log4j.Logger;
-import org.eclipse.swt.widgets.Display;
 
 import javax.imageio.ImageIO;
 
@@ -24,6 +24,8 @@ import net.sourceforge.tess4j.TessAPI1.TessPageSegMode;
 import net.sourceforge.tess4j.Tesseract1;
 import net.sourceforge.tess4j.TesseractException;
 import net.sourceforge.vietocr.ImageHelper;
+
+import org.apache.log4j.Logger;
 
 import com.omahaBot.consts.Consts;
 import com.omahaBot.enums.Block;
@@ -43,12 +45,11 @@ public class OcrServiceImpl implements OcrService {
 	private static final Logger log = Logger.getLogger(ThreadTable.class);
 
 	private static final String PNG_EXTENSION = ".png";
-	private static final String SCANED_KO_FILENAME = "scanedKO";
 	private static final String TABLE_FILENAME = "tableCaps.png";
 	private static final String CAPS_DIRECTORY = "C:/_DEV/caps/";
+	private static final String TO_SEE = "toSee-";
+	private static final String TO_SEE_SCANED_KO = "toSeeScanedKO-";
 
-	private static int CPT = 0;
-	
 	private List<CardModel> listBoardCard = new ArrayList<CardModel>();
 
 	private Robot robot;
@@ -94,14 +95,7 @@ public class OcrServiceImpl implements OcrService {
 		try {
 			potScaned = OcrUtils.cleanPot(ocr);
 		} catch (ScanOcrException e) {
-			try {
-				System.out.println("!!! potScaned KO  (" + e.getMessage() + ")");
-				ImageIO.write(capture, "png", new File(CAPS_DIRECTORY +
-						SCANED_KO_FILENAME + CPT + PNG_EXTENSION));
-				CPT++;
-			} catch (IOException e1) {
-				log.warn(e.getMessage());
-			}
+			CapsError(capture, e);
 		}
 
 		return potScaned;
@@ -121,14 +115,7 @@ public class OcrServiceImpl implements OcrService {
 			try {
 				btnCheckCallScaned = OcrUtils.cleanPot(ocr);
 			} catch (ScanOcrException e) {
-				try {
-					System.out.println("!!! btnCheckCallScaned KO (" + e.getMessage() + ")");
-					ImageIO.write(capture, "png", new File(CAPS_DIRECTORY +
-							SCANED_KO_FILENAME + CPT + PNG_EXTENSION));
-					CPT++;
-				} catch (IOException e1) {
-					log.warn(e.getMessage());
-				}
+				CapsError(capture, e);
 			}
 		}
 
@@ -193,6 +180,7 @@ public class OcrServiceImpl implements OcrService {
 		return listMyCard;
 	}
 
+	@Override
 	public PlayerModel scanPlayer(PlayerBlock playerBlock) {
 
 		String name = scanPlayerName(playerBlock);
@@ -214,11 +202,12 @@ public class OcrServiceImpl implements OcrService {
 
 		return ocr;
 	}
-
+	
+	@Override
 	public BigDecimal scanPlayerStack(PlayerBlock playerBlock) {
 
 		BigDecimal stackScaned = BigDecimal.ZERO;
-		
+
 		Rectangle block = new Rectangle(playerBlock.getBlock().x, playerBlock.getBlock().y
 				+ Consts.BLOCK_PLAYER_STACK_Y, playerBlock.getBlock().width, Consts.BLOCK_PLAYER_STACK_HEIGHT);
 		BufferedImage capture = robot.createScreenCapture(block);
@@ -230,16 +219,9 @@ public class OcrServiceImpl implements OcrService {
 		try {
 			stackScaned = OcrUtils.cleanStack(ocr);
 		} catch (ScanOcrException e) {
-			try {
-				System.out.println("!!! stackScaned KO (" + e.getMessage() + ")");
-				ImageIO.write(capture, "png", new File(CAPS_DIRECTORY +
-						SCANED_KO_FILENAME + CPT + PNG_EXTENSION));
-				CPT++;
-			} catch (IOException e1) {
-				log.warn(e.getMessage());
-			}
+			CapsError(capture, e);
 		}
-		
+
 		return stackScaned;
 	}
 
@@ -332,4 +314,25 @@ public class OcrServiceImpl implements OcrService {
 		return false;
 	}
 
+	private void CapsError(BufferedImage capture, ScanOcrException e) {
+		try {
+			System.out.println("ERROR: Caps (" + e.getMessage() + ")");
+			ImageIO.write(capture, "png", new File(CAPS_DIRECTORY + TO_SEE_SCANED_KO + new SimpleDateFormat("yyyyMMddhhmm").format(new Date()) + PNG_EXTENSION));
+		} catch (IOException e1) {
+			log.warn(e.getMessage());
+		}
+	}
+
+	@Override
+	public void screenCaps() {
+		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+		Rectangle screenRectangle = new Rectangle(screenSize);
+		try {
+			BufferedImage image = robot.createScreenCapture(screenRectangle);
+			ImageIO.write(image, "png", new File(CAPS_DIRECTORY + TO_SEE + new SimpleDateFormat("yyyyMMddhhmm").format(new Date()) + PNG_EXTENSION));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 }

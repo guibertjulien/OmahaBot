@@ -31,7 +31,8 @@ public class SetStrategy extends AbstractStrategy {
 
 	public SetStrategy(StrategyContext actionContext) {
 		super(actionContext);
-		System.out.println("--> SetStrategy");
+		System.out.println("----------------------------------------");
+		System.out.println("SetStrategy");
 	}
 
 	@Override

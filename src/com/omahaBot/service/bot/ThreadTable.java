@@ -30,6 +30,7 @@ import com.omahaBot.model.DealStepModel;
 import com.omahaBot.model.PlayerModel;
 import com.omahaBot.model.draw.DrawModel;
 import com.omahaBot.model.hand.HandModel;
+import com.omahaBot.service.bot.MyRobot.ClickSpeed;
 import com.omahaBot.strategy.StrategyContext;
 import com.omahaBot.ui.form.MainForm;
 
@@ -158,6 +159,11 @@ public class ThreadTable extends MyThread {
 
 		myStackCurrent = ocrService.scanPlayerStack(PlayerBlock.PLAYER_4);
 
+		// TODO
+		if (myStackCurrent.doubleValue() == -1) {
+			System.out.println("=> IM ALLIN");	
+		}
+		
 		if (myStackCurrent.compareTo(myStackOld) == 0) {
 			// nothing
 		} else if (myStackCurrent.compareTo(myStackOld) > 0) {
@@ -194,7 +200,7 @@ public class ThreadTable extends MyThread {
 	private void goDealStep() {
 		log.debug("NEW STEP : " + dealStepCurrent);
 
-		System.out.println(" STEP : " + dealStepCurrent);
+		//System.out.println(" STEP : " + dealStepCurrent);
 
 		// START - intialize
 		handDraws.clear();
@@ -453,7 +459,7 @@ public class ThreadTable extends MyThread {
 		LastPlayerBetType lastPlayerBetType = lastPlayerBetType(toCall);
 		
 		//
-		StrategyContext strategyContext = new StrategyContext(nbTurnOfBet, nbPlayerCurrent, nbAction, lastPlayerBetType);
+		StrategyContext strategyContext = new StrategyContext(nbTurnOfBet, nbPlayerCurrent, nbAction, lastPlayerBetType, potCurrent, toCall);
 		strategyContexts.add(strategyContext);
 
 		//System.out.println(strategyContext);
@@ -475,7 +481,7 @@ public class ThreadTable extends MyThread {
 
 		try {
 			MyRobot robot = new MyRobot();
-			robot.clickAction(bettingDecision, this.getId());
+			robot.clickAction(bettingDecision, ClickSpeed.FAST);
 		} catch (AWTException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

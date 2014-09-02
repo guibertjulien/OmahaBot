@@ -5,8 +5,6 @@ import java.math.BigDecimal;
 
 import org.eclipse.swt.graphics.Point;
 
-import com.omahaBot.enums.PlayerBlock;
-
 public final class Consts {
 
 	public static final String CAPS_DIRECTORY = "C:/_DEV/caps/";

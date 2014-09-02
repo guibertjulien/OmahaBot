@@ -87,4 +87,21 @@ public class FooTest {
 		Assert.assertTrue(analyserService.getHandLevel() == 1);
 		Assert.assertTrue(analyserService.isNutsForLevel());
 	}
+	
+	/*
+	 * tirage quinte par les 2 bouts
+	 * pas de best draws sur le board
+	 * CHECK_FOLD 
+	 */
+	@Test
+	public void testBug6() throws CardPackNoValidException {
+		dealStep = DealStep.TURN;
+		handModel = new HandModel("JsTd2c5s", dealStep);
+		boardModel = new BoardModel("7c4dKhQs", dealStep);
+		context = new StrategyContext(1, 6, 1, LastPlayerBetType.NO_BET);
+		
+		analyserService.analyseHand(handModel, boardModel);
+		
+		analyserService.decide(dealStep, handModel, context);
+	}
 }

@@ -18,7 +18,8 @@ public class OnePairStrategy extends AbstractStrategy {
 
 	public OnePairStrategy(StrategyContext context) {
 		super(context);
-		System.out.println("--> OnePairStrategy");
+		System.out.println("----------------------------------------");
+		System.out.println("OnePairStrategy");
 	}
 
 	@Override
@@ -29,7 +30,7 @@ public class OnePairStrategy extends AbstractStrategy {
 
 		// test boardDraw first
 		DrawModel boardDrawFirst = boardDrawsSorted.first();
-
+		
 		switch (boardDrawFirst.getHandCategory()) {
 		case FOUR_OF_A_KIND:
 		case FULL_HOUSE:
@@ -37,21 +38,23 @@ public class OnePairStrategy extends AbstractStrategy {
 			System.out.println(OnePair_10);
 			bettingDecision = BettingDecision.CHECK_FOLD;
 			break;
+		case THREE_OF_A_KIND:
 		case FLUSH_DRAW:
 		case STRAIGHT:
 		case STRAIGHT_ACE_LOW:
 			if (straightDrawType.isGoodStraightOut()) {
 				System.out.println(OnePair_20);
-				bettingDecision = betOrCall_fold(BetType.SMALL);
+				bettingDecision = betIfnoBetOrCall_fold(BetType.SMALL);
 			}
 			else {
 				if (nutsForLevel) {
 					System.out.println(OnePair_30);
-					bettingDecision = betOrCall_fold(BetType.SMALL);
+					bettingDecision = betIfnoBetOrCall_fold(BetType.SMALL);
 				}
 				else {
 					System.out.println(OnePair_31);
-					bettingDecision = betOrFold_fold(BetType.SMALL);
+					//bettingDecision = betOrFold_fold(BetType.SMALL);
+					bettingDecision = BettingDecision.CHECK_FOLD;
 				}
 			}
 			break;

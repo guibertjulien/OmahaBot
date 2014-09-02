@@ -8,7 +8,9 @@ import java.util.SortedSet;
 
 import com.omahaBot.enums.CardBlock;
 import com.omahaBot.enums.DealStep;
+import com.omahaBot.enums.PlayerBlock;
 import com.omahaBot.model.CardModel;
+import com.omahaBot.model.PlayerModel;
 
 public interface OcrService {
 
@@ -20,6 +22,8 @@ public interface OcrService {
 
 	BigDecimal scanPot();
 	
+	PlayerModel scanPlayer(PlayerBlock playerBlock);
+	
 	boolean checkTable();
 
 	SortedSet<CardModel> scanMyHand();
@@ -28,4 +32,7 @@ public interface OcrService {
 
 	BigDecimal scanCheckOrCallButton();
 
+	void screenCaps();
+
+	BigDecimal scanPlayerStack(PlayerBlock playerBlock);
 }

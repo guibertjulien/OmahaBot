@@ -9,13 +9,14 @@ import com.omahaBot.model.draw.DrawModel;
 public class StraightStrategy extends AbstractStrategy {
 
 	private static String Straight_10 = "Straight_10 : I have NUTS";
-	private static String Straight_20 = "Straight_20 : STRAIGHT but FLUSH in board";
+	private static String Straight_20 = "Straight_20 : STRAIGHT but BEST draws on board";
 	private static String Straight_30 = "Straight_30 : TOP STRAIGHT but FLUSH_DRAW in board";
 	private static String Straight_31 = "Straight_31 : STRAIGHT but FLUSH_DRAW in board";
 
 	public StraightStrategy(StrategyContext actionContext) {
 		super(actionContext);
-		System.out.println("--> StraightStrategy");
+		System.out.println("----------------------------------------");
+		System.out.println("StraightStrategy");
 	}
 
 	@Override
@@ -43,7 +44,7 @@ public class StraightStrategy extends AbstractStrategy {
 				}
 				else {
 					System.out.println(Straight_31);
-					bettingDecision = betOrCall_fold(BetType.BIG);
+					bettingDecision = betIfnoBetOrCall_fold(BetType.BIG);
 				}
 				break;
 			default:

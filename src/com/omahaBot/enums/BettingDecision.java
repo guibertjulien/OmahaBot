@@ -7,12 +7,10 @@ import java.util.List;
 import java.util.Random;
 
 public enum BettingDecision {
-	CHECK_FOLD(KeyEvent.VK_NUMPAD1),
-	FOLD_ALWAYS(KeyEvent.VK_NUMPAD2),
-	CHECK(KeyEvent.VK_NUMPAD3),
-	CALL(KeyEvent.VK_NUMPAD4),
-	CHECK_CALL(KeyEvent.VK_NUMPAD5),
-	BET_RAISE_MIN(KeyEvent.VK_NUMPAD6),
+	FOLD_ALWAYS(KeyEvent.VK_NUMPAD1),
+	CHECK_FOLD(KeyEvent.VK_NUMPAD2),
+	CHECK_CALL(KeyEvent.VK_NUMPAD3),
+	BET_RAISE_25(KeyEvent.VK_NUMPAD6),
 	BET_RAISE_50(KeyEvent.VK_NUMPAD7),
 	BET_RAISE_75(KeyEvent.VK_NUMPAD8),
 	ALLIN(KeyEvent.VK_NUMPAD9);

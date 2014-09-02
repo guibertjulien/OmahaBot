@@ -16,6 +16,8 @@ public class StrategyFactory {
 			return new FlushDrawStrategy(actionContext);
 		case STRAIGHT:
 			return new StraightStrategy(actionContext);
+		case STRAIGHT_DRAW:
+			return new StraightDrawStrategy(actionContext);
 		case THREE_OF_A_KIND:
 			return new SetStrategy(actionContext);
 		case TWO_PAIR:

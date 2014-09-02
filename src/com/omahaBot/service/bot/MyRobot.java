@@ -13,28 +13,37 @@ public class MyRobot extends Robot {
 
 	private static final Logger log = Logger.getLogger(PreFlopAnalyser.class);
 
-	public static final int MIN = 1000;
-	public static final int MAX = 3000;
+	public static final int MIN = 1500;
+	public static final int FAST = 4000;
+	public static final int MAX = 6500;
+
+	public enum ClickSpeed {
+		SLOW, FAST
+	}
 
 	public MyRobot() throws AWTException {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 
-	public void clickAction(BettingDecision bettingDecision, long threadId) {
+	public void clickAction(BettingDecision bettingDecision, ClickSpeed clickSpeed) {
 
 		if (log.isDebugEnabled()) {
 			log.debug(">> clickAction");
 		}
 
 		Random rand = new Random();
-		int randomNumber = rand.nextInt(MAX - MIN + 1) + MIN;
+		int randomNumber;
+
+		if (clickSpeed.equals(ClickSpeed.SLOW)) {
+			randomNumber = rand.nextInt(MAX - MIN + 1) + MIN;
+		}
+		else {
+			randomNumber = rand.nextInt(FAST - MIN + 1) + MIN;
+		}
 
 		delay(randomNumber);
 		keyPress(bettingDecision.getShortcut());
 
-		log.debug("threadId=" + threadId + " / random=" + randomNumber + " / playerShortcut=" + bettingDecision);
-
-		System.out.println("KEYPRESS at " + randomNumber);
+		System.out.println("KEYPRESS at " + randomNumber + "(" + bettingDecision.getShortcut() + ")");
 	}
 }

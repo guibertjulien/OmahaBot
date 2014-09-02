@@ -9,7 +9,6 @@ import com.omahaBot.exception.StrategyUnknownException;
 import com.omahaBot.model.draw.DrawModel;
 
 /**
- * TODO même comportement que OnePairStrategy
  * 
  * @author Julien
  *
@@ -36,7 +35,8 @@ public class TwoPairStrategy extends AbstractStrategy {
 
 	public TwoPairStrategy(StrategyContext context) {
 		super(context);
-		System.out.println("--> TwoPairStrategy");
+		System.out.println("----------------------------------------");
+		System.out.println("TwoPairStrategy");
 	}
 
 	@Override
@@ -52,7 +52,7 @@ public class TwoPairStrategy extends AbstractStrategy {
 		case FOUR_OF_A_KIND:
 		case FULL_HOUSE:
 			System.out.println(TwoPair_20);
-			bettingDecision = betIfnoBetOrCall_call(BetType.SMALL);
+			bettingDecision = BettingDecision.CHECK_FOLD;
 			break;
 		case FLUSH:
 			if (nutsForLevel) {

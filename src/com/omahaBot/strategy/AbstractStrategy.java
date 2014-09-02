@@ -46,7 +46,14 @@ public abstract class AbstractStrategy {
 	 * @return
 	 */
 	public BettingDecision callAllBet() {
-		return BettingDecision.CHECK_CALL;
+
+		BettingDecision bettingDecision = BettingDecision.CHECK_FOLD;
+		
+		if (go()) {
+			bettingDecision = BettingDecision.CHECK_CALL;
+		}
+		
+		return bettingDecision;
 	}
 
 	/**
@@ -55,7 +62,7 @@ public abstract class AbstractStrategy {
 	 * @return
 	 */
 	public BettingDecision betSmall() {
-		return BettingDecision.randomBetween(BettingDecision.BET_RAISE_MIN, BettingDecision.BET_RAISE_50);
+		return BettingDecision.randomBetween(BettingDecision.BET_RAISE_25, BettingDecision.BET_RAISE_50);
 	}
 
 	/**
@@ -83,45 +90,6 @@ public abstract class AbstractStrategy {
 	// }
 
 	/**
-	 * 1 : betOrFold - 2 : fold
-	 * 
-	 * @return
-	 */
-	public BettingDecision betOrFold_fold(BetType betType) {
-
-		System.out.println("betOrFold_fold : " + betType);
-
-		if (context.isFirstTurnOfBet()) {// 1er tour de mise
-			if (context.noBetInTurn()) {// pas de mise précédente
-				return bet(betType);
-			}
-		}
-
-		return BettingDecision.CHECK_FOLD;
-	}
-
-	/**
-	 * 1 : betOrCall - 2 : fold
-	 * 
-	 * @return
-	 */
-	public BettingDecision betOrCall_fold(BetType betType) {
-
-		System.out.println("betOrCall_fold : " + betType);
-
-		if (context.isFirstTurnOfBet()) {// 1er tour de mise
-			if (context.noBetInTurn()) {// pas de mise précédente
-				return bet(betType);
-			}
-			else {
-				return callAllBet();
-			}
-		}
-
-		return BettingDecision.CHECK_FOLD;
-	}
-
-	/**
 	 * 
 	 * @param betType
 	 * @return
@@ -145,6 +113,25 @@ public abstract class AbstractStrategy {
 		return bettingDecision;
 	}
 
+	public BettingDecision betIfnoBetOrCall_fold(BetType betType) {
+
+		BettingDecision bettingDecision = BettingDecision.CHECK_FOLD;
+
+		if (context.isFirstTurnOfBet()) {// 1er tour de mise
+			if (context.noBetInTurn()) {// pas de mise précédente
+				bettingDecision = bet(betType);
+			}
+			else {
+				bettingDecision = callAllBet();
+			}
+		}
+		else {
+			bettingDecision = BettingDecision.CHECK_FOLD;
+		}
+
+		return bettingDecision;
+	}
+	
 	public BettingDecision betIfnoBetOrFold_fold(BetType betType) {
 
 		BettingDecision bettingDecision = BettingDecision.CHECK_FOLD;
@@ -308,5 +295,20 @@ public abstract class AbstractStrategy {
 	
 	public boolean boardHasFullorStraightDraw(SortedSet<DrawModel> drawsSorted) {
 		return boardHasFullDraw(drawsSorted) || boardHasStraightDraw(drawsSorted);
+	}
+	
+	public boolean go() {
+		
+		boolean go = true;
+		
+		// test si HU
+		if (context.isHU()) {
+			System.out.println("--> HU");
+		}
+		else {	
+			System.out.println("--> PERCENT TO GO: " + context.percentOfBet());
+		}
+		
+		return go;
 	}
 }

@@ -12,7 +12,8 @@ public class QuadsStategy extends AbstractStrategy {
 	
 	public QuadsStategy(StrategyContext context) {
 		super(context);
-		System.out.println("--> QuadsStategy");
+		System.out.println("----------------------------------------");
+		System.out.println("QuadsStategy");
 	}
 
 	@Override

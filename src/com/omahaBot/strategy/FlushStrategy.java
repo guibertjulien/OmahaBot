@@ -21,7 +21,8 @@ public class FlushStrategy extends AbstractStrategy {
 
 	public FlushStrategy(StrategyContext context) {
 		super(context);
-		System.out.println("--> FlushStrategy");
+		System.out.println("----------------------------------------");
+		System.out.println("FlushStrategy");
 	}
 
 	/**

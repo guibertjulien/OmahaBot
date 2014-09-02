@@ -28,24 +28,25 @@ public class PreFlopAnalyser {
 		}
 
 		System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-		System.out.println(" ANALYSE PREFLOP : " + handModel);
+		System.out.println(" ANALYSE PREFLOP");
+		System.out.println(handModel);
 		System.out.println("----------------------------------------");
 		
 		handPreFlopPower = new HandPreFlopPower(handModel);
 
-//		if (handPreFlopPower.isTrashHand()) {
-//			System.out.println("Me: My hand is TRASH !");
-//		}
-//		else if (handPreFlopPower.isBestHand()) {
-//			System.out.println("Me: My hand is TOP 30 ! " + handPreFlopPower.getBestHandLevel());
-//		}
-//
+		if (handPreFlopPower.isTrashHand()) {
+			System.out.println("Me: My hand is TRASH !");
+		}
+		else if (handPreFlopPower.isBestHand()) {
+			System.out.println("Me: My hand is TOP 30 ! " + handPreFlopPower.getBestHandLevel());
+		}
+
 //		System.out.println("+ " + handPreFlopPower.getPreFlopPairLevel());
 //		System.out.println("+ " +  handPreFlopPower.getPreFlopStraightLevel());
 //		System.out.println("+ " +  handPreFlopPower.getPreFlopSuitLevel());
-//
-//		System.out.println("=POWER hand : " + handPreFlopPower.getPower());
-//		System.out.println("----------------------------------------");
+
+		System.out.println("Power hand: " + handPreFlopPower.getPower());
+		System.out.println("----------------------------------------");
 	}
 
 	/**

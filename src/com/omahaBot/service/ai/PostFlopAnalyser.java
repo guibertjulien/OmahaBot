@@ -16,8 +16,8 @@ import com.omahaBot.model.BoardModel;
 import com.omahaBot.model.draw.DrawModel;
 import com.omahaBot.model.hand.HandModel;
 import com.omahaBot.strategy.AbstractStrategy;
-import com.omahaBot.strategy.StrategyFactory;
 import com.omahaBot.strategy.StrategyContext;
+import com.omahaBot.strategy.StrategyFactory;
 
 /**
  * TODO continuation BET SLOW_PLAY DEAD_CARD POSITION BLUFF CAPACITY OUT STACK 2
@@ -68,7 +68,9 @@ public class PostFlopAnalyser {
 		}
 
 		System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-		System.out.println(" ANALYSE POSTFLOP : " + handModel + " / " + boardModel);
+		System.out.println(" ANALYSE POSTFLOP");
+		System.out.println(handModel);
+		System.out.println(boardModel);
 		System.out.println("----------------------------------------");
 		
 		handLevel = 99;
@@ -123,36 +125,36 @@ public class PostFlopAnalyser {
 
 		}
 
-		System.out.println("----------------------------------------");
-		System.out.println("HAND DRAWS :");
-
+//		System.out.println("----------------------------------------");
+//		System.out.println("HAND DRAWS :");
+//
 		// analyse de STRAIGHT DRAWS TYPE si pas de STRAIGHT
 		if (!handModel.isStraight(handDrawsSorted)) {
 			straightDrawType = handModel.searchStraightDrawType(boardModel);
-			System.out.println(" straightDrawType=" + straightDrawType);
+			System.out.println("StraightDrawType: " + straightDrawType);
 		}
-
-		int level = 0;
-		for (DrawModel drawModel : handDrawsSorted) {
-			System.out.println(" #" + level + ": " + drawModel);
-			level++;
-		}
-
-		System.out.println("----------------------------------------");
-		System.out.println("BOARD DRAWS :");
-
-		level = 0;
-		for (DrawModel drawModel : boardDrawsSorted) {
-			System.out.println(" #" + level + ": " + drawModel);
-			level++;
-		}
-
-		if (iHaveNuts()) {
-			System.out.println(">>>> I have NUTS !");
-		}
-		else {
-			System.out.println(">>>> LEVEL=" + handLevel + " / NUTS=" + isNutsForLevel());
-		}
+//
+//		int level = 0;
+//		for (DrawModel drawModel : handDrawsSorted) {
+//			System.out.println(" #" + level + ": " + drawModel);
+//			level++;
+//		}
+//
+//		System.out.println("----------------------------------------");
+//		System.out.println("BOARD DRAWS :");
+//
+//		level = 0;
+//		for (DrawModel drawModel : boardDrawsSorted) {
+//			System.out.println(" #" + level + ": " + drawModel);
+//			level++;
+//		}
+//
+//		if (iHaveNuts()) {
+//			System.out.println(">>>> I have NUTS !");
+//		}
+//		else {
+//			System.out.println(">>>> LEVEL=" + handLevel + " / NUTS=" + isNutsForLevel());
+//		}
 
 		System.out.println("----------------------------------------");
 	}
@@ -165,32 +167,24 @@ public class PostFlopAnalyser {
 
 		BettingDecision bettingDecision = BettingDecision.CHECK_FOLD;
 
-		// TODO better : caution straightDrawType
-		if (!handDrawsSorted.isEmpty()) {
+		if (!handDrawsSorted.isEmpty() || (straightDrawType.ordinal() > 0 && !dealStep.equals(DealStep.RIVER))) {
 
-			DrawModel bestPermutation = handDrawsSorted.first();
-			// ArrayList<DrawModel> boardDraws = new
-			// ArrayList<DrawModel>(boardDrawsSorted);
-			//
-			// List<DrawModel> boardflushDraws = boardDraws.stream()
-			// .filter(d -> d.getHandCategory().equals(HandCategory.FLUSH))
-			// .collect(Collectors.toList());
-			//
-			// if (boardflushDraws.isEmpty()) {
-			// boardflushDraws = boardDraws.stream().filter(d ->
-			// d.getHandCategory().equals(HandCategory.FLUSH_DRAW))
-			// .collect(Collectors.toList());
-			// }
-
-			AbstractStrategy strategyFactory = StrategyFactory.getStrategy(bestPermutation.getHandCategory(),
-					context);
+			HandCategory handCategory = HandCategory.UNKNOWN;
+			
+			if (handDrawsSorted.isEmpty()) {
+				handCategory = HandCategory.STRAIGHT_DRAW;
+			}
+			else {
+				handCategory = handDrawsSorted.first().getHandCategory();
+			}
+						
+			AbstractStrategy strategyFactory = StrategyFactory.getStrategy(handCategory, context);
 
 			try {
 				switch (dealStep) {
 				case FLOP:
 					bettingDecision = strategyFactory.decideAtFlop(handDrawsSorted, boardDrawsSorted, iHaveNuts(),
 							nutsForLevel, straightDrawType);
-
 					break;
 				case TURN:
 					bettingDecision = strategyFactory.decideAtTurn(handDrawsSorted, boardDrawsSorted, iHaveNuts(),
@@ -209,7 +203,11 @@ public class PostFlopAnalyser {
 				log.debug(e.getMessage());
 			}
 		}
-
+		else {
+			// TODO
+			System.out.println("--> No Strategy");
+		}
+		
 		System.out.println("Me: I " + bettingDecision + " at " + dealStep + " (" + context.getNbTurnOfBet() + ")");
 		System.out.println("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
 

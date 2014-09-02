@@ -23,15 +23,37 @@ import com.omahaBot.exception.ScanOcrException;
 public class OcrUtilsTest {
 
 	@Test
-	public void test() throws ScanOcrException {
-		BigDecimal stack = OcrUtils.cleanPot(",Pot:1200€");
+	public void testCleanPot() throws ScanOcrException {
+		BigDecimal stack;
+		
+		stack = OcrUtils.cleanPot(",Pot:1200€");
 		assertTrue(",Pot:1200€", stack.doubleValue() == 1200);
 
 		stack = OcrUtils.cleanPot(",Pot:0,58€");
 		assertTrue(",Pot:0,58€", stack.doubleValue() == 0.58);
 
 		stack = OcrUtils.cleanPot(",POT : 12,456€");
-		assertTrue(",Pot:0,58€", stack.doubleValue() == 12.456);
+		assertTrue(",POT : 12,456€", stack.doubleValue() == 12.456);
+		
+		stack = OcrUtils.cleanPot("Pot: 0,16% I");
+		assertTrue("Pot: 0,16% I", stack.doubleValue() == 0.16);
+		
+		stack = OcrUtils.cleanPot("");
+		assertTrue("vide", stack.doubleValue() == 0);
+	}
+	
+	@Test
+	public void testStack() throws ScanOcrException {
+		BigDecimal stack;
+
+		stack = OcrUtils.cleanStack("123456789.01 €");
+		assertTrue("123456789.01", stack.doubleValue() == 123456789.01);
+		
+		stack = OcrUtils.cleanStack("All In");
+		assertTrue("All In", stack.doubleValue() == -1);
+		
+		stack = OcrUtils.cleanStack("");
+		assertTrue("vide", stack.doubleValue() == 0);
 	}
 
 	@Test

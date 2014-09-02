@@ -34,6 +34,7 @@ import com.omahaBot.model.hand.HandModel;
 import com.omahaBot.model.hand.HandPreFlopPower;
 import com.omahaBot.service.ai.PostFlopAnalyser;
 import com.omahaBot.service.bot.ThreadTable;
+import com.omahaBot.service.ocr.OcrService;
 import com.omahaBot.service.ocr.OcrServiceImpl;
 import com.omahaBot.utils.CustomOutputStream;
 
@@ -44,7 +45,7 @@ import com.omahaBot.utils.CustomOutputStream;
  */
 public class MainForm {
 
-	private OcrServiceImpl ocrService = OcrServiceImpl.getInstance();
+	private OcrService ocrService = OcrServiceImpl.getInstance();
 
 	protected Shell shell;
 
@@ -69,8 +70,7 @@ public class MainForm {
 	private TabItem tbtm3;
 	
 	private AnalyseWidget analyseWidget;
-	private Button btn_register;
-	private Button btnNewButton_1;
+	private Button btn_screenCaps;
 
 	/**
 	 * Launch the application.
@@ -151,11 +151,14 @@ public class MainForm {
 		});
 		btn_clear.setText("Clear log");
 		
-		btn_register = new Button(grpActions, SWT.TOGGLE);
-		btn_register.setText("Register");
-		
-		btnNewButton_1 = new Button(grpActions, SWT.TOGGLE);
-		btnNewButton_1.setText("In play");
+		btn_screenCaps = new Button(grpActions, SWT.TOGGLE);
+		btn_screenCaps.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				ocrService.screenCaps();
+			}
+		});
+		btn_screenCaps.setText("ScreenCaps");
 		btnNewButton.addSelectionListener(new SelectionAdapter() {
 			private ThreadTable threadDeal;
 
